@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    <meta name="description" content="Hexo Theme Redefine">
+    <meta name="author" content="背着蒜头的耿鬼">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-redefine.png">
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://blog.2nfree.com/2023/02/28/install-oh-my-zsh/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="安装oh my zsh">
+    <meta property="og:description" content="Hexo Theme Redefine">
+    <meta property="og:url" content="https://blog.2nfree.com2023/02/28/install-oh-my-zsh/">
+    <meta property="og:image" content="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg">
+    <meta property="og:site_name" content="2nfree&#39;s Blog">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="安装oh my zsh">
+    <meta name="twitter:description" content="Hexo Theme Redefine">
+    <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg">
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg">
+    <meta name="theme-color" content="#005080">
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg">
+    
+    <title>
+        
+            安装oh my zsh -
+        
+        2nfree&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/assets/fonts.css">
+
+    
+    
+    
+    
+    <script id="hexo-configurations">
+    let REDEFINE = window.REDEFINE || {};
+    REDEFINE.hexo_config = {"hostname":"blog.2nfree.com","root":"/","language":"zh-CN","path":"search.xml"};
+    REDEFINE.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#005080","avatar":"https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/avatar.png","favicon":"https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg","article_img_align":"center","right_side_width":"210px","content_max_width":"1000px","nav_color":{"left":"#f78736","right":"#367df7","transparency":35},"hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"background_image":{"light":"https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/background-light.webp","dark":"https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/background-night.webp"},"title_color":{"light":"#fff","dark":"#000"},"description":"The quick brown fox jumps over the lazy dog","custom_font":{"enable":false,"font_family":null,"font_url":null}},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_block":{"copy":true,"style":"mac","custom_font":{"enable":false,"font_family":null,"font_url":null}},"pjax":{"enable":false},"lazyload":{"enable":true},"version":"1.1.6","friend_links":{"columns":2},"home_article":{"date_format":"auto","category":{"enable":true,"limit":3},"tag":{"enable":true,"limit":3}},"plugins":{"aplayer":{"enable":false,"audio":[{"name":null,"artist":null,"url":null,"cover":null},{"name":null,"artist":null,"url":null,"cover":null}]}}};
+    REDEFINE.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+    
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="2nfree's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="menu-wrapper">
+    
+    <div class="menu-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                2nfree&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        归档
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/categories"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-folder-open"></i>
+                                        
+                                        分类
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/tags"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-tag"></i>
+                                        
+                                        标签
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/about"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-user"></i>
+                                        
+                                        关于
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/links"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-link"></i>
+                                        
+                                        友链
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="menu-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                归档
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/categories"  >
+                             
+                                
+                                    <i class="fa-regular fa-folder-open"></i>
+                                
+                                分类
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/tags"  >
+                             
+                                
+                                    <i class="fa-regular fa-tag"></i>
+                                
+                                标签
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/about"  >
+                             
+                                
+                                    <i class="fa-regular fa-user"></i>
+                                
+                                关于
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/links"  >
+                             
+                                
+                                    <i class="fa-regular fa-link"></i>
+                                
+                                友链
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            
+            
+                <div class="article-title">
+                    <h1 class="article-title-regular">安装oh my zsh</h1>
+                </div>
+            
+                
+            
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/avatar.png">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">背着蒜头的耿鬼</span>
+                            
+                                <span class="author-label">Lv1</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="pc">2023-02-28 22:33:29</span>
+        <span class="mobile">2023-02-28 22:33</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="pc">2023-03-02 19:42:37</span>
+            <span class="mobile">2023-03-02 19:42</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E8%BF%90%E7%BB%B4/">运维</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Linux/">Linux</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fa-regular fa-file-word"></i>&nbsp;<span>919 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>3 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content markdown-body">
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>普遍我们使用的shell解释器都是sh、bash这两种，但是除此之外当然还有其他的例如ksh、csh和zsh等</p>
+<p>现在要安装的oh my zsh是基于zsh的一个扩展，与之相同的还有windows上的oh my posh，他们都是基于原始命令行上的一个扩展工具集，提供了很多丰富的功能，而且提供了很多的命令行样式，可以使我们的命令行更加好看</p>
+<p>官方仓库地址：<a class="link"   target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh" >oh my zsh <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>在安装oh my zsh之前，我们需要安装zsh，并且将zsh设置为我们的默认命令行</p>
+<p>PS：在部分linux发行版（如kali）中包括新版的MAC OS操作系统，都是默认使用zsh作为shell解释器，像这种就不需要进行设置了</p>
+<h2 id="安装zsh"><a href="#安装zsh" class="headerlink" title="安装zsh"></a>安装zsh</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#查看所有的shell解释器</span></span><br><span class="line"><span class="built_in">cat</span> /etc/shells</span><br><span class="line"></span><br><span class="line"><span class="comment">#查看当前使用shell解释器</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$SHELL</span></span><br></pre></td></tr></table></figure></div>
+<div class="tabs" id="tab-install-zsh"><ul class="nav-tabs"><li class="tab active"><a class="#install-zsh-1">ubuntu & debian</a></li><li class="tab"><a class="#install-zsh-2">centos & redhat & fedora</a></li></ul><div class="tab-content"><div class="tab-pane active" id="install-zsh-1"><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install zsh -y</span><br><span class="line"></span><br><span class="line"><span class="comment">#切换shell到zsh</span></span><br><span class="line">chsh -s /bin/zsh</span><br></pre></td></tr></table></figure></div></div><div class="tab-pane" id="install-zsh-2"><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">sudo yum install zsh -y</span><br><span class="line"></span><br><span class="line"><span class="comment">#切换shell到zsh</span></span><br><span class="line">chsh -s /bin/zsh</span><br></pre></td></tr></table></figure></div></div></div></div>
+
+<h2 id="安装oh-my-zsh"><a href="#安装oh-my-zsh" class="headerlink" title="安装oh my zsh"></a>安装oh my zsh</h2><p>安装oh my zsh有很多方式，一般可以直接使用官方提供的安装脚本，或者自己clone仓库自行配置，但无论那种方式我们都需要git命令，如果没有这个命令则需要安装</p>
+<div class="tabs" id="tab-install-oh-my-zsh"><ul class="nav-tabs"><li class="tab active"><a class="#install-oh-my-zsh-1">官方安装方式</a></li><li class="tab"><a class="#install-oh-my-zsh-2">镜像源安装</a></li></ul><div class="tab-content"><div class="tab-pane active" id="install-oh-my-zsh-1"><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#官方安装方式需要较好的网络环境</span></span><br><span class="line">sh -c <span class="string">&quot;<span class="subst">$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)</span>&quot;</span></span><br></pre></td></tr></table></figure></div></div><div class="tab-pane" id="install-oh-my-zsh-2"><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#从镜像源下载安装脚本</span></span><br><span class="line">wget https://gitee.com/mirrors/oh-my-zsh/raw/master/tools/install.sh</span><br></pre></td></tr></table></figure></div>
+
+<p>下载完安装脚本后，我们需要将安装脚本中的仓库地址改为镜像地址，主要修改下面两项</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">REPO=$&#123;REPO:-ohmyzsh/ohmyzsh&#125;</span><br><span class="line">REMOTE=$&#123;REMOTE:-https://github.com/$&#123;REPO&#125;.git&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">改为</span></span><br><span class="line">REPO=$&#123;REPO:-mirrors/oh-my-zsh&#125;</span><br><span class="line">REMOTE=$&#123;REMOTE:-https://gitee.com/$&#123;REPO&#125;.git&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>如图所示<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static@latest/post-assets/2023-02-28-install-oh-my-zsh/repo.png"
+                      alt=""
+                ></p>
+<p>修改完后执行脚本，并切换oh my zsh的git远程仓库地址为镜像源，便于后续的更新</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">sh install.sh</span><br><span class="line"><span class="built_in">cd</span> ~/.oh-my-zsh</span><br><span class="line">git remote set-url origin https://gitee.com/mirrors/oh-my-zsh.git</span><br><span class="line">git pull</span><br></pre></td></tr></table></figure></div></div></div></div>
+
+<h2 id="编辑-zshrc"><a href="#编辑-zshrc" class="headerlink" title="编辑.zshrc"></a>编辑.zshrc</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; ~/.zshrc &lt;&lt;<span class="string">&quot;EOF&quot;</span></span><br><span class="line"><span class="built_in">export</span> ZSH=<span class="string">&quot;<span class="variable">$HOME</span>/.oh-my-zsh&quot;</span></span><br><span class="line"><span class="built_in">export</span> TERM=xterm-256color</span><br><span class="line"></span><br><span class="line">ZSH_THEME=<span class="string">&quot;dallas&quot;</span> <span class="comment">#个人比较喜欢的命令行样式，可以根据官方文档自行修改</span></span><br><span class="line"></span><br><span class="line">plugins=(</span><br><span class="line">  git <span class="comment">#git插件，提供了很多git的缩减命令，可以在官方查看</span></span><br><span class="line">  sudo <span class="comment">#sudo插件，连按两下esc键自动在命令前加上sudo</span></span><br><span class="line">  docker <span class="comment">#docker插件，为docker提供了很好的命令提示</span></span><br><span class="line">  kubectl <span class="comment">#kubectl插件，为kubectl提供了很好的命令提示</span></span><br><span class="line">  themes <span class="comment">#皮肤插件，命令行输入theme可以更换当前的命令行样式</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">source</span> <span class="variable">$ZSH</span>/oh-my-zsh.sh</span><br><span class="line"><span class="built_in">setopt</span> no_nomatch</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="comment">#使用配置</span></span><br><span class="line"><span class="built_in">source</span> ~/.zshrc</span><br></pre></td></tr></table></figure></div>
+
+<p>在执行了上面的命令后，可以发现当前命令行使用了oh my zsh，我们还可以配置 ~&#x2F;.zshrc 文件来设置更多的插件，也可以将除了官方以外的插件下载到 ~&#x2F;.oh-my-zsh&#x2F;custom&#x2F;plugins 下来使用</p>
+<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><p>比较推荐的插件有两个：</p>
+<ul>
+<li>zsh-syntax-highlighting：命令高亮</li>
+<li>zsh-autosuggestions：历史命令提示</li>
+</ul>
+<p>下面来安装这两个插件</p>
+<div class="tabs" id="tab-install-plugins"><ul class="nav-tabs"><li class="tab active"><a class="#install-plugins-1">官方仓库安装</a></li><li class="tab"><a class="#install-plugins-2">镜像源安装</a></li></ul><div class="tab-content"><div class="tab-pane active" id="install-plugins-1"><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/.oh-my-zsh/custom/plugins</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/zsh-users/zsh-syntax-highlighting.git</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/zsh-users/zsh-autosuggestions</span><br></pre></td></tr></table></figure></div></div><div class="tab-pane" id="install-plugins-2"><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/.oh-my-zsh/custom/plugins</span><br><span class="line">git <span class="built_in">clone</span> https://gitee.com/lightnear/zsh-syntax-highlighting.git</span><br><span class="line">git <span class="built_in">clone</span> https://gitee.com/mattuy/zsh-autosuggestions.git</span><br></pre></td></tr></table></figure></div></div></div></div>
+
+<p>之后我们再修改.zshrc文件来使用这两个插件，在plugins中添加刚才下载的插件即可</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">plugins=(</span><br><span class="line">  git</span><br><span class="line">  sudo</span><br><span class="line">  docker</span><br><span class="line">  kubectl</span><br><span class="line">  themes</span><br><span class="line">  zsh-autosuggestions</span><br><span class="line">  zsh-syntax-highlighting</span><br><span class="line">)</span><br></pre></td></tr></table></figure></div>
+
+<p>到此为止就已经安装完了，可以试试新的命令行了</p>
+
+            </div>
+
+            
+                <div class="post-copyright-info">
+                    <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：安装oh my zsh</li>
+        <li>本文作者：背着蒜头的耿鬼</li>
+        <li>创建时间：2023-02-28 22:33:29</li>
+        <li>
+            本文链接：https://blog.2nfree.com/2023/02/28/install-oh-my-zsh/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+                </div>
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Linux/">#Linux</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            <div class="recommended-article">
+  <div class="recommended-article-header">
+    <i class="fa-solid fa-bookmark fa-fw" aria-hidden="true"></i><span>推荐阅读</span>
+  </div>
+  <div class="recommended-article-group"><a class="recommended-article-item" href="/2023/02/17/deploy-k8s-with-kubeadm/" title="基于kubeadm的k8s部署" rel="bookmark">
+  <img src="https://evan.beee.top/img/wallhaven-wqery6-light.webp" alt="基于kubeadm的k8s部署">
+  <span class="title">基于kubeadm的k8s部署</span>
+</a><a class="recommended-article-item" href="/2023/02/17/deploy-rook-ceph-on-k8s/" title="安装Rook Ceph作为K8S的存储服务" rel="bookmark">
+  <img src="https://evan.beee.top/img/wallhaven-wqery6-light.webp" alt="安装Rook Ceph作为K8S的存储服务">
+  <span class="title">安装Rook Ceph作为K8S的存储服务</span>
+</a><a class="recommended-article-item" href="/2023/02/21/deploy-doris/" title="Doris安装部署" rel="bookmark">
+  <img src="https://evan.beee.top/img/wallhaven-wqery6-light.webp" alt="Doris安装部署">
+  <span class="title">Doris安装部署</span>
+</a></div>
+</div>
+
+            
+                <div class="article-nav">
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                            rel="next"
+                            href="/2023/02/21/deploy-doris/"
+                            >
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">Doris安装部署</span>
+                                    <span class="post-nav-item">下一篇</span>
+                                </span>
+                                <span class="right arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+
+
+            
+                <div class="comment-container">
+                    <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments"></i>&nbsp;评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script 
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script >
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: 'f0f74b0cc1d9323fe15f',
+                    clientSecret: '74213435c72bf1a18c20d91c35c325fc985ff79d',
+                    repo: '2nfree.github.io',
+                    owner: '2Nfree',
+                    admin: ['2Nfree'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('false') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+                </div>
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">安装oh my zsh</div>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85zsh"><span class="nav-number">2.1.</span> <span class="nav-text">安装zsh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85oh-my-zsh"><span class="nav-number">2.2.</span> <span class="nav-text">安装oh my zsh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%BE%91-zshrc"><span class="nav-number">2.3.</span> <span class="nav-text">编辑.zshrc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6"><span class="nav-number">2.4.</span> <span class="nav-text">安装插件</span></a></li></ol></li></ol>
+
+    </div>
+</div>
+            </div>
+        
+    </div>
+</div>
+
+
+                
+
+            </div>
+
+
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2023&nbsp;&nbsp;<i class="fa-regular fa-computer-classic"></i>&nbsp;&nbsp;<a href="/">背着蒜头的耿鬼</a>
+        </div>
+        
+            <script async  src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            <span class="powered-by-container">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" href="https://hexo.io">Hexo</a> 驱动</span>
+                <br> 
+            <span class="theme-version-container">主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v1.1.6</a>
+        </div>
+        
+        
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="unfolded-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="right-bottom-tools rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                <i class="fa-regular fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="fa-regular fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="folded-tools-list">
+        <li class="right-bottom-tools tool-toggle-show flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/menu-shrink.js"></script>
+
+<script src="/js/tools/go-top-bottom.js"></script>
+
+<script src="/js/tools/dark-light-toggle.js"></script>
+
+
+
+    
+<script src="/js/tools/local-search.js"></script>
+
+
+
+
+    
+<script src="/js/tools/code-block.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+        
+<script src="/js/tools/toc-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+    
+</div>
+
+
+
+
+</body>
+</html>

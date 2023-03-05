@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    <meta name="description" content="Hexo Theme Redefine">
+    <meta name="author" content="背着蒜头的耿鬼">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-redefine.png">
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://blog.2nfree.com/2023/02/17/deploy-rook-ceph-on-k8s/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="安装Rook Ceph作为K8S的存储服务">
+    <meta property="og:description" content="Hexo Theme Redefine">
+    <meta property="og:url" content="https://blog.2nfree.com2023/02/17/deploy-rook-ceph-on-k8s/">
+    <meta property="og:image" content="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg">
+    <meta property="og:site_name" content="2nfree&#39;s Blog">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="安装Rook Ceph作为K8S的存储服务">
+    <meta name="twitter:description" content="Hexo Theme Redefine">
+    <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg">
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg">
+    <meta name="theme-color" content="#005080">
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg">
+    
+    <title>
+        
+            安装Rook Ceph作为K8S的存储服务 -
+        
+        2nfree&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/assets/fonts.css">
+
+    
+    
+    
+    
+    <script id="hexo-configurations">
+    let REDEFINE = window.REDEFINE || {};
+    REDEFINE.hexo_config = {"hostname":"blog.2nfree.com","root":"/","language":"zh-CN","path":"search.xml"};
+    REDEFINE.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#005080","avatar":"https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/avatar.png","favicon":"https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg","article_img_align":"center","right_side_width":"210px","content_max_width":"1000px","nav_color":{"left":"#f78736","right":"#367df7","transparency":35},"hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"background_image":{"light":"https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/background-light.webp","dark":"https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/background-night.webp"},"title_color":{"light":"#fff","dark":"#000"},"description":"The quick brown fox jumps over the lazy dog","custom_font":{"enable":false,"font_family":null,"font_url":null}},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_block":{"copy":true,"style":"mac","custom_font":{"enable":false,"font_family":null,"font_url":null}},"pjax":{"enable":false},"lazyload":{"enable":true},"version":"1.1.6","friend_links":{"columns":2},"home_article":{"date_format":"auto","category":{"enable":true,"limit":3},"tag":{"enable":true,"limit":3}},"plugins":{"aplayer":{"enable":false,"audio":[{"name":null,"artist":null,"url":null,"cover":null},{"name":null,"artist":null,"url":null,"cover":null}]}}};
+    REDEFINE.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+    
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="2nfree's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="menu-wrapper">
+    
+    <div class="menu-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                2nfree&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        归档
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/categories"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-folder-open"></i>
+                                        
+                                        分类
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/tags"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-tag"></i>
+                                        
+                                        标签
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/about"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-user"></i>
+                                        
+                                        关于
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/links"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-link"></i>
+                                        
+                                        友链
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="menu-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                归档
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/categories"  >
+                             
+                                
+                                    <i class="fa-regular fa-folder-open"></i>
+                                
+                                分类
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/tags"  >
+                             
+                                
+                                    <i class="fa-regular fa-tag"></i>
+                                
+                                标签
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/about"  >
+                             
+                                
+                                    <i class="fa-regular fa-user"></i>
+                                
+                                关于
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/links"  >
+                             
+                                
+                                    <i class="fa-regular fa-link"></i>
+                                
+                                友链
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            
+            
+                <div class="article-title">
+                    <h1 class="article-title-regular">安装Rook Ceph作为K8S的存储服务</h1>
+                </div>
+            
+                
+            
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/avatar.png">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">背着蒜头的耿鬼</span>
+                            
+                                <span class="author-label">Lv1</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="pc">2023-02-17 23:20:34</span>
+        <span class="mobile">2023-02-17 23:20</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="pc">2023-03-02 19:42:37</span>
+            <span class="mobile">2023-03-02 19:42</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E8%BF%90%E7%BB%B4/">运维</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Kubernetes/">Kubernetes</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/CloudNative/">CloudNative</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/DevOps/">DevOps</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fa-regular fa-file-word"></i>&nbsp;<span>1.9k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>8 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content markdown-body">
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="容器的持久化存储"><a href="#容器的持久化存储" class="headerlink" title="容器的持久化存储"></a>容器的持久化存储</h2><p>容器的持久化存储是保存容器存储状态的重要手段，存储插件会在容器里挂载一个基于网络或者其他机制的远程数据卷，使得在容器里创建的文件，实际上是保存在远程存储服务器上，或者以分布式的方式保存在多个节点上，而与当前宿主机没有任何绑定关系。<br>这样，无论你在其他哪个宿主机上启动新的容器，都可以请求挂载指定的持久化存储卷，从而访问到数据卷里保存的内容。<br>由于 Kubernetes 本身的松耦合设计，绝大多数存储项目，比如 Ceph、GlusterFS、NFS 等，都可以为 Kubernetes 提供持久化存储能力。</p>
+<h2 id="Ceph"><a href="#Ceph" class="headerlink" title="Ceph"></a>Ceph</h2><p>Ceph是一种高度可扩展的分布式存储解决方案，提供对象、文件和块存储。</p>
+<p>官方网站：<a class="link"   target="_blank" rel="noopener" href="https://ceph.io/" >ceph.io <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="Rook"><a href="#Rook" class="headerlink" title="Rook"></a>Rook</h2><p>Rook 是一个开源的cloud-native storage编排, 提供平台和框架；为各种存储解决方案提供平台、框架和支持，以便与云原生环境本地集成。</p>
+<p>官方网站：<a class="link"   target="_blank" rel="noopener" href="https://rook.io/" >rook.io <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>GitHub仓库：<a class="link"   target="_blank" rel="noopener" href="https://github.com/rook/rook" >rook&#x2F;rook <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h1 id="部署环境准备"><a href="#部署环境准备" class="headerlink" title="部署环境准备"></a>部署环境准备</h1><p>PS：在集群中至少有三个节点可用，满足ceph高可用要求</p>
+<h2 id="rook使用存储方式"><a href="#rook使用存储方式" class="headerlink" title="rook使用存储方式"></a>rook使用存储方式</h2><p>rook默认使用所有节点的所有资源，rook operator自动在所有节点上启动OSD设备，Rook会用如下标准监控并发现可用设备：</p>
+<ul>
+<li>设备没有分区</li>
+<li>设备没有格式化的文件系统</li>
+<li>Rook不会使用不满足以上标准的设备。另外也可以通过修改配置文件，指定哪些节点或者设备会被使用</li>
+</ul>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#服务器添加新磁盘</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#查看磁盘情况</span></span><br><span class="line">lsblk -f</span><br><span class="line"></span><br><span class="line"><span class="comment">#初始化磁盘</span></span><br><span class="line">yum install gdisk -y</span><br><span class="line">sgdisk --zap-all /dev/vdb</span><br><span class="line"><span class="built_in">dd</span> <span class="keyword">if</span>=/dev/zero of=<span class="string">&quot;/dev/vdb&quot;</span> bs=1M count=100 oflag=direct,dsync</span><br><span class="line">blkdiscard /dev/vdb</span><br><span class="line">partprobe /dev/vdb</span><br><span class="line"></span><br><span class="line"><span class="comment">#确认安装lvm2</span></span><br><span class="line">yum install lvm2 -y</span><br><span class="line"><span class="comment">#启用rbd模块</span></span><br><span class="line">modprobe rbd</span><br><span class="line"><span class="built_in">cat</span> &gt; /etc/rc.sysinit &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">#!/bin/bash</span></span><br><span class="line"><span class="string">for file in /etc/sysconfig/modules/*.modules</span></span><br><span class="line"><span class="string">do</span></span><br><span class="line"><span class="string">  [ -x \$file ] &amp;&amp; \$file</span></span><br><span class="line"><span class="string">done</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"><span class="built_in">cat</span> &gt; /etc/sysconfig/modules/rbd.modules &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">modprobe rbd</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"><span class="built_in">chmod</span> 755 /etc/sysconfig/modules/rbd.modules</span><br><span class="line">lsmod |grep rbd</span><br></pre></td></tr></table></figure></div>
+
+<h1 id="开始安装"><a href="#开始安装" class="headerlink" title="开始安装"></a>开始安装</h1><h2 id="部署Rook-Operator"><a href="#部署Rook-Operator" class="headerlink" title="部署Rook Operator"></a>部署Rook Operator</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> /data/packages</span><br><span class="line"></span><br><span class="line"><span class="comment">#国外</span></span><br><span class="line">git <span class="built_in">clone</span> --single-branch --branch release-1.9 https://github.com/rook/rook.git</span><br><span class="line"></span><br><span class="line"><span class="comment">#国内无法访问建议手动下载上传到服务器上</span></span><br></pre></td></tr></table></figure></div>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> /data/packages/rook/deploy/examples</span><br><span class="line"></span><br><span class="line"><span class="comment">#安装常规资源</span></span><br><span class="line">kubectl create -f crds.yaml</span><br><span class="line">kubectl create -f common.yaml</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>这个文件是K8S的编排文件直接便可以使用K8S命令将文件之中编排的资源全部安装到集群之中</li>
+<li>需要注意的只有一点，如果你想讲rook和对应的ceph容器全部安装到一个特定的项目之中去，那么建议优先创建项目和命名空间</li>
+<li>common文件资源会自动创建一个叫做rook-ceph的命名空间，后续所有的资源与容器都会安装到这里面去。</li>
+</ul>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#修改operator.yaml中的配置，开启磁盘自动发现</span></span><br><span class="line"><span class="comment">#默认不开启自动发现，开启自动发现后，当你接入新的裸磁盘设备时会自动创建osd，但是将磁盘取消挂载不会删除osd</span></span><br><span class="line">ROOK_ENABLE_DISCOVERY_DAEMON: <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#安装操作器</span></span><br><span class="line">kubectl create -f operator.yaml</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>operator是整个ROOK的核心，后续的集群创建、自动编排、拓展等等功能全部是在operator的基础之上实现的</li>
+<li>安装完成之后需要等待所有的操作器正常运行之后才能继续ceph分布式集群的安装<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#查看安装状态，等待所有的pod都是running状态之后继续下一步</span></span><br><span class="line">kubectl -n rook-ceph get pod</span><br></pre></td></tr></table></figure></div></li>
+</ul>
+<h1 id="部署rook-ceph集群"><a href="#部署rook-ceph集群" class="headerlink" title="部署rook-ceph集群"></a>部署rook-ceph集群</h1><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#通过一个yaml编排文件能够对整个Ceph组件部署、硬盘配置、集群配置等一系列操作</span></span><br><span class="line">kubectl apply -f cluster.yaml</span><br><span class="line"><span class="comment">#其中osd-0、osd-1、osd-2容器必须是存在且正常的，如果上述pod均正常运行成功，则视为集群安装成功。</span></span><br><span class="line">kubectl -n rook-ceph get pod</span><br></pre></td></tr></table></figure></div>
+<p>国内无法下载镜像需要自己pull</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">quay.io/ceph/ceph:v16.2.9</span><br><span class="line">quay.io/cephcsi/cephcsi:v3.6.2</span><br><span class="line">quay.io/csiaddons/k8s-sidecar:v0.2.1</span><br><span class="line">quay.io/csiaddons/volumereplication-operator:v0.3.0</span><br><span class="line">registry.k8s.io/sig-storage/csi-attacher:v3.4.0</span><br><span class="line">registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.5.1</span><br><span class="line">registry.k8s.io/sig-storage/csi-provisioner:v3.1.0</span><br><span class="line">registry.k8s.io/sig-storage/csi-resizer:v1.4.0</span><br><span class="line">registry.k8s.io/sig-storage/csi-snapshotter:v6.0.1</span><br><span class="line">registry.k8s.io/sig-storage/nfsplugin:v4.0.0</span><br><span class="line">rook/ceph:v1.9.5</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#国内无法下载k8s.gcr.io的镜像</span><br><span class="line">#可以使用国外服务器下载，导入到镜像仓库，记住tag和版本要一致</span><br><span class="line">#或者使用镜像仓库地址，记住tag和版本要一致</span><br><span class="line">#quay.io == quay.mirrors.ustc.edu.cn</span><br><span class="line">#k8s.gcr.io == registry.aliyuncs.com/google_containers</span><br></pre></td></tr></table></figure></div>
+
+<h1 id="测试集群"><a href="#测试集群" class="headerlink" title="测试集群"></a>测试集群</h1><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#安装工具</span></span><br><span class="line">kubectl apply -f toolbox.yaml</span><br><span class="line"></span><br><span class="line"><span class="comment">#进入管理pod</span></span><br><span class="line">kubectl -n rook-ceph <span class="built_in">exec</span> -it deploy/rook-ceph-tools -- bash</span><br><span class="line"></span><br><span class="line"><span class="comment">#测试</span></span><br><span class="line">ceph status</span><br><span class="line">ceph osd status</span><br><span class="line">ceph <span class="built_in">df</span> </span><br><span class="line">rados <span class="built_in">df</span></span><br></pre></td></tr></table></figure></div>
+
+<h1 id="存储类"><a href="#存储类" class="headerlink" title="存储类"></a>存储类</h1><p>集群搭建完毕之后便是存储的创建，目前Ceph支持块存储、文件系统存储、对象存储三种方案，K8S官方对接的存储方案是块存储，他也是比较稳定的方案，但是块存储目前不支持多主机读写（只能RWO）；</p>
+<p>文件系统存储是支持多主机存储的性能也不错；对象存储系统IO性能太差不考虑，所以可以根据要求自行决定。</p>
+<p>存储系统创建完成之后对这个系统添加一个存储类之后整个集群才能通过K8S的存储类直接使用Ceph存储。<br>因为此部分分类太多，建议参考<a class="link"   target="_blank" rel="noopener" href="https://rook.github.io/docs/rook/latest/Storage-Configuration/Block-Storage-RBD/block-storage/" >Storage Configuration <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>PS：涉及到格式化类型建议使用XFS而不是EXT4，因为EXT4格式化后会生成一个lost+found文件夹，某些容器要求挂载的数据盘必须是空的，例如Mysql，如果必要使用，可选择挂载到上一级目录</p>
+<h1 id="CephFS存储类（共享文件系统）："><a href="#CephFS存储类（共享文件系统）：" class="headerlink" title="CephFS存储类（共享文件系统）："></a>CephFS存储类（共享文件系统）：</h1><h2 id="创建文件系统池（测试用，生产环境建议修改分片数为2或3）"><a href="#创建文件系统池（测试用，生产环境建议修改分片数为2或3）" class="headerlink" title="创建文件系统池（测试用，生产环境建议修改分片数为2或3）"></a>创建文件系统池（测试用，生产环境建议修改分片数为2或3）</h2><div class="highlight-container" data-rel="Yaml"><figure class="iseeu highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">ceph.rook.io/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">CephFilesystem</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">cephfs</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">rook-ceph</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">metadataPool:</span></span><br><span class="line">    <span class="attr">replicated:</span></span><br><span class="line">      <span class="comment">#设置分片为 1</span></span><br><span class="line">      <span class="attr">size:</span> <span class="number">1</span></span><br><span class="line">      <span class="attr">requireSafeReplicaSize:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">dataPools:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">replicated</span></span><br><span class="line">      <span class="attr">failureDomain:</span> <span class="string">osd</span></span><br><span class="line">      <span class="attr">replicated:</span></span><br><span class="line">        <span class="comment">#设置分片为 1</span></span><br><span class="line">        <span class="attr">size:</span> <span class="number">1</span></span><br><span class="line">        <span class="attr">requireSafeReplicaSize:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">preserveFilesystemOnDelete:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">metadataServer:</span></span><br><span class="line">    <span class="attr">activeCount:</span> <span class="number">1</span></span><br><span class="line">    <span class="attr">activeStandby:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure></div>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl apply -f ceph-filesystem.yaml</span><br><span class="line"></span><br><span class="line"><span class="comment">#查看文件系统pod创建情况</span></span><br><span class="line">kubectl -n rook-ceph get pod -l app=rook-ceph-mds</span><br><span class="line"></span><br><span class="line"><span class="comment">#进入管理pod</span></span><br><span class="line">kubectl -n rook-ceph <span class="built_in">exec</span> -it deploy/rook-ceph-tools -- bash</span><br><span class="line">ceph status</span><br></pre></td></tr></table></figure></div>
+<h2 id="创建文件系统存储类"><a href="#创建文件系统存储类" class="headerlink" title="创建文件系统存储类"></a>创建文件系统存储类</h2><div class="highlight-container" data-rel="Yaml"><figure class="iseeu highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">storage.k8s.io/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">StorageClass</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">rook-cephfs</span></span><br><span class="line"><span class="attr">provisioner:</span> <span class="string">rook-ceph.cephfs.csi.ceph.com</span></span><br><span class="line"><span class="attr">parameters:</span></span><br><span class="line">  <span class="attr">clusterID:</span> <span class="string">rook-ceph</span></span><br><span class="line">  <span class="attr">fsName:</span> <span class="string">cephfs</span></span><br><span class="line">  <span class="attr">pool:</span> <span class="string">cephfs-replicated</span></span><br><span class="line">  <span class="attr">csi.storage.k8s.io/provisioner-secret-name:</span> <span class="string">rook-csi-cephfs-provisioner</span></span><br><span class="line">  <span class="attr">csi.storage.k8s.io/provisioner-secret-namespace:</span> <span class="string">rook-ceph</span></span><br><span class="line">  <span class="attr">csi.storage.k8s.io/controller-expand-secret-name:</span> <span class="string">rook-csi-cephfs-provisioner</span></span><br><span class="line">  <span class="attr">csi.storage.k8s.io/controller-expand-secret-namespace:</span> <span class="string">rook-ceph</span></span><br><span class="line">  <span class="attr">csi.storage.k8s.io/node-stage-secret-name:</span> <span class="string">rook-csi-cephfs-node</span></span><br><span class="line">  <span class="attr">csi.storage.k8s.io/node-stage-secret-namespace:</span> <span class="string">rook-ceph</span></span><br><span class="line"><span class="attr">reclaimPolicy:</span> <span class="string">Delete</span></span><br><span class="line"><span class="attr">allowVolumeExpansion:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure></div>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#创建</span></span><br><span class="line">kubectl apply -f storageclass-cephfs.yaml</span><br><span class="line"></span><br><span class="line"><span class="comment">#查看存储类</span></span><br><span class="line">kubectl get sc</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="设置默认存储"><a href="#设置默认存储" class="headerlink" title="设置默认存储"></a>设置默认存储</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl patch sc rook-cephfs -p <span class="string">&#x27;&#123;&quot;metadata&quot;: &#123;&quot;annotations&quot;:&#123;&quot;storageclass.kubernetes.io/is-default-class&quot;:&quot;true&quot;&#125;&#125;&#125;&#x27;</span></span><br></pre></td></tr></table></figure></div>
+
+<h2 id="创建测试pvc"><a href="#创建测试pvc" class="headerlink" title="创建测试pvc"></a>创建测试pvc</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolumeClaim</span><br><span class="line">metadata:</span><br><span class="line">  name: test-cephfs-pvc</span><br><span class="line">  namespace: kube-system</span><br><span class="line">spec:</span><br><span class="line">  accessModes:</span><br><span class="line">  - ReadWriteMany</span><br><span class="line">  resources:</span><br><span class="line">    requests:</span><br><span class="line">      storage: 1Gi</span><br><span class="line">  storageClassName: rook-cephfs</span><br></pre></td></tr></table></figure></div>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#创建测试用的pvc</span></span><br><span class="line">kubectl apply -f pvc-cephfs-test.yaml</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">kubectl get pvc -A</span><br><span class="line">kubectl delete -f pvc-cephfs-test.yaml</span><br></pre></td></tr></table></figure></div>
+<h1 id="开启dashboard（三选一，根据集群情况选择）"><a href="#开启dashboard（三选一，根据集群情况选择）" class="headerlink" title="开启dashboard（三选一，根据集群情况选择）"></a>开启dashboard（三选一，根据集群情况选择）</h1><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">dashboard-external-https.yaml</span><br><span class="line">dashboard-ingress-https.yaml</span><br><span class="line">dashboard-loadbalancer.yaml</span><br></pre></td></tr></table></figure></div>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#获取dashboard默认密码</span></span><br><span class="line">kubectl -n rook-ceph get secret rook-ceph-dashboard-password -o jsonpath=<span class="string">&quot;&#123;[&#x27;data&#x27;][&#x27;password&#x27;]&#125;&quot;</span>|<span class="built_in">base64</span> --decode &amp;&amp; <span class="built_in">echo</span></span><br></pre></td></tr></table></figure></div>
+
+<h1 id="加入新node时加入ceph集群"><a href="#加入新node时加入ceph集群" class="headerlink" title="加入新node时加入ceph集群"></a>加入新node时加入ceph集群</h1><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#节点打标签</span></span><br><span class="line">kubectl label node [node名字] role=rook-osd-node</span><br><span class="line"></span><br><span class="line"><span class="comment">#删除operator</span></span><br><span class="line">kubectl delete pod -n rook-ceph $(kubectl get pod -n rook-ceph | grep operator | awk <span class="string">&#x27;&#123;print$1&#125;&#x27;</span>)</span><br></pre></td></tr></table></figure></div>
+
+
+            </div>
+
+            
+                <div class="post-copyright-info">
+                    <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：安装Rook Ceph作为K8S的存储服务</li>
+        <li>本文作者：背着蒜头的耿鬼</li>
+        <li>创建时间：2023-02-17 23:20:34</li>
+        <li>
+            本文链接：https://blog.2nfree.com/2023/02/17/deploy-rook-ceph-on-k8s/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+                </div>
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Kubernetes/">#Kubernetes</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/CloudNative/">#CloudNative</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/DevOps/">#DevOps</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            <div class="recommended-article">
+  <div class="recommended-article-header">
+    <i class="fa-solid fa-bookmark fa-fw" aria-hidden="true"></i><span>推荐阅读</span>
+  </div>
+  <div class="recommended-article-group"><a class="recommended-article-item" href="/2023/02/17/deploy-k8s-with-kubeadm/" title="基于kubeadm的k8s部署" rel="bookmark">
+  <img src="https://evan.beee.top/img/wallhaven-wqery6-light.webp" alt="基于kubeadm的k8s部署">
+  <span class="title">基于kubeadm的k8s部署</span>
+</a><a class="recommended-article-item" href="/2023/02/28/install-oh-my-zsh/" title="安装oh my zsh" rel="bookmark">
+  <img src="https://evan.beee.top/img/wallhaven-wqery6-light.webp" alt="安装oh my zsh">
+  <span class="title">安装oh my zsh</span>
+</a><a class="recommended-article-item" href="/2023/02/21/deploy-doris/" title="Doris安装部署" rel="bookmark">
+  <img src="https://evan.beee.top/img/wallhaven-wqery6-light.webp" alt="Doris安装部署">
+  <span class="title">Doris安装部署</span>
+</a></div>
+</div>
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                            rel="prev"
+                            href="/2023/02/21/deploy-doris/"
+                            >
+                                <span class="left arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </span>
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">Doris安装部署</span>
+                                    <span class="post-nav-item">上一篇</span>
+                                </span>
+                            </a>
+                        </div>
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                            rel="next"
+                            href="/2023/02/17/deploy-k8s-with-kubeadm/"
+                            >
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">基于kubeadm的k8s部署</span>
+                                    <span class="post-nav-item">下一篇</span>
+                                </span>
+                                <span class="right arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+
+
+            
+                <div class="comment-container">
+                    <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments"></i>&nbsp;评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script 
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script >
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: 'f0f74b0cc1d9323fe15f',
+                    clientSecret: '74213435c72bf1a18c20d91c35c325fc985ff79d',
+                    repo: '2nfree.github.io',
+                    owner: '2Nfree',
+                    admin: ['2Nfree'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('false') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+                </div>
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">安装Rook Ceph作为K8S的存储服务</div>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E5%AD%98%E5%82%A8"><span class="nav-number">1.1.</span> <span class="nav-text">容器的持久化存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ceph"><span class="nav-number">1.2.</span> <span class="nav-text">Ceph</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rook"><span class="nav-number">1.3.</span> <span class="nav-text">Rook</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">部署环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rook%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E6%96%B9%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">rook使用存储方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">开始安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2Rook-Operator"><span class="nav-number">3.1.</span> <span class="nav-text">部署Rook Operator</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2rook-ceph%E9%9B%86%E7%BE%A4"><span class="nav-number">4.</span> <span class="nav-text">部署rook-ceph集群</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E9%9B%86%E7%BE%A4"><span class="nav-number">5.</span> <span class="nav-text">测试集群</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E7%B1%BB"><span class="nav-number">6.</span> <span class="nav-text">存储类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CephFS%E5%AD%98%E5%82%A8%E7%B1%BB%EF%BC%88%E5%85%B1%E4%BA%AB%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%EF%BC%89%EF%BC%9A"><span class="nav-number">7.</span> <span class="nav-text">CephFS存储类（共享文件系统）：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%B1%A0%EF%BC%88%E6%B5%8B%E8%AF%95%E7%94%A8%EF%BC%8C%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E5%BB%BA%E8%AE%AE%E4%BF%AE%E6%94%B9%E5%88%86%E7%89%87%E6%95%B0%E4%B8%BA2%E6%88%963%EF%BC%89"><span class="nav-number">7.1.</span> <span class="nav-text">创建文件系统池（测试用，生产环境建议修改分片数为2或3）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%AD%98%E5%82%A8%E7%B1%BB"><span class="nav-number">7.2.</span> <span class="nav-text">创建文件系统存储类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E9%BB%98%E8%AE%A4%E5%AD%98%E5%82%A8"><span class="nav-number">7.3.</span> <span class="nav-text">设置默认存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%B5%8B%E8%AF%95pvc"><span class="nav-number">7.4.</span> <span class="nav-text">创建测试pvc</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%80%E5%90%AFdashboard%EF%BC%88%E4%B8%89%E9%80%89%E4%B8%80%EF%BC%8C%E6%A0%B9%E6%8D%AE%E9%9B%86%E7%BE%A4%E6%83%85%E5%86%B5%E9%80%89%E6%8B%A9%EF%BC%89"><span class="nav-number">8.</span> <span class="nav-text">开启dashboard（三选一，根据集群情况选择）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A0%E5%85%A5%E6%96%B0node%E6%97%B6%E5%8A%A0%E5%85%A5ceph%E9%9B%86%E7%BE%A4"><span class="nav-number">9.</span> <span class="nav-text">加入新node时加入ceph集群</span></a></li></ol>
+
+    </div>
+</div>
+            </div>
+        
+    </div>
+</div>
+
+
+                
+
+            </div>
+
+
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2023&nbsp;&nbsp;<i class="fa-regular fa-computer-classic"></i>&nbsp;&nbsp;<a href="/">背着蒜头的耿鬼</a>
+        </div>
+        
+            <script async  src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            <span class="powered-by-container">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" href="https://hexo.io">Hexo</a> 驱动</span>
+                <br> 
+            <span class="theme-version-container">主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v1.1.6</a>
+        </div>
+        
+        
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="unfolded-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="right-bottom-tools rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                <i class="fa-regular fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="fa-regular fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="folded-tools-list">
+        <li class="right-bottom-tools tool-toggle-show flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/menu-shrink.js"></script>
+
+<script src="/js/tools/go-top-bottom.js"></script>
+
+<script src="/js/tools/dark-light-toggle.js"></script>
+
+
+
+    
+<script src="/js/tools/local-search.js"></script>
+
+
+
+
+    
+<script src="/js/tools/code-block.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+        
+<script src="/js/tools/toc-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+    
+</div>
+
+
+
+
+</body>
+</html>

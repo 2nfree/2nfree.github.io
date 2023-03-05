@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    <meta name="description" content="Hexo Theme Redefine">
+    <meta name="author" content="背着蒜头的耿鬼">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-redefine.png">
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://blog.2nfree.com/2023/02/21/deploy-doris/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Doris安装部署">
+    <meta property="og:description" content="Hexo Theme Redefine">
+    <meta property="og:url" content="https://blog.2nfree.com2023/02/21/deploy-doris/">
+    <meta property="og:image" content="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg">
+    <meta property="og:site_name" content="2nfree&#39;s Blog">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Doris安装部署">
+    <meta name="twitter:description" content="Hexo Theme Redefine">
+    <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg">
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg">
+    <meta name="theme-color" content="#005080">
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg">
+    
+    <title>
+        
+            Doris安装部署 -
+        
+        2nfree&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/assets/fonts.css">
+
+    
+    
+    
+    
+    <script id="hexo-configurations">
+    let REDEFINE = window.REDEFINE || {};
+    REDEFINE.hexo_config = {"hostname":"blog.2nfree.com","root":"/","language":"zh-CN","path":"search.xml"};
+    REDEFINE.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#005080","avatar":"https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/avatar.png","favicon":"https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/logo.svg","article_img_align":"center","right_side_width":"210px","content_max_width":"1000px","nav_color":{"left":"#f78736","right":"#367df7","transparency":35},"hover":{"shadow":true,"scale":false},"first_screen":{"enable":true,"background_image":{"light":"https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/background-light.webp","dark":"https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/background-night.webp"},"title_color":{"light":"#fff","dark":"#000"},"description":"The quick brown fox jumps over the lazy dog","custom_font":{"enable":false,"font_family":null,"font_url":null}},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_block":{"copy":true,"style":"mac","custom_font":{"enable":false,"font_family":null,"font_url":null}},"pjax":{"enable":false},"lazyload":{"enable":true},"version":"1.1.6","friend_links":{"columns":2},"home_article":{"date_format":"auto","category":{"enable":true,"limit":3},"tag":{"enable":true,"limit":3}},"plugins":{"aplayer":{"enable":false,"audio":[{"name":null,"artist":null,"url":null,"cover":null},{"name":null,"artist":null,"url":null,"cover":null}]}}};
+    REDEFINE.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+    
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="2nfree's Blog" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="menu-wrapper">
+    
+    <div class="menu-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                2nfree&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        归档
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/categories"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-folder-open"></i>
+                                        
+                                        分类
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/tags"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-tag"></i>
+                                        
+                                        标签
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/about"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-user"></i>
+                                        
+                                        关于
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="menu-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/links"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-link"></i>
+                                        
+                                        友链
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="menu-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                归档
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/categories"  >
+                             
+                                
+                                    <i class="fa-regular fa-folder-open"></i>
+                                
+                                分类
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/tags"  >
+                             
+                                
+                                    <i class="fa-regular fa-tag"></i>
+                                
+                                标签
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/about"  >
+                             
+                                
+                                    <i class="fa-regular fa-user"></i>
+                                
+                                关于
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-menu-item flex-center">
+                        <a class="" 
+                        href="/links"  >
+                             
+                                
+                                    <i class="fa-regular fa-link"></i>
+                                
+                                友链
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            
+            
+                <div class="article-title">
+                    <h1 class="article-title-regular">Doris安装部署</h1>
+                </div>
+            
+                
+            
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="https://cdn.jsdelivr.net/gh/2nfree/2nfree-blog-static/images/avatar.png">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">背着蒜头的耿鬼</span>
+                            
+                                <span class="author-label">Lv1</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="pc">2023-02-21 16:08:12</span>
+        <span class="mobile">2023-02-21 16:08</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="pc">2023-03-02 19:42:37</span>
+            <span class="mobile">2023-03-02 19:42</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E8%BF%90%E7%BB%B4/">运维</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Database/">Database</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/BigData/">BigData</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fa-regular fa-file-word"></i>&nbsp;<span>1.7k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>8 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content markdown-body">
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Apache Doris 是一个基于 MPP 架构的高性能、实时的分析型数据库，以极速易用的特点被人们所熟知，仅需亚秒级响应时间即可返回海量数据下的查询结果，不仅可以支持高并发的点查询场景，也能支持高吞吐的复杂分析场景。基于此，Apache Doris 能够较好的满足报表分析、即席查询、统一数仓构建、数据湖联邦查询加速等使用场景，用户可以在此之上构建用户行为分析、AB 实验平台、日志检索分析、用户画像分析、订单分析等应用。</p>
+<h2 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h2><table>
+<thead>
+<tr>
+<th><strong>主机名</strong></th>
+<th><strong>内网IP</strong></th>
+<th><strong>操作系统</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>doris_fe</td>
+<td>192.168.1.10</td>
+<td>centos7</td>
+</tr>
+<tr>
+<td>doris_be1</td>
+<td>192.168.1.20</td>
+<td>centos7</td>
+</tr>
+<tr>
+<td>doris_be2</td>
+<td>192.168.1.21</td>
+<td>centos7</td>
+</tr>
+<tr>
+<td>doris_be3</td>
+<td>192.168.1.22</td>
+<td>centos7</td>
+</tr>
+</tbody></table>
+<br>
+
+<table>
+<thead>
+<tr>
+<th><strong>实例名称</strong></th>
+<th><strong>端口名称</strong></th>
+<th><strong>默认端口</strong></th>
+<th><strong>沟通方向</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BE</td>
+<td>be_port</td>
+<td>9060</td>
+<td>FE –&gt; BE</td>
+<td>BE 用于接收来自 FE 的请求</td>
+</tr>
+<tr>
+<td>BE</td>
+<td>webserver_port</td>
+<td>8040</td>
+<td>BE &lt;–&gt; BE</td>
+<td>BE</td>
+</tr>
+<tr>
+<td>BE</td>
+<td>heartbeat_service_port</td>
+<td>9050</td>
+<td>FE –&gt; BE</td>
+<td>BE上的心跳服务端口（thrift），用于接收FE的心跳</td>
+</tr>
+<tr>
+<td>BE</td>
+<td>brpc_port</td>
+<td>8060</td>
+<td>FE &lt;–&gt; BE, BE &lt;–&gt; BE</td>
+<td>BE用于BE之间的通信</td>
+</tr>
+<tr>
+<td>FE</td>
+<td>http_port</td>
+<td>8030</td>
+<td>FE &lt;–&gt; FE, user &lt;–&gt; FE</td>
+<td>FE 上的 HTTP 服务器端口</td>
+</tr>
+<tr>
+<td>FE</td>
+<td>rpc_port</td>
+<td>9020</td>
+<td>BE –&gt; FE, FE &lt;–&gt; FE</td>
+<td>FE上的thrift server端口，每个fe的配置需要一致</td>
+</tr>
+<tr>
+<td>FE</td>
+<td>query_port</td>
+<td>9030</td>
+<td>user &lt;–&gt; FE</td>
+<td>FE</td>
+</tr>
+<tr>
+<td>FE</td>
+<td>edit_log_port</td>
+<td>9010</td>
+<td>FE &lt;–&gt; FE</td>
+<td>FE</td>
+</tr>
+</tbody></table>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="设置系统最大打开文件句柄数（all）"><a href="#设置系统最大打开文件句柄数（all）" class="headerlink" title="设置系统最大打开文件句柄数（all）"></a>设置系统最大打开文件句柄数（all）</h3><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; /etc/security/limits.conf &lt;&lt;<span class="string">EOF</span></span><br><span class="line"><span class="string">* soft noproc 204800</span></span><br><span class="line"><span class="string">* hard noproc 204800</span></span><br><span class="line"><span class="string">* soft nofile 204800</span></span><br><span class="line"><span class="string">* hard nofile 204800</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> &gt; /etc/security/limits.d/20-nproc.conf </span><br><span class="line"></span><br><span class="line"><span class="built_in">ulimit</span> -n 204800</span><br><span class="line"><span class="built_in">ulimit</span> -u 204800</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="修改文件描述符（all）"><a href="#修改文件描述符（all）" class="headerlink" title="修改文件描述符（all）"></a>修改文件描述符（all）</h3><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> fs.file-max = 6553560  &gt;&gt; /etc/sysctl.d/doris.conf</span><br><span class="line">sysctl -p /etc/sysctl.d/doris.conf</span><br><span class="line"></span><br><span class="line">vim /etc/systemd/system.conf</span><br><span class="line"><span class="comment">#修改如下内容</span></span><br><span class="line">DefaultLimitNOFILE=204800</span><br><span class="line">DefaultLimitNPROC=204800</span><br><span class="line"></span><br><span class="line">vim /etc/systemd/user.conf</span><br><span class="line"><span class="comment">#修改如下内容</span></span><br><span class="line">DefaultLimitNOFILE=204800</span><br><span class="line">DefaultLimitNPROC=204800</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="关闭交换分区（all）"><a href="#关闭交换分区（all）" class="headerlink" title="关闭交换分区（all）"></a>关闭交换分区（all）</h3><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#关闭交换分区</span></span><br><span class="line">swapoff -a</span><br><span class="line">sed -ri <span class="string">&#x27;s/.*swap.*/#&amp;/&#x27;</span> /etc/fstab</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="安装java（doris-fe）"><a href="#安装java（doris-fe）" class="headerlink" title="安装java（doris_fe）"></a>安装java（doris_fe）</h3><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#openjdk</span></span><br><span class="line">yum -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel</span><br><span class="line"></span><br><span class="line"><span class="comment">#oracle jdk</span></span><br><span class="line"><span class="comment">#解压jdk后设置环境变量</span></span><br><span class="line">tar -zxvf jdk-8u321-linux-x64.tar.gz</span><br><span class="line"><span class="built_in">mv</span> jdk1.8.0_321 /usr/local/java8</span><br><span class="line"></span><br><span class="line"><span class="built_in">cat</span> &gt;&gt; /etc/profile &lt;&lt;<span class="string">EOF</span></span><br><span class="line"><span class="string">#java env</span></span><br><span class="line"><span class="string">export JAVA_HOME=/usr/local/java8</span></span><br><span class="line"><span class="string">export JRE_HOME=\$JAVA_HOME/jre</span></span><br><span class="line"><span class="string">export CLASSPATH=.:\$JAVA_HOME/lib:\$JRE_HOME/lib</span></span><br><span class="line"><span class="string">export PATH=\$JAVA_HOME/bin:\$PATH</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="安装mysql客户端（doris-fe）"><a href="#安装mysql客户端（doris-fe）" class="headerlink" title="安装mysql客户端（doris_fe）"></a>安装mysql客户端（doris_fe）</h3><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">yum remove mysql-libs -y</span><br><span class="line"></span><br><span class="line">wget https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-community-common-5.7.39-1.el7.x86_64.rpm</span><br><span class="line">wget https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-community-libs-5.7.39-1.el7.x86_64.rpm</span><br><span class="line">wget https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-community-client-5.7.39-1.el7.x86_64.rpm</span><br><span class="line"></span><br><span class="line">rpm -ivh mysql-community-common-5.7.39-1.el7.x86_64.rpm</span><br><span class="line">rpm -ivh mysql-community-libs-5.7.39-1.el7.x86_64.rpm</span><br><span class="line">rpm -ivh mysql-community-client-5.7.39-1.el7.x86_64.rpm</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="安装odbc依赖（all）"><a href="#安装odbc依赖（all）" class="headerlink" title="安装odbc依赖（all）"></a>安装odbc依赖（all）</h3><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">yum install unixODBC -y</span><br><span class="line">wget https://dev.mysql.com/get/Downloads/Connector-ODBC/8.0/mysql-connector-odbc-8.0.30-1.el7.x86_64.rpm</span><br><span class="line">rpm -ivh mysql-connector-odbc-8.0.30-1.el7.x86_64.rpm</span><br><span class="line"></span><br><span class="line"><span class="comment">#检查</span></span><br><span class="line"><span class="built_in">ls</span> /usr/lib64/libmyodbc8w.so</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="域名转发（doris-fe）"><a href="#域名转发（doris-fe）" class="headerlink" title="域名转发（doris_fe）"></a>域名转发（doris_fe）</h3><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#修改/etc/hosts文件</span></span><br><span class="line">192.168.1.10 doris.example.com</span><br></pre></td></tr></table></figure></div>
+
+<h1 id="下载安装doris"><a href="#下载安装doris" class="headerlink" title="下载安装doris"></a>下载安装doris</h1><h2 id="下载doris"><a href="#下载doris" class="headerlink" title="下载doris"></a>下载doris</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -pv /data/doris</span><br><span class="line"><span class="built_in">mkdir</span> -pv /data/logs/doris</span><br><span class="line"></span><br><span class="line"><span class="comment">#fe</span></span><br><span class="line">wget https://dist.apache.org/repos/dist/release/doris/1.1/1.1.2-rc05/apache-doris-fe-1.1.2-bin.tar.gz</span><br><span class="line">tar -zxvf apache-doris-fe-1.1.2-bin.tar.gz</span><br><span class="line"><span class="built_in">cd</span> apache-doris-fe-1.1.2-bin</span><br><span class="line"><span class="built_in">cp</span> -a fe /data/doris/fe</span><br><span class="line"></span><br><span class="line"><span class="comment">#be</span></span><br><span class="line">wget https://dist.apache.org/repos/dist/release/doris/1.1/1.1.2-rc05/apache-doris-be-1.1.2-bin-x86_64.tar.gz</span><br><span class="line">tar -zxvf apache-doris-be-1.1.2-bin-x86_64.tar.gz</span><br><span class="line"><span class="built_in">cd</span> apache-doris-be-1.1.2-bin-x86_64</span><br><span class="line"><span class="built_in">cp</span> -a be /data/doris/be</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="修改doris启动脚本"><a href="#修改doris启动脚本" class="headerlink" title="修改doris启动脚本"></a>修改doris启动脚本</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#fe</span></span><br><span class="line"><span class="comment">#将启动脚本中的</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$&#123;RUN_DAEMON&#125;</span> -eq 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">nohup</span> <span class="variable">$LIMIT</span> <span class="variable">$JAVA</span> <span class="variable">$final_java_opt</span> -XX:OnOutOfMemoryError=<span class="string">&quot;kill -9 %p&quot;</span> org.apache.doris.PaloFe <span class="variable">$&#123;HELPER&#125;</span> <span class="string">&quot;<span class="variable">$@</span>&quot;</span> &gt;&gt; <span class="variable">$LOG_DIR</span>/fe.out 2&gt;&amp;1 &lt; /dev/null &amp;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">export</span> DORIS_LOG_TO_STDERR=1</span><br><span class="line">    <span class="variable">$LIMIT</span> <span class="variable">$JAVA</span> <span class="variable">$final_java_opt</span> -XX:OnOutOfMemoryError=<span class="string">&quot;kill -9 %p&quot;</span> org.apache.doris.PaloFe <span class="variable">$&#123;HELPER&#125;</span> <span class="string">&quot;<span class="variable">$@</span>&quot;</span> &lt; /dev/null</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="comment">#改为（去掉最后的 &amp; 符号）</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$&#123;RUN_DAEMON&#125;</span> -eq 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">nohup</span> <span class="variable">$LIMIT</span> <span class="variable">$JAVA</span> <span class="variable">$final_java_opt</span> -XX:OnOutOfMemoryError=<span class="string">&quot;kill -9 %p&quot;</span> org.apache.doris.PaloFe <span class="variable">$&#123;HELPER&#125;</span> <span class="string">&quot;<span class="variable">$@</span>&quot;</span> &gt;&gt; <span class="variable">$LOG_DIR</span>/fe.out 2&gt;&amp;1 &lt; /dev/null</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">export</span> DORIS_LOG_TO_STDERR=1</span><br><span class="line">    <span class="variable">$LIMIT</span> <span class="variable">$JAVA</span> <span class="variable">$final_java_opt</span> -XX:OnOutOfMemoryError=<span class="string">&quot;kill -9 %p&quot;</span> org.apache.doris.PaloFe <span class="variable">$&#123;HELPER&#125;</span> <span class="string">&quot;<span class="variable">$@</span>&quot;</span> &lt; /dev/null</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#be</span></span><br><span class="line"><span class="comment">#将启动脚本中的</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$&#123;RUN_DAEMON&#125;</span> -eq 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">nohup</span> <span class="variable">$LIMIT</span> <span class="variable">$&#123;DORIS_HOME&#125;</span>/lib/doris_be <span class="string">&quot;<span class="variable">$@</span>&quot;</span> &gt;&gt; <span class="variable">$LOG_DIR</span>/be.out 2&gt;&amp;1 &lt; /dev/null &amp;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">export</span> DORIS_LOG_TO_STDERR=1</span><br><span class="line">    <span class="variable">$LIMIT</span> <span class="variable">$&#123;DORIS_HOME&#125;</span>/lib/doris_be <span class="string">&quot;<span class="variable">$@</span>&quot;</span> 2&gt;&amp;1 &lt; /dev/null</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="comment">#改为（去掉最后的 &amp; 符号）</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$&#123;RUN_DAEMON&#125;</span> -eq 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">nohup</span> <span class="variable">$LIMIT</span> <span class="variable">$&#123;DORIS_HOME&#125;</span>/lib/doris_be <span class="string">&quot;<span class="variable">$@</span>&quot;</span> &gt;&gt; <span class="variable">$LOG_DIR</span>/be.out 2&gt;&amp;1 &lt; /dev/null</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">export</span> DORIS_LOG_TO_STDERR=1</span><br><span class="line">    <span class="variable">$LIMIT</span> <span class="variable">$&#123;DORIS_HOME&#125;</span>/lib/doris_be <span class="string">&quot;<span class="variable">$@</span>&quot;</span> 2&gt;&amp;1 &lt; /dev/null</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure></div>
+
+<h2 id="安装supervisor"><a href="#安装supervisor" class="headerlink" title="安装supervisor"></a>安装supervisor</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">yum -y install supervisor</span><br><span class="line"></span><br><span class="line">systemctl start supervisord</span><br><span class="line">systemctl status supervisord</span><br><span class="line">systemctl <span class="built_in">enable</span> supervisord</span><br><span class="line"></span><br><span class="line"><span class="comment">#查看supervisor的文件描述符 不符合doris要求</span></span><br><span class="line"><span class="built_in">cat</span> /proc/$(ps -aux | grep supervisor | grep -v grep | awk <span class="string">&#x27;&#123;print $2&#125;&#x27;</span>)/limits</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="修改supervisor服务文件"><a href="#修改supervisor服务文件" class="headerlink" title="修改supervisor服务文件"></a>修改supervisor服务文件</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#在服务文件的[Service]下添加</span></span><br><span class="line">vim /usr/lib/systemd/system/supervisord.service</span><br><span class="line">LimitCORE=infinity</span><br><span class="line">LimitNOFILE=204800</span><br><span class="line">LimitNPROC=204800</span><br></pre></td></tr></table></figure></div>
+<div class="highlight-container" data-rel="Properties"><figure class="iseeu highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">[Unit]</span></span><br><span class="line"><span class="attr">Description</span>=<span class="string">Process Monitoring and Control Daemon</span></span><br><span class="line"><span class="attr">After</span>=<span class="string">rc-local.service nss-user-lookup.target</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[Service]</span></span><br><span class="line"><span class="attr">LimitCORE</span>=<span class="string">infinity</span></span><br><span class="line"><span class="attr">LimitNOFILE</span>=<span class="string">204800</span></span><br><span class="line"><span class="attr">LimitNPROC</span>=<span class="string">204800</span></span><br><span class="line"><span class="attr">Type</span>=<span class="string">forking</span></span><br><span class="line"><span class="attr">ExecStart</span>=<span class="string">/usr/bin/supervisord -c /etc/supervisord.conf</span></span><br><span class="line"></span><br><span class="line"><span class="attr">[Install]</span></span><br><span class="line"><span class="attr">WantedBy</span>=<span class="string">multi-user.target</span></span><br></pre></td></tr></table></figure></div>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#重启supervisor并查看文件描述符</span></span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart supervisord</span><br><span class="line">systemctl status supervisord</span><br><span class="line"><span class="built_in">cat</span> /proc/$(ps -aux | grep supervisor | grep -v grep | awk <span class="string">&#x27;&#123;print $2&#125;&#x27;</span>)/limits</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="修改配置文件"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件</h2><h3 id="fe-修改对应值"><a href="#fe-修改对应值" class="headerlink" title="fe:修改对应值"></a>fe:修改对应值</h3><div class="highlight-container" data-rel="Properties"><figure class="iseeu highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">priority_networks</span> = <span class="string">192.168.1.0/24</span></span><br></pre></td></tr></table></figure></div>
+
+
+<h3 id="be-修改对应值"><a href="#be-修改对应值" class="headerlink" title="be:修改对应值"></a>be:修改对应值</h3><div class="highlight-container" data-rel="Properties"><figure class="iseeu highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">storage_root_path</span> = <span class="string">$&#123;DORIS_HOME&#125;/storage</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"># 是否记录stream load</span></span><br><span class="line"><span class="attr">enable_stream_load_record</span>=<span class="string">true</span></span><br><span class="line"><span class="comment"># 是否进行使用page cache进行index的缓存</span></span><br><span class="line"><span class="attr">disable_storage_page_cache</span>=<span class="string">true</span></span><br><span class="line"><span class="comment"># 文件句柄缓存清理的间隔</span></span><br><span class="line"><span class="attr">cache_clean_interval</span>=<span class="string">180</span></span><br><span class="line"><span class="comment"># 单节点上所有的导入线程占据的内存上限</span></span><br><span class="line"><span class="attr">load_process_max_memory_limit_bytes</span>=<span class="string">5368709120</span></span><br></pre></td></tr></table></figure></div>
+
+<h3 id="supervisor配置文件"><a href="#supervisor配置文件" class="headerlink" title="supervisor配置文件"></a>supervisor配置文件</h3><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; /etc/supervisord.d/DorisFE.ini &lt;&lt;<span class="string">&quot;EOF&quot;</span></span><br><span class="line">[program:DorisFE]</span><br><span class="line"><span class="comment">#进程名称</span></span><br><span class="line">process_name=DorisFE</span><br><span class="line"><span class="comment">#工作目录</span></span><br><span class="line">directory=/data/doris/fe</span><br><span class="line"><span class="comment">#启动命令</span></span><br><span class="line"><span class="built_in">command</span>=sh /data/doris/fe/bin/start_fe.sh</span><br><span class="line"><span class="comment">#自启动</span></span><br><span class="line">autostart=<span class="literal">true</span></span><br><span class="line"><span class="comment">#自动重启</span></span><br><span class="line">autorestart=<span class="literal">true</span></span><br><span class="line"><span class="comment">#运行用户</span></span><br><span class="line">user=root</span><br><span class="line"><span class="comment">#进程数1</span></span><br><span class="line">numprocs=1</span><br><span class="line"><span class="comment">#启动重试次数</span></span><br><span class="line">startretries=3</span><br><span class="line"><span class="comment">#是否停止子进程（必须设置）</span></span><br><span class="line">stopasgroup=<span class="literal">true</span></span><br><span class="line"><span class="comment">#是否杀死子进程（必须设置）</span></span><br><span class="line">killasgroup=<span class="literal">true</span></span><br><span class="line"><span class="comment">#启动5秒后，如果还是运行状态才认为进程已经启动</span></span><br><span class="line">startsecs=5</span><br><span class="line"><span class="comment">#日志</span></span><br><span class="line">redirect_stderr = <span class="literal">true</span></span><br><span class="line">stdout_logfile_maxbytes = 20MB</span><br><span class="line">stdout_logfile_backups = 10</span><br><span class="line">stdout_logfile=/data/logs/doris/DorisFE.<span class="built_in">log</span></span><br><span class="line">EOF</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; /etc/supervisord.d/DorisBE.ini &lt;&lt;<span class="string">&quot;EOF&quot;</span></span><br><span class="line">[program:DorisBE]</span><br><span class="line"><span class="comment">#进程名称</span></span><br><span class="line">process_name=DorisBE</span><br><span class="line"><span class="comment">#工作目录</span></span><br><span class="line">directory=/data/doris/be</span><br><span class="line"><span class="comment">#启动命令</span></span><br><span class="line"><span class="built_in">command</span>=sh /data/doris/be/bin/start_be.sh</span><br><span class="line"><span class="comment">#自启动</span></span><br><span class="line">autostart=<span class="literal">true</span></span><br><span class="line"><span class="comment">#自动重启</span></span><br><span class="line">autorestart=<span class="literal">true</span></span><br><span class="line"><span class="comment">#运行用户</span></span><br><span class="line">user=root</span><br><span class="line"><span class="comment">#进程数1</span></span><br><span class="line">numprocs=1</span><br><span class="line"><span class="comment">#启动重试次数</span></span><br><span class="line">startretries=3</span><br><span class="line"><span class="comment">#是否停止子进程（必须设置）</span></span><br><span class="line">stopasgroup=<span class="literal">true</span></span><br><span class="line"><span class="comment">#是否杀死子进程（必须设置）</span></span><br><span class="line">killasgroup=<span class="literal">true</span></span><br><span class="line"><span class="comment">#启动5秒后，如果还是运行状态才认为进程已经启动</span></span><br><span class="line">startsecs=5</span><br><span class="line"><span class="comment">#日志</span></span><br><span class="line">redirect_stderr = <span class="literal">true</span></span><br><span class="line">stdout_logfile_maxbytes = 20MB</span><br><span class="line">stdout_logfile_backups = 10</span><br><span class="line">stdout_logfile=/data/logs/doris/DorisBE.<span class="built_in">log</span></span><br><span class="line">EOF</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="启动doris"><a href="#启动doris" class="headerlink" title="启动doris"></a>启动doris</h2><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">supervisorctl reread</span><br><span class="line">supervisorctl update</span><br><span class="line">supervisorctl start all</span><br><span class="line">supervisorctl status</span><br></pre></td></tr></table></figure></div>
+
+<h1 id="配置doris服务"><a href="#配置doris服务" class="headerlink" title="配置doris服务"></a>配置doris服务</h1><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">mysql -hdorisdb.example.com -uroot -P9030</span><br></pre></td></tr></table></figure></div>
+<div class="highlight-container" data-rel="Sql"><figure class="iseeu highlight sql"><table><tr><td class="code"><pre><span class="line">#配置be地址</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">SYSTEM</span> <span class="keyword">ADD</span> BACKEND &quot;192.168.1.20:9050&quot;;</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">SYSTEM</span> <span class="keyword">ADD</span> BACKEND &quot;192.168.1.21:9050&quot;;</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">SYSTEM</span> <span class="keyword">ADD</span> BACKEND &quot;192.168.1.22:9050&quot;;</span><br><span class="line"></span><br><span class="line">#修改账号密码</span><br><span class="line"><span class="keyword">SET</span> PASSWORD <span class="keyword">FOR</span> <span class="string">&#x27;用户&#x27;</span> <span class="operator">=</span> PASSWORD(<span class="string">&#x27;密码&#x27;</span>);</span><br><span class="line"></span><br><span class="line"># 设置stream load请求数量限制</span><br><span class="line">ADMIN <span class="keyword">SET</span> FRONTEND CONFIG (&quot;max_running_txn_num_per_db&quot; <span class="operator">=</span> &quot;10000&quot;);</span><br></pre></td></tr></table></figure></div>
+
+<p>安装完毕，后续如果doris需要开放公网访问，需要吧DNS解析到doris fe的内网地址，如果解析到fe的公网地址则无法访问</p>
+
+            </div>
+
+            
+                <div class="post-copyright-info">
+                    <div class="article-copyright-info-container">
+    <ul>
+        <li>本文标题：Doris安装部署</li>
+        <li>本文作者：背着蒜头的耿鬼</li>
+        <li>创建时间：2023-02-21 16:08:12</li>
+        <li>
+            本文链接：https://blog.2nfree.com/2023/02/21/deploy-doris/
+        </li>
+        <li>
+            版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
+        </li>
+    </ul>
+</div>
+
+                </div>
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Database/">#Database</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/BigData/">#BigData</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            <div class="recommended-article">
+  <div class="recommended-article-header">
+    <i class="fa-solid fa-bookmark fa-fw" aria-hidden="true"></i><span>推荐阅读</span>
+  </div>
+  <div class="recommended-article-group"><a class="recommended-article-item" href="/2023/02/17/deploy-k8s-with-kubeadm/" title="基于kubeadm的k8s部署" rel="bookmark">
+  <img src="https://evan.beee.top/img/wallhaven-wqery6-light.webp" alt="基于kubeadm的k8s部署">
+  <span class="title">基于kubeadm的k8s部署</span>
+</a><a class="recommended-article-item" href="/2023/02/28/install-oh-my-zsh/" title="安装oh my zsh" rel="bookmark">
+  <img src="https://evan.beee.top/img/wallhaven-wqery6-light.webp" alt="安装oh my zsh">
+  <span class="title">安装oh my zsh</span>
+</a><a class="recommended-article-item" href="/2023/02/17/deploy-rook-ceph-on-k8s/" title="安装Rook Ceph作为K8S的存储服务" rel="bookmark">
+  <img src="https://evan.beee.top/img/wallhaven-wqery6-light.webp" alt="安装Rook Ceph作为K8S的存储服务">
+  <span class="title">安装Rook Ceph作为K8S的存储服务</span>
+</a></div>
+</div>
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                            rel="prev"
+                            href="/2023/02/28/install-oh-my-zsh/"
+                            >
+                                <span class="left arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </span>
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">安装oh my zsh</span>
+                                    <span class="post-nav-item">上一篇</span>
+                                </span>
+                            </a>
+                        </div>
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                            rel="next"
+                            href="/2023/02/17/deploy-rook-ceph-on-k8s/"
+                            >
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">安装Rook Ceph作为K8S的存储服务</span>
+                                    <span class="post-nav-item">下一篇</span>
+                                </span>
+                                <span class="right arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+
+
+            
+                <div class="comment-container">
+                    <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments"></i>&nbsp;评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script 
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script >
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: 'f0f74b0cc1d9323fe15f',
+                    clientSecret: '74213435c72bf1a18c20d91c35c325fc985ff79d',
+                    repo: '2nfree.github.io',
+                    owner: '2Nfree',
+                    admin: ['2Nfree'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('false') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+                </div>
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">Doris安装部署</div>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="nav-number">1.1.</span> <span class="nav-text">基本信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.2.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%B3%BB%E7%BB%9F%E6%9C%80%E5%A4%A7%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E5%8F%A5%E6%9F%84%E6%95%B0%EF%BC%88all%EF%BC%89"><span class="nav-number">1.2.1.</span> <span class="nav-text">设置系统最大打开文件句柄数（all）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6%EF%BC%88all%EF%BC%89"><span class="nav-number">1.2.2.</span> <span class="nav-text">修改文件描述符（all）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E4%BA%A4%E6%8D%A2%E5%88%86%E5%8C%BA%EF%BC%88all%EF%BC%89"><span class="nav-number">1.2.3.</span> <span class="nav-text">关闭交换分区（all）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85java%EF%BC%88doris-fe%EF%BC%89"><span class="nav-number">1.2.4.</span> <span class="nav-text">安装java（doris_fe）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85mysql%E5%AE%A2%E6%88%B7%E7%AB%AF%EF%BC%88doris-fe%EF%BC%89"><span class="nav-number">1.2.5.</span> <span class="nav-text">安装mysql客户端（doris_fe）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85odbc%E4%BE%9D%E8%B5%96%EF%BC%88all%EF%BC%89"><span class="nav-number">1.2.6.</span> <span class="nav-text">安装odbc依赖（all）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%9F%E5%90%8D%E8%BD%AC%E5%8F%91%EF%BC%88doris-fe%EF%BC%89"><span class="nav-number">1.2.7.</span> <span class="nav-text">域名转发（doris_fe）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85doris"><span class="nav-number">2.</span> <span class="nav-text">下载安装doris</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BDdoris"><span class="nav-number">2.1.</span> <span class="nav-text">下载doris</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9doris%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC"><span class="nav-number">2.2.</span> <span class="nav-text">修改doris启动脚本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85supervisor"><span class="nav-number">2.3.</span> <span class="nav-text">安装supervisor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9supervisor%E6%9C%8D%E5%8A%A1%E6%96%87%E4%BB%B6"><span class="nav-number">2.4.</span> <span class="nav-text">修改supervisor服务文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">2.5.</span> <span class="nav-text">修改配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#fe-%E4%BF%AE%E6%94%B9%E5%AF%B9%E5%BA%94%E5%80%BC"><span class="nav-number">2.5.1.</span> <span class="nav-text">fe:修改对应值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#be-%E4%BF%AE%E6%94%B9%E5%AF%B9%E5%BA%94%E5%80%BC"><span class="nav-number">2.5.2.</span> <span class="nav-text">be:修改对应值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#supervisor%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">2.5.3.</span> <span class="nav-text">supervisor配置文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8doris"><span class="nav-number">2.6.</span> <span class="nav-text">启动doris</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEdoris%E6%9C%8D%E5%8A%A1"><span class="nav-number">3.</span> <span class="nav-text">配置doris服务</span></a></li></ol>
+
+    </div>
+</div>
+            </div>
+        
+    </div>
+</div>
+
+
+                
+
+            </div>
+
+
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2023&nbsp;&nbsp;<i class="fa-regular fa-computer-classic"></i>&nbsp;&nbsp;<a href="/">背着蒜头的耿鬼</a>
+        </div>
+        
+            <script async  src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            <span class="powered-by-container">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" href="https://hexo.io">Hexo</a> 驱动</span>
+                <br> 
+            <span class="theme-version-container">主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v1.1.6</a>
+        </div>
+        
+        
+        
+        
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="unfolded-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="right-bottom-tools rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                <i class="fa-regular fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="fa-regular fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="folded-tools-list">
+        <li class="right-bottom-tools tool-toggle-show flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/menu-shrink.js"></script>
+
+<script src="/js/tools/go-top-bottom.js"></script>
+
+<script src="/js/tools/dark-light-toggle.js"></script>
+
+
+
+    
+<script src="/js/tools/local-search.js"></script>
+
+
+
+
+    
+<script src="/js/tools/code-block.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+        
+<script src="/js/tools/toc-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+    
+</div>
+
+
+
+
+</body>
+</html>

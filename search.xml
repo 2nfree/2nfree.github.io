@@ -189,50 +189,6 @@
       </tags>
   </entry>
   <entry>
-    <title>安装oh my zsh</title>
-    <url>/2023/02/28/install-oh-my-zsh/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>普遍我们使用的shell解释器都是sh、bash这两种，但是除此之外当然还有其他的例如ksh、csh和zsh等</p>
-<p>现在要安装的oh my zsh是基于zsh的一个扩展，与之相同的还有windows上的oh my posh，他们都是基于原始命令行上的一个扩展工具集，提供了很多丰富的功能，而且提供了很多的命令行样式，可以使我们的命令行更加好看</p>
-<p>官方仓库地址：<a href="https://github.com/ohmyzsh/ohmyzsh">oh my zsh</a></p>
-<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>在安装oh my zsh之前，我们需要安装zsh，并且将zsh设置为我们的默认命令行</p>
-<p>PS：在部分linux发行版（如kali）中包括新版的MAC OS操作系统，都是默认使用zsh作为shell解释器，像这种就不需要进行设置了</p>
-<h2 id="安装zsh"><a href="#安装zsh" class="headerlink" title="安装zsh"></a>安装zsh</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#查看所有的shell解释器</span></span><br><span class="line"><span class="built_in">cat</span> /etc/shells</span><br><span class="line"></span><br><span class="line"><span class="comment">#查看当前使用shell解释器</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$SHELL</span></span><br></pre></td></tr></table></figure>
-<div class="tabs" id="install-zsh"><ul class="nav-tabs"><button type="button" class="tab  active" data-href="install-zsh-1">ubuntu & debian</button><button type="button" class="tab " data-href="install-zsh-2">centos & redhat & fedora</button></ul><div class="tab-contents"><div class="tab-item-content active" id="install-zsh-1"><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install zsh -y</span><br><span class="line"></span><br><span class="line"><span class="comment">#切换shell到zsh</span></span><br><span class="line">chsh -s /bin/zsh</span><br></pre></td></tr></table></figure></div><div class="tab-item-content" id="install-zsh-2"><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo yum install zsh -y</span><br><span class="line"></span><br><span class="line"><span class="comment">#切换shell到zsh</span></span><br><span class="line">chsh -s /bin/zsh</span><br></pre></td></tr></table></figure></div></div><div class="tab-to-top"><button type="button" aria-label="scroll to top"><i class="fas fa-arrow-up"></i></button></div></div>
-
-<h2 id="安装oh-my-zsh"><a href="#安装oh-my-zsh" class="headerlink" title="安装oh my zsh"></a>安装oh my zsh</h2><p>安装oh my zsh有很多方式，一般可以直接使用官方提供的安装脚本，或者自己clone仓库自行配置，但无论那种方式我们都需要git命令，如果没有这个命令则需要安装</p>
-<div class="tabs" id="install-oh-my-zsh"><ul class="nav-tabs"><button type="button" class="tab  active" data-href="install-oh-my-zsh-1">官方安装方式</button><button type="button" class="tab " data-href="install-oh-my-zsh-2">镜像源安装</button></ul><div class="tab-contents"><div class="tab-item-content active" id="install-oh-my-zsh-1"><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#官方安装方式需要较好的网络环境</span></span><br><span class="line">sh -c <span class="string">&quot;<span class="subst">$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)</span>&quot;</span></span><br></pre></td></tr></table></figure></div><div class="tab-item-content" id="install-oh-my-zsh-2"><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#从镜像源下载安装脚本</span></span><br><span class="line">wget https://gitee.com/mirrors/oh-my-zsh/raw/master/tools/install.sh</span><br></pre></td></tr></table></figure>
-
-<p>下载完安装脚本后，我们需要将安装脚本中的仓库地址改为镜像地址，主要修改下面两项</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">REPO=$&#123;REPO:-ohmyzsh/ohmyzsh&#125;</span><br><span class="line">REMOTE=$&#123;REMOTE:-https://github.com/$&#123;REPO&#125;.git&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">改为</span></span><br><span class="line">REPO=$&#123;REPO:-mirrors/oh-my-zsh&#125;</span><br><span class="line">REMOTE=$&#123;REMOTE:-https://gitee.com/$&#123;REPO&#125;.git&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如图所示<br><img src="/2023/02/28/install-oh-my-zsh/repo.png" class=""></p>
-<p>修改完后执行脚本，并切换oh my zsh的git远程仓库地址为镜像源，便于后续的更新</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sh install.sh</span><br><span class="line"><span class="built_in">cd</span> ~/.oh-my-zsh</span><br><span class="line">git remote set-url origin https://gitee.com/mirrors/oh-my-zsh.git</span><br><span class="line">git pull</span><br></pre></td></tr></table></figure></div></div><div class="tab-to-top"><button type="button" aria-label="scroll to top"><i class="fas fa-arrow-up"></i></button></div></div>
-
-<h2 id="编辑-zshrc"><a href="#编辑-zshrc" class="headerlink" title="编辑.zshrc"></a>编辑.zshrc</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; ~/.zshrc &lt;&lt;<span class="string">&quot;EOF&quot;</span></span><br><span class="line"><span class="built_in">export</span> ZSH=<span class="string">&quot;<span class="variable">$HOME</span>/.oh-my-zsh&quot;</span></span><br><span class="line"><span class="built_in">export</span> TERM=xterm-256color</span><br><span class="line"></span><br><span class="line">ZSH_THEME=<span class="string">&quot;dallas&quot;</span> <span class="comment">#个人比较喜欢的命令行样式，可以根据官方文档自行修改</span></span><br><span class="line"></span><br><span class="line">plugins=(</span><br><span class="line">  git <span class="comment">#git插件，提供了很多git的缩减命令，可以在官方查看</span></span><br><span class="line">  sudo <span class="comment">#sudo插件，连按两下esc键自动在命令前加上sudo</span></span><br><span class="line">  docker <span class="comment">#docker插件，为docker提供了很好的命令提示</span></span><br><span class="line">  kubectl <span class="comment">#kubectl插件，为kubectl提供了很好的命令提示</span></span><br><span class="line">  themes <span class="comment">#皮肤插件，命令行输入theme可以更换当前的命令行样式</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">source</span> <span class="variable">$ZSH</span>/oh-my-zsh.sh</span><br><span class="line"><span class="built_in">setopt</span> no_nomatch</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="comment">#使用配置</span></span><br><span class="line"><span class="built_in">source</span> ~/.zshrc</span><br></pre></td></tr></table></figure>
-
-<p>在执行了上面的命令后，可以发现当前命令行使用了oh my zsh，我们还可以配置 ~&#x2F;.zshrc 文件来设置更多的插件，也可以将除了官方以外的插件下载到 ~&#x2F;.oh-my-zsh&#x2F;custom&#x2F;plugins 下来使用</p>
-<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><p>比较推荐的插件有两个：</p>
-<ul>
-<li>zsh-syntax-highlighting：命令高亮</li>
-<li>zsh-autosuggestions：历史命令提示</li>
-</ul>
-<p>下面来安装这两个插件</p>
-<div class="tabs" id="install-plugins"><ul class="nav-tabs"><button type="button" class="tab  active" data-href="install-plugins-1">官方仓库安装</button><button type="button" class="tab " data-href="install-plugins-2">镜像源安装</button></ul><div class="tab-contents"><div class="tab-item-content active" id="install-plugins-1"><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/.oh-my-zsh/custom/plugins</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/zsh-users/zsh-syntax-highlighting.git</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/zsh-users/zsh-autosuggestions</span><br></pre></td></tr></table></figure></div><div class="tab-item-content" id="install-plugins-2"><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/.oh-my-zsh/custom/plugins</span><br><span class="line">git <span class="built_in">clone</span> https://gitee.com/lightnear/zsh-syntax-highlighting.git</span><br><span class="line">git <span class="built_in">clone</span> https://gitee.com/mattuy/zsh-autosuggestions.git</span><br></pre></td></tr></table></figure></div></div><div class="tab-to-top"><button type="button" aria-label="scroll to top"><i class="fas fa-arrow-up"></i></button></div></div>
-
-<p>之后我们再修改.zshrc文件来使用这两个插件，在plugins中添加刚才下载的插件即可</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">plugins=(</span><br><span class="line">  git</span><br><span class="line">  sudo</span><br><span class="line">  docker</span><br><span class="line">  kubectl</span><br><span class="line">  themes</span><br><span class="line">  zsh-autosuggestions</span><br><span class="line">  zsh-syntax-highlighting</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<p>到此为止就已经安装完了，可以试试新的命令行了</p>
-]]></content>
-      <categories>
-        <category>Linux</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Doris安装部署</title>
     <url>/2023/02/21/deploy-doris/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Apache Doris 是一个基于 MPP 架构的高性能、实时的分析型数据库，以极速易用的特点被人们所熟知，仅需亚秒级响应时间即可返回海量数据下的查询结果，不仅可以支持高并发的点查询场景，也能支持高吞吐的复杂分析场景。基于此，Apache Doris 能够较好的满足报表分析、即席查询、统一数仓构建、数据湖联邦查询加速等使用场景，用户可以在此之上构建用户行为分析、AB 实验平台、日志检索分析、用户画像分析、订单分析等应用。</p>
@@ -379,6 +335,50 @@
       </categories>
       <tags>
         <tag>Database</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>安装oh my zsh</title>
+    <url>/2023/02/28/install-oh-my-zsh/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>普遍我们使用的shell解释器都是sh、bash这两种，但是除此之外当然还有其他的例如ksh、csh和zsh等</p>
+<p>现在要安装的oh my zsh是基于zsh的一个扩展，与之相同的还有windows上的oh my posh，他们都是基于原始命令行上的一个扩展工具集，提供了很多丰富的功能，而且提供了很多的命令行样式，可以使我们的命令行更加好看</p>
+<p>官方仓库地址：<a href="https://github.com/ohmyzsh/ohmyzsh">oh my zsh</a></p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>在安装oh my zsh之前，我们需要安装zsh，并且将zsh设置为我们的默认命令行</p>
+<p>PS：在部分linux发行版（如kali）中包括新版的MAC OS操作系统，都是默认使用zsh作为shell解释器，像这种就不需要进行设置了</p>
+<h2 id="安装zsh"><a href="#安装zsh" class="headerlink" title="安装zsh"></a>安装zsh</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#查看所有的shell解释器</span></span><br><span class="line"><span class="built_in">cat</span> /etc/shells</span><br><span class="line"></span><br><span class="line"><span class="comment">#查看当前使用shell解释器</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$SHELL</span></span><br></pre></td></tr></table></figure>
+<div class="tabs" id="install-zsh"><ul class="nav-tabs"><button type="button" class="tab  active" data-href="install-zsh-1">ubuntu & debian</button><button type="button" class="tab " data-href="install-zsh-2">centos & redhat & fedora</button></ul><div class="tab-contents"><div class="tab-item-content active" id="install-zsh-1"><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install zsh -y</span><br><span class="line"></span><br><span class="line"><span class="comment">#切换shell到zsh</span></span><br><span class="line">chsh -s /bin/zsh</span><br></pre></td></tr></table></figure></div><div class="tab-item-content" id="install-zsh-2"><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo yum install zsh -y</span><br><span class="line"></span><br><span class="line"><span class="comment">#切换shell到zsh</span></span><br><span class="line">chsh -s /bin/zsh</span><br></pre></td></tr></table></figure></div></div><div class="tab-to-top"><button type="button" aria-label="scroll to top"><i class="fas fa-arrow-up"></i></button></div></div>
+
+<h2 id="安装oh-my-zsh"><a href="#安装oh-my-zsh" class="headerlink" title="安装oh my zsh"></a>安装oh my zsh</h2><p>安装oh my zsh有很多方式，一般可以直接使用官方提供的安装脚本，或者自己clone仓库自行配置，但无论那种方式我们都需要git命令，如果没有这个命令则需要安装</p>
+<div class="tabs" id="install-oh-my-zsh"><ul class="nav-tabs"><button type="button" class="tab  active" data-href="install-oh-my-zsh-1">官方安装方式</button><button type="button" class="tab " data-href="install-oh-my-zsh-2">镜像源安装</button></ul><div class="tab-contents"><div class="tab-item-content active" id="install-oh-my-zsh-1"><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#官方安装方式需要较好的网络环境</span></span><br><span class="line">sh -c <span class="string">&quot;<span class="subst">$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)</span>&quot;</span></span><br></pre></td></tr></table></figure></div><div class="tab-item-content" id="install-oh-my-zsh-2"><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#从镜像源下载安装脚本</span></span><br><span class="line">wget https://gitee.com/mirrors/oh-my-zsh/raw/master/tools/install.sh</span><br></pre></td></tr></table></figure>
+
+<p>下载完安装脚本后，我们需要将安装脚本中的仓库地址改为镜像地址，主要修改下面两项</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">REPO=$&#123;REPO:-ohmyzsh/ohmyzsh&#125;</span><br><span class="line">REMOTE=$&#123;REMOTE:-https://github.com/$&#123;REPO&#125;.git&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">改为</span></span><br><span class="line">REPO=$&#123;REPO:-mirrors/oh-my-zsh&#125;</span><br><span class="line">REMOTE=$&#123;REMOTE:-https://gitee.com/$&#123;REPO&#125;.git&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如图所示<br><img src="/2023/02/28/install-oh-my-zsh/repo.png" class=""></p>
+<p>修改完后执行脚本，并切换oh my zsh的git远程仓库地址为镜像源，便于后续的更新</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sh install.sh</span><br><span class="line"><span class="built_in">cd</span> ~/.oh-my-zsh</span><br><span class="line">git remote set-url origin https://gitee.com/mirrors/oh-my-zsh.git</span><br><span class="line">git pull</span><br></pre></td></tr></table></figure></div></div><div class="tab-to-top"><button type="button" aria-label="scroll to top"><i class="fas fa-arrow-up"></i></button></div></div>
+
+<h2 id="编辑-zshrc"><a href="#编辑-zshrc" class="headerlink" title="编辑.zshrc"></a>编辑.zshrc</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> &gt; ~/.zshrc &lt;&lt;<span class="string">&quot;EOF&quot;</span></span><br><span class="line"><span class="built_in">export</span> ZSH=<span class="string">&quot;<span class="variable">$HOME</span>/.oh-my-zsh&quot;</span></span><br><span class="line"><span class="built_in">export</span> TERM=xterm-256color</span><br><span class="line"></span><br><span class="line">ZSH_THEME=<span class="string">&quot;dallas&quot;</span> <span class="comment">#个人比较喜欢的命令行样式，可以根据官方文档自行修改</span></span><br><span class="line"></span><br><span class="line">plugins=(</span><br><span class="line">  git <span class="comment">#git插件，提供了很多git的缩减命令，可以在官方查看</span></span><br><span class="line">  sudo <span class="comment">#sudo插件，连按两下esc键自动在命令前加上sudo</span></span><br><span class="line">  docker <span class="comment">#docker插件，为docker提供了很好的命令提示</span></span><br><span class="line">  kubectl <span class="comment">#kubectl插件，为kubectl提供了很好的命令提示</span></span><br><span class="line">  themes <span class="comment">#皮肤插件，命令行输入theme可以更换当前的命令行样式</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">source</span> <span class="variable">$ZSH</span>/oh-my-zsh.sh</span><br><span class="line"><span class="built_in">setopt</span> no_nomatch</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="comment">#使用配置</span></span><br><span class="line"><span class="built_in">source</span> ~/.zshrc</span><br></pre></td></tr></table></figure>
+
+<p>在执行了上面的命令后，可以发现当前命令行使用了oh my zsh，我们还可以配置 ~&#x2F;.zshrc 文件来设置更多的插件，也可以将除了官方以外的插件下载到 ~&#x2F;.oh-my-zsh&#x2F;custom&#x2F;plugins 下来使用</p>
+<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><p>比较推荐的插件有两个：</p>
+<ul>
+<li>zsh-syntax-highlighting：命令高亮</li>
+<li>zsh-autosuggestions：历史命令提示</li>
+</ul>
+<p>下面来安装这两个插件</p>
+<div class="tabs" id="install-plugins"><ul class="nav-tabs"><button type="button" class="tab  active" data-href="install-plugins-1">官方仓库安装</button><button type="button" class="tab " data-href="install-plugins-2">镜像源安装</button></ul><div class="tab-contents"><div class="tab-item-content active" id="install-plugins-1"><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/.oh-my-zsh/custom/plugins</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/zsh-users/zsh-syntax-highlighting.git</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/zsh-users/zsh-autosuggestions</span><br></pre></td></tr></table></figure></div><div class="tab-item-content" id="install-plugins-2"><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/.oh-my-zsh/custom/plugins</span><br><span class="line">git <span class="built_in">clone</span> https://gitee.com/lightnear/zsh-syntax-highlighting.git</span><br><span class="line">git <span class="built_in">clone</span> https://gitee.com/mattuy/zsh-autosuggestions.git</span><br></pre></td></tr></table></figure></div></div><div class="tab-to-top"><button type="button" aria-label="scroll to top"><i class="fas fa-arrow-up"></i></button></div></div>
+
+<p>之后我们再修改.zshrc文件来使用这两个插件，在plugins中添加刚才下载的插件即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">plugins=(</span><br><span class="line">  git</span><br><span class="line">  sudo</span><br><span class="line">  docker</span><br><span class="line">  kubectl</span><br><span class="line">  themes</span><br><span class="line">  zsh-autosuggestions</span><br><span class="line">  zsh-syntax-highlighting</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>到此为止就已经安装完了，可以试试新的命令行了</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
       </tags>
   </entry>
   <entry>

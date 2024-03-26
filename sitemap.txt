@@ -1,7 +1,3 @@
-https://blog.2nfree.com/2024/03/21/kubernetes-logging-collection-2/
-https://blog.2nfree.com/2024/03/25/keda/
-https://blog.2nfree.com/links/
-https://blog.2nfree.com/tags/
 https://blog.2nfree.com/2022/04/05/install-nginx/
 https://blog.2nfree.com/2022/04/05/nginx-proxy-config/
 https://blog.2nfree.com/2022/05/07/install-mysql/
@@ -17,13 +13,17 @@ https://blog.2nfree.com/2023/04/05/flink-operator/
 https://blog.2nfree.com/2023/05/22/common-ops-for-kubernetes/
 https://blog.2nfree.com/2023/08/02/spark-operator/
 https://blog.2nfree.com/2024/01/12/deploy-ceph-by-cephadm/
-https://blog.2nfree.com/2024/02/02/common-command-lines-for-ceph/
-https://blog.2nfree.com/2024/03/08/volume-snapshots-with-rook-ceph/
 https://blog.2nfree.com/2024/02/27/cicd-in-kubernetes-based-jenkins-1/
+https://blog.2nfree.com/2024/03/08/volume-snapshots-with-rook-ceph/
+https://blog.2nfree.com/2024/02/02/common-command-lines-for-ceph/
 https://blog.2nfree.com/2024/03/13/ceph-osd-down/
 https://blog.2nfree.com/2024/03/17/kubernetes-logging-collection-1/
+https://blog.2nfree.com/2024/03/21/kubernetes-logging-collection-2/
+https://blog.2nfree.com/2024/03/25/keda/
 https://blog.2nfree.com/about/
 https://blog.2nfree.com/categories/
+https://blog.2nfree.com/links/
+https://blog.2nfree.com/tags/
 https://blog.2nfree.com/
 https://blog.2nfree.com/tags/Linux/
 https://blog.2nfree.com/tags/Shell/

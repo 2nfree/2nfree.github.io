@@ -2,42 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://blog.2nfree.com/2024/03/21/kubernetes-logging-collection-2/</loc>
-    
-    <lastmod>2024-03-26</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.2nfree.com/2024/03/25/keda/</loc>
-    
-    <lastmod>2024-03-26</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.2nfree.com/links/</loc>
-    
-    <lastmod>2024-03-26</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.2nfree.com/tags/</loc>
-    
-    <lastmod>2024-03-26</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://blog.2nfree.com/2022/04/05/install-nginx/</loc>
     
     <lastmod>2024-03-26</lastmod>
@@ -173,7 +137,7 @@
   </url>
   
   <url>
-    <loc>https://blog.2nfree.com/2024/02/02/common-command-lines-for-ceph/</loc>
+    <loc>https://blog.2nfree.com/2024/02/27/cicd-in-kubernetes-based-jenkins-1/</loc>
     
     <lastmod>2024-03-26</lastmod>
     
@@ -191,7 +155,7 @@
   </url>
   
   <url>
-    <loc>https://blog.2nfree.com/2024/02/27/cicd-in-kubernetes-based-jenkins-1/</loc>
+    <loc>https://blog.2nfree.com/2024/02/02/common-command-lines-for-ceph/</loc>
     
     <lastmod>2024-03-26</lastmod>
     
@@ -218,6 +182,24 @@
   </url>
   
   <url>
+    <loc>https://blog.2nfree.com/2024/03/21/kubernetes-logging-collection-2/</loc>
+    
+    <lastmod>2024-03-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2024/03/25/keda/</loc>
+    
+    <lastmod>2024-03-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.2nfree.com/about/</loc>
     
     <lastmod>2024-03-26</lastmod>
@@ -228,6 +210,24 @@
   
   <url>
     <loc>https://blog.2nfree.com/categories/</loc>
+    
+    <lastmod>2024-03-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/links/</loc>
+    
+    <lastmod>2024-03-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/</loc>
     
     <lastmod>2024-03-26</lastmod>
     

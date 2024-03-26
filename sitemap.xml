@@ -137,15 +137,6 @@
   </url>
   
   <url>
-    <loc>https://blog.2nfree.com/2024/02/02/common-command-lines-for-ceph/</loc>
-    
-    <lastmod>2024-03-26</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://blog.2nfree.com/2024/02/27/cicd-in-kubernetes-based-jenkins-1/</loc>
     
     <lastmod>2024-03-26</lastmod>
@@ -156,6 +147,15 @@
   
   <url>
     <loc>https://blog.2nfree.com/2024/03/08/volume-snapshots-with-rook-ceph/</loc>
+    
+    <lastmod>2024-03-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2024/02/02/common-command-lines-for-ceph/</loc>
     
     <lastmod>2024-03-26</lastmod>
     

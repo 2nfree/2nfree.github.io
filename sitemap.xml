@@ -74,6 +74,15 @@
   </url>
   
   <url>
+    <loc>https://blog.2nfree.com/2023/02/21/deploy-doris/</loc>
+    
+    <lastmod>2024-03-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.2nfree.com/2023/02/28/install-oh-my-zsh/</loc>
     
     <lastmod>2024-03-26</lastmod>
@@ -84,15 +93,6 @@
   
   <url>
     <loc>https://blog.2nfree.com/2023/03/25/kind/</loc>
-    
-    <lastmod>2024-03-26</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.2nfree.com/2023/02/21/deploy-doris/</loc>
     
     <lastmod>2024-03-26</lastmod>
     
@@ -119,7 +119,7 @@
   </url>
   
   <url>
-    <loc>https://blog.2nfree.com/2023/08/02/spark-operator/</loc>
+    <loc>https://blog.2nfree.com/2024/01/12/deploy-ceph-by-cephadm/</loc>
     
     <lastmod>2024-03-26</lastmod>
     
@@ -128,7 +128,7 @@
   </url>
   
   <url>
-    <loc>https://blog.2nfree.com/2024/01/12/deploy-ceph-by-cephadm/</loc>
+    <loc>https://blog.2nfree.com/2024/02/02/common-command-lines-for-ceph/</loc>
     
     <lastmod>2024-03-26</lastmod>
     
@@ -146,7 +146,7 @@
   </url>
   
   <url>
-    <loc>https://blog.2nfree.com/2024/03/08/volume-snapshots-with-rook-ceph/</loc>
+    <loc>https://blog.2nfree.com/2023/08/02/spark-operator/</loc>
     
     <lastmod>2024-03-26</lastmod>
     
@@ -155,7 +155,7 @@
   </url>
   
   <url>
-    <loc>https://blog.2nfree.com/2024/02/02/common-command-lines-for-ceph/</loc>
+    <loc>https://blog.2nfree.com/2024/03/08/volume-snapshots-with-rook-ceph/</loc>
     
     <lastmod>2024-03-26</lastmod>
     
@@ -329,14 +329,14 @@
   </url>
   
   <url>
-    <loc>https://blog.2nfree.com/tags/Spark/</loc>
+    <loc>https://blog.2nfree.com/tags/Jenkins/</loc>
     <lastmod>2024-03-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://blog.2nfree.com/tags/Jenkins/</loc>
+    <loc>https://blog.2nfree.com/tags/Spark/</loc>
     <lastmod>2024-03-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>https://blog.2nfree.com/about/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/categories/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/links/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2024/01/12/deploy-ceph-by-cephadm/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2024/02/02/common-command-lines-for-ceph/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2024/02/11/cicd-in-cloud-native/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2024/03/08/volume-snapshots-with-rook-ceph/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2024/02/27/cicd-in-kubernetes-based-jenkins-1%20copy/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2024/03/13/ceph-osd-down/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2024/03/17/kubernetes-logging-collection-1/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2024/03/21/kubernetes-logging-collection-2/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2024/03/25/keda/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2024/05/13/kubernetes-logging-collection-3/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2024/07/04/cicd-in-kubernetes-based-jenkins-2/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2024/05/22/kubernetes-logging-collection-4/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2022/04/05/nginx-proxy-config/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2022/04/11/centos-common-tool/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2022/06/25/install-redis/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2022/06/26/redis-command/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2022/06/27/redis-config/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2023/02/17/deploy-rook-ceph-on-k8s/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2023/02/17/deploy-k8s-with-kubeadm/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2022/05/07/install-mysql/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2022/04/05/install-nginx/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2023/02/21/deploy-doris/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2023/02/28/install-oh-my-zsh/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2023/04/05/flink-operator/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2023/03/25/kind/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2023/05/22/common-ops-for-kubernetes/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2023/07/07/useful-kubernetes-commands/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/2023/08/02/spark-operator/</loc>
+    
+    <lastmod>2024-07-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+
+  <url>
+    <loc>https://blog.2nfree.com/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/Linux/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/Shell/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/Nginx/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/Redis/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/Kubernetes/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/Storage/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/Ceph/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/DevOps/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/Mysql/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/Database/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/Doris/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/Flink/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/Spark/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/Jenkins/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/Logging/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/tags/HPA/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+
+  
+  <url>
+    <loc>https://blog.2nfree.com/categories/Linux/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/categories/Redis/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/categories/Mysql/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.2nfree.com/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/</loc>
+    <lastmod>2024-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+</urlset>

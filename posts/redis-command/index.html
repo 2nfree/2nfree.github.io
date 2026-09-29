@@ -1,0 +1,376 @@
+<!doctype html><html itemscope itemtype=http://schema.org/WebPage lang=zh-CN dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=2"><title>Redis 命令与数据类型 - 蒜头耿鬼's Blog</title><meta name=author content="komorebi"><meta name=description content="Redis 常用命令以及相关数据类型操作命令解析"><meta name=robots content="index, follow"><meta name=keywords content='Linux,Shell,Redis'><meta itemprop=name content="Redis 命令与数据类型"><meta itemprop=description content="Redis 常用命令以及相关数据类型操作命令解析"><meta itemprop=datePublished content="2022-06-26T16:03:03+00:00"><meta itemprop=dateModified content="2026-09-29T08:03:28+00:00"><meta itemprop=wordCount content="2012"><meta itemprop=keywords content="Linux,Shell,Redis"><meta property="og:url" content="https://blog.2nfree.com/posts/redis-command/"><meta property="og:site_name" content="蒜头耿鬼's Blog"><meta property="og:title" content="Redis 命令与数据类型"><meta property="og:description" content="Redis 常用命令以及相关数据类型操作命令解析"><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-06-26T16:03:03+00:00"><meta property="article:modified_time" content="2026-09-29T08:03:28+00:00"><meta property="article:tag" content="Linux"><meta property="article:tag" content="Shell"><meta property="article:tag" content="Redis"><meta name=twitter:card content="summary"><meta name=twitter:title content="Redis 命令与数据类型"><meta name=twitter:description content="Redis 常用命令以及相关数据类型操作命令解析"><meta name=application-name content="Hugo FixIt Blog"><meta name=apple-mobile-web-app-title content="Hugo FixIt Blog"><meta name=theme-color data-light=#f8f8f8 data-dark=#252627 content="#f8f8f8"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=canonical type=text/html href=https://blog.2nfree.com/posts/redis-command/ title="Redis 命令与数据类型 - 蒜头耿鬼's Blog"><link rel=prev type=text/html href=https://blog.2nfree.com/posts/install-redis/ title="Redis 编译安装"><link rel=next type=text/html href=https://blog.2nfree.com/posts/redis-config/ title="Redis 高级功能"><link rel=alternate type=text/markdown href=https://blog.2nfree.com/posts/redis-command/index.md><link rel=stylesheet href=/css/unocss.min.css><link rel=stylesheet href=/css/main.min.css><link rel=stylesheet href=/css/pages/posts.min.css><link rel=stylesheet href=/css/custom.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><link rel=preload href=/js/main.min.js as=script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Redis 命令与数据类型","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/blog.2nfree.com\/posts\/redis-command\/"},"genre":"posts","keywords":"Linux, Shell, Redis","wordcount":2012,"url":"https:\/\/blog.2nfree.com\/posts\/redis-command\/","datePublished":"2022-06-26T16:03:03+00:00","dateModified":"2026-09-29T08:03:28+00:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"komorebi"},"description":"Redis 常用命令以及相关数据类型操作命令解析"}</script><script src=/js/head.min.js></script></head><body data-instant-intensity=viewport data-header-desktop=sticky data-header-mobile=auto><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="蒜头耿鬼's Blog" class=header-title-link><img class=logo src=/images/avatar.png alt="蒜头耿鬼's Blog" height=32 width=32><span class=header-title-text>蒜头耿鬼's Blog</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class=menu-item><a class=menu-link href=/archives/><i class="fa-solid fa-archive fa-sm" aria-hidden=true></i> 归档</a></li><li class=menu-item><a class=menu-link href=/categories/><i class="fa-solid fa-folder-tree fa-sm" aria-hidden=true></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class="fa-solid fa-tags fa-sm" aria-hidden=true></i> 标签</a></li><li class=menu-item><a class=menu-link href=/links/><i class="fa-solid fa-link fa-sm" aria-hidden=true></i> 友情链接</a></li><li class=menu-item><a class=menu-link href=/about/><i class="fa-solid fa-heart fa-sm" aria-hidden=true></i> 关于</a></li><li class="menu-item delimiter"></li><li class="menu-item search"><button type=button class="search-trigger desktop" aria-label=搜索 title=搜索>
+<i class="fa-solid fa-search" aria-hidden=true></i>
+搜索
+<kbd></kbd></button></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch-item"><button type=button class=theme-switch aria-label=切换主题 title=切换主题><i class="fa-solid fa-adjust" aria-hidden=true></i></button></li><li class="menu-item language-switch"><button type=button aria-label=选择语言 title=选择语言><i class="fa-solid fa-language" aria-hidden=true></i></button><ul class=sub-menu><li class=menu-item><span class=text-secondary title=简体中文>简体中文</span></li><li class=menu-item><a href=/en/posts/redis-command/ class=menu-link title=English>English</a></li></ul></li></ul></nav></div></header><header class="mobile animate__faster" id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title="蒜头耿鬼's Blog" class=header-title-link><img class=logo src=/images/avatar.png alt="蒜头耿鬼's Blog" height=26 width=26><span class=header-title-text>蒜头耿鬼's Blog</span></a><span class=header-subtitle></span></div><button type=button class="search-trigger mobile" aria-label=搜索><i class="fa-solid fa-search" aria-hidden=true></i></button><button type=button class=theme-switch aria-label=切换主题><i class="fa-solid fa-adjust" aria-hidden=true></i></button>
+<button type=button class=menu-toggle id=menu-toggle-mobile aria-controls=menu-mobile aria-expanded=false aria-labelledby=menu-mobile>
+<span></span><span></span><span></span></button></div><nav><ul class=menu id=menu-mobile><li class=menu-item><a class=menu-link href=/archives/><i class="fa-solid fa-archive fa-sm" aria-hidden=true></i> 归档</a></li><li class=menu-item><a class=menu-link href=/categories/><i class="fa-solid fa-folder-tree fa-sm" aria-hidden=true></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class="fa-solid fa-tags fa-sm" aria-hidden=true></i> 标签</a></li><li class=menu-item><a class=menu-link href=/links/><i class="fa-solid fa-link fa-sm" aria-hidden=true></i> 友情链接</a></li><li class=menu-item><a class=menu-link href=/about/><i class="fa-solid fa-heart fa-sm" aria-hidden=true></i> 关于</a></li><li class="menu-item menu-system"><span class="menu-system-item language-switch"><button type=button aria-label=选择语言 title=选择语言>简体中文<i class="dropdown-icon fa-solid fa-chevron-down" aria-hidden=true></i></button>
+<select id=language-select class=language-select onchange="location=this.value"><option value=/posts/redis-command/ selected disabled>简体中文</option><option value=/en/posts/redis-command/>English</option></select></span></li></ul></nav></div></header><main class=fi-container><aside class="aside-collection animate__animated animate__fadeIn animate__faster" aria-label=合集></aside><article class="page single"><div class=header><h1 class="single-title animate__animated animate__flipInX"><span>Redis 命令与数据类型</span></h1></div><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://blog.2nfree.com/ title=作者 rel=author class=author><img class=avatar src=/images/avatar.png alt=komorebi height=16 width=16>&nbsp;komorebi</a></span><span class=post-included-in>&nbsp;收录于 <a href=/categories/redis/ class=post-category title="分类 - Redis"><i class="fa-regular fa-folder" aria-hidden=true></i> Redis</a></span></div><div class=post-meta-line><span title="发布于 2022-06-26 16:03:03"><i class="fa-solid fa-calendar-days me-1" aria-hidden=true></i><time datetime=2022-06-26>2022-06-26</time></span>&nbsp;<span title="更新于 2026-09-29 08:03:28"><i class="fa-regular fa-calendar-check me-1" aria-hidden=true></i><time datetime=2026-09-29>2026-09-29</time></span>&nbsp;<span title="2012 字"><i class="fa-solid fa-pencil me-1" aria-hidden=true></i>约 2100 字</span>&nbsp;<span><i class="fa-regular fa-clock me-1" aria-hidden=true></i>预计阅读 5 分钟</span>&nbsp;</div></div><div class="details toc" id=toc-static data-kept=false><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static></div></div><template data-toc><nav id=TableOfContents><ul><li><a href=#string-类型>String 类型</a></li><li><a href=#list-类型列表>List 类型（列表）</a></li><li><a href=#set-类型集合>Set 类型（集合）</a></li><li><a href=#hash-类型map>Hash 类型（map）</a></li><li><a href=#zset-类型有序集合>Zset 类型（有序集合）</a></li><li><a href=#geospatial地理位置>geospatial（地理位置）</a></li><li><a href=#hyperloglog基数统计算法>hyperloglog（基数统计算法）</a></li><li><a href=#bitmaps>bitmaps</a></li></ul></nav></template><div class=content id=content><h1 class=heading-element id=基本命令><span>基本命令</span>
+<a href=#%e5%9f%ba%e6%9c%ac%e5%91%bd%e4%bb%a4 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#测试连接，返回pong连接成功</span>
+</span></span><span class=line><span class=cl>ping
+</span></span><span class=line><span class=cl><span class=c1>#切换数据库 select [index]</span>
+</span></span><span class=line><span class=cl><span class=k>select</span> <span class=m>1</span>
+</span></span><span class=line><span class=cl><span class=c1>#查看数据库大小</span>
+</span></span><span class=line><span class=cl>dbsize
+</span></span><span class=line><span class=cl><span class=c1>#查看所有的key</span>
+</span></span><span class=line><span class=cl>keys *
+</span></span><span class=line><span class=cl><span class=c1>#清空所有</span>
+</span></span><span class=line><span class=cl>flushall
+</span></span><span class=line><span class=cl><span class=c1>#清空当前数据库</span>
+</span></span><span class=line><span class=cl>flushdb
+</span></span><span class=line><span class=cl><span class=c1>#判断是否存在key exists [key]</span>
+</span></span><span class=line><span class=cl>exists name
+</span></span><span class=line><span class=cl><span class=c1>#移动key到另一个数据库 move [key] [db]</span>
+</span></span><span class=line><span class=cl>move name <span class=m>1</span>
+</span></span><span class=line><span class=cl><span class=c1>#设置key过期时间 expire [key] [second]</span>
+</span></span><span class=line><span class=cl>expire name <span class=m>10</span>
+</span></span><span class=line><span class=cl><span class=c1>#查看key剩余时间 ttl [key]</span>
+</span></span><span class=line><span class=cl>ttl name
+</span></span><span class=line><span class=cl><span class=c1>#移除key del [key]</span>
+</span></span><span class=line><span class=cl>del name
+</span></span><span class=line><span class=cl><span class=c1>#查看key的类型 type [key]</span>
+</span></span><span class=line><span class=cl><span class=nb>type</span> name
+</span></span><span class=line><span class=cl><span class=c1>#设置基本值 set [key] [value]</span>
+</span></span><span class=line><span class=cl><span class=nb>set</span> name zhangsan
+</span></span><span class=line><span class=cl><span class=c1>#获取key</span>
+</span></span><span class=line><span class=cl>get name
+</span></span><span class=line><span class=cl><span class=c1>#测试并发：100个并发连接 100000请求</span>
+</span></span><span class=line><span class=cl>redis-benchmark -h localhost -p <span class=m>6379</span> -c <span class=m>100</span> -n <span class=m>100000</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h1 class=heading-element id=数据类型><span>数据类型</span>
+<a href=#%e6%95%b0%e6%8d%ae%e7%b1%bb%e5%9e%8b class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><h2 class=heading-element id=string-类型><span>String 类型</span>
+<a href=#string-%e7%b1%bb%e5%9e%8b class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>String 除了字符串类型还能是数字类型，一般用于</p><ul><li>计数器</li><li>统计多单位数量</li><li>粉丝数</li><li>对象缓存存储</li></ul><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#设置多个值 mset [key] [value] [key1] [value2] ....</span>
+</span></span><span class=line><span class=cl>mset name komorebi name1 komorebi
+</span></span><span class=line><span class=cl><span class=c1>#获取多个值 mget [key] [key1]</span>
+</span></span><span class=line><span class=cl>mget name name1
+</span></span><span class=line><span class=cl><span class=c1>#设置一个值，指定时间过期 setex [key] [second] [value]</span>
+</span></span><span class=line><span class=cl>setex name <span class=m>30</span> hello
+</span></span><span class=line><span class=cl><span class=c1>#设置一个值，如果该值已经存在，则不设置 setnx [key] [value]</span>
+</span></span><span class=line><span class=cl>setnx name hello
+</span></span><span class=line><span class=cl><span class=c1>#设置多个值，同时判断值是否存在，存在则全部不创建（要么一起成功，要么一起失败）msetnx [key] [value] [key1] [value2] ....</span>
+</span></span><span class=line><span class=cl>msetnx name komorebi name1 komorebi
+</span></span><span class=line><span class=cl><span class=c1>#向String类型的key中追加字符 append [key] [value]</span>
+</span></span><span class=line><span class=cl><span class=c1>#如果追加的key在当前数据库不存在，则相当于set key</span>
+</span></span><span class=line><span class=cl>append name <span class=s2>&#34;hello&#34;</span>
+</span></span><span class=line><span class=cl><span class=c1>#获取字符串长度 strlen [key]</span>
+</span></span><span class=line><span class=cl>strlen name
+</span></span><span class=line><span class=cl><span class=c1>#自增1 incr [key]</span>
+</span></span><span class=line><span class=cl>incr views
+</span></span><span class=line><span class=cl><span class=c1>#指定数字增加 incrby [key] [num]</span>
+</span></span><span class=line><span class=cl>incrby views <span class=m>10</span>
+</span></span><span class=line><span class=cl><span class=c1>#自减1 decr [key]</span>
+</span></span><span class=line><span class=cl>decr views
+</span></span><span class=line><span class=cl><span class=c1>#指定数字减少 decrby [key] [num]</span>
+</span></span><span class=line><span class=cl>decrby views <span class=m>10</span>
+</span></span><span class=line><span class=cl><span class=c1>#字符串范围 getrange [key] [begin] [end]</span>
+</span></span><span class=line><span class=cl><span class=c1>#后面为-1 为开区间</span>
+</span></span><span class=line><span class=cl>getrange name <span class=m>0</span> <span class=m>3</span>
+</span></span><span class=line><span class=cl>getrange name <span class=m>0</span> -1
+</span></span><span class=line><span class=cl><span class=c1>#替换指定位置开始的字符串 setrange [key] [index] [value]</span>
+</span></span><span class=line><span class=cl>setrange name <span class=m>1</span> xx
+</span></span><span class=line><span class=cl><span class=c1>#设置对象 set [key]:[id]{[key1]:[value1],[key2]:[value2]}</span>
+</span></span><span class=line><span class=cl><span class=c1>#mset [key]:[id]:[key1] [value1] [key]:[id]:[key2] [value2]</span>
+</span></span><span class=line><span class=cl><span class=nb>set</span> user:1<span class=o>{</span>name:zhangsan,age:3<span class=o>}</span>
+</span></span><span class=line><span class=cl>mset user:1:name zhangsan user:1:age <span class=m>3</span>
+</span></span><span class=line><span class=cl><span class=c1>#得到上一个值，设置下一个值 不存在就直接set getset [key] [value]</span>
+</span></span><span class=line><span class=cl>getset name komorebi </span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=list-类型列表><span>List 类型（列表）</span>
+<a href=#list-%e7%b1%bb%e5%9e%8b%e5%88%97%e8%a1%a8 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#向list中添加值,插入的时候为列表的头部，最后一个插入的下标为0 lpush [key] [value]</span>
+</span></span><span class=line><span class=cl>lpush list one
+</span></span><span class=line><span class=cl>lpush list two
+</span></span><span class=line><span class=cl>lpush list three
+</span></span><span class=line><span class=cl><span class=c1>#向list中的列表尾部添加值，下标为最后一位 rpush [key] [value]</span>
+</span></span><span class=line><span class=cl>rpush list right
+</span></span><span class=line><span class=cl><span class=c1>#获取list中的所有值 lrange [key] [begin] [end]</span>
+</span></span><span class=line><span class=cl>lrange list <span class=m>0</span> -1
+</span></span><span class=line><span class=cl><span class=c1>#获取list中的指定值</span>
+</span></span><span class=line><span class=cl>lrange list <span class=m>0</span> <span class=m>1</span>
+</span></span><span class=line><span class=cl><span class=c1>#移除list中的第一个元素 lpop [key]</span>
+</span></span><span class=line><span class=cl>lpop list
+</span></span><span class=line><span class=cl><span class=c1>#移除list中的最后一个元素 rpop [key]</span>
+</span></span><span class=line><span class=cl>rpop list
+</span></span><span class=line><span class=cl><span class=c1>#通过下标获取list中的某一个值 lindex [key] [index]</span>
+</span></span><span class=line><span class=cl>lindex list <span class=m>0</span>
+</span></span><span class=line><span class=cl><span class=c1>#获取list中的长度 llen [key]</span>
+</span></span><span class=line><span class=cl>llen list
+</span></span><span class=line><span class=cl><span class=c1>#移除list中的一个值 数字可以为&gt;0 =0 &lt;0 或者为其他数字</span>
+</span></span><span class=line><span class=cl>lrem list <span class=m>1</span> one</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=set-类型集合><span>Set 类型（集合）</span>
+<a href=#set-%e7%b1%bb%e5%9e%8b%e9%9b%86%e5%90%88 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#set中的值不能重复</span>
+</span></span><span class=line><span class=cl><span class=c1>#添加</span>
+</span></span><span class=line><span class=cl>sadd myset <span class=s2>&#34;hello&#34;</span>
+</span></span><span class=line><span class=cl><span class=c1>#查看所有元素</span>
+</span></span><span class=line><span class=cl>smembers myset
+</span></span><span class=line><span class=cl><span class=c1>#判断当前值是不是存在set中</span>
+</span></span><span class=line><span class=cl>sismember myset hello
+</span></span><span class=line><span class=cl><span class=c1>#查看当前set值的个数</span>
+</span></span><span class=line><span class=cl>scard myset
+</span></span><span class=line><span class=cl><span class=c1>#移除某一个元素</span>
+</span></span><span class=line><span class=cl>srem myset hello
+</span></span><span class=line><span class=cl><span class=c1>#随机抽取元素（可以指定个数）</span>
+</span></span><span class=line><span class=cl>srandmember myset <span class=m>2</span>
+</span></span><span class=line><span class=cl><span class=c1>#随机移除一个元素</span>
+</span></span><span class=line><span class=cl>spop myset
+</span></span><span class=line><span class=cl><span class=c1>#将元素从一个set移动到另一个set</span>
+</span></span><span class=line><span class=cl>smove myset1 myset2 hello
+</span></span><span class=line><span class=cl><span class=c1>#求两个set的差集</span>
+</span></span><span class=line><span class=cl>sdiff myset1 myset2
+</span></span><span class=line><span class=cl><span class=c1>#求两个set的交集</span>
+</span></span><span class=line><span class=cl>sinter myset1 myset2
+</span></span><span class=line><span class=cl><span class=c1>#求两个set的并集</span>
+</span></span><span class=line><span class=cl>sunion myset1 myset2</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=hash-类型map><span>Hash 类型（map）</span>
+<a href=#hash-%e7%b1%bb%e5%9e%8bmap class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>本质上和String类型没有什么区别</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#创建一个hash</span>
+</span></span><span class=line><span class=cl>hset myhash field1 hello
+</span></span><span class=line><span class=cl><span class=c1>#查询hash中的值</span>
+</span></span><span class=line><span class=cl>hget myhash field1
+</span></span><span class=line><span class=cl><span class=c1>#设置多个值 会覆盖</span>
+</span></span><span class=line><span class=cl>hmset myhash field1 hello field2 world
+</span></span><span class=line><span class=cl><span class=c1>#获取多个值</span>
+</span></span><span class=line><span class=cl>hmget myhash field1 field2
+</span></span><span class=line><span class=cl><span class=c1>#获取hash里所有的键值对</span>
+</span></span><span class=line><span class=cl>hgetall myhash
+</span></span><span class=line><span class=cl><span class=c1>#删除某个字段</span>
+</span></span><span class=line><span class=cl>hdel myhash field1
+</span></span><span class=line><span class=cl><span class=c1>#获取hash的长度</span>
+</span></span><span class=line><span class=cl>hlen myhash
+</span></span><span class=line><span class=cl><span class=c1>#判断hash中的某个field是否存在</span>
+</span></span><span class=line><span class=cl>hexists myhash field1
+</span></span><span class=line><span class=cl><span class=c1>#只获得所有的field</span>
+</span></span><span class=line><span class=cl>hkeys myhash
+</span></span><span class=line><span class=cl><span class=c1>#只获得所有的值</span>
+</span></span><span class=line><span class=cl>hvals myhash
+</span></span><span class=line><span class=cl><span class=c1>#给hash中的指定field值自增 如果设置-1相当于自减</span>
+</span></span><span class=line><span class=cl>hincrby myhash field1 <span class=m>1</span>
+</span></span><span class=line><span class=cl><span class=c1>#判断是否存在，不存在就创建</span>
+</span></span><span class=line><span class=cl>hsetnx myhash field2 hello</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=zset-类型有序集合><span>Zset 类型（有序集合）</span>
+<a href=#zset-%e7%b1%bb%e5%9e%8b%e6%9c%89%e5%ba%8f%e9%9b%86%e5%90%88 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>set的基础上增加了值</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#添加（需要添加一个数来进行排序）</span>
+</span></span><span class=line><span class=cl>zadd myset <span class=m>1</span> one
+</span></span><span class=line><span class=cl>zadd myset <span class=m>2</span> two
+</span></span><span class=line><span class=cl><span class=c1>#获取所有的值</span>
+</span></span><span class=line><span class=cl>zrange myset <span class=m>0</span> -1
+</span></span><span class=line><span class=cl><span class=c1>#从高到低获取所有的值</span>
+</span></span><span class=line><span class=cl>zrevrange myset <span class=m>0</span> -1
+</span></span><span class=line><span class=cl><span class=c1>#设定查询的范围（-inf +inf表示负无穷到正无穷，withscores表示加上参数）</span>
+</span></span><span class=line><span class=cl>zrangebyscore myset -inf +inf
+</span></span><span class=line><span class=cl>zrangebyscore myset <span class=m>1</span> <span class=m>2</span> withscores
+</span></span><span class=line><span class=cl><span class=c1>#查看存在多少个元素</span>
+</span></span><span class=line><span class=cl>zcard myset
+</span></span><span class=line><span class=cl><span class=c1>#移除对应的元素</span>
+</span></span><span class=line><span class=cl>zrem myset hello
+</span></span><span class=line><span class=cl><span class=c1>#判断区间内共有多少元素</span>
+</span></span><span class=line><span class=cl>zcount myset <span class=m>1</span> <span class=m>3</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=geospatial地理位置><span>geospatial（地理位置）</span>
+<a href=#geospatial%e5%9c%b0%e7%90%86%e4%bd%8d%e7%bd%ae class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>geo的底层实现原理其实就是Zset
+可以使用zset命令操作geo</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#一般直接通过java程序一次性导入</span>
+</span></span><span class=line><span class=cl><span class=c1>#参数 key 经度 纬度 名称</span>
+</span></span><span class=line><span class=cl><span class=c1>#geoadd 添加指定的经纬度 可以同时添加多个</span>
+</span></span><span class=line><span class=cl>geoadd china:city 121.47 31.23 shanghai
+</span></span><span class=line><span class=cl><span class=c1>#geopos获取经纬度</span>
+</span></span><span class=line><span class=cl>geopos china:city shanghai
+</span></span><span class=line><span class=cl><span class=c1>#geodist获取两地之间的距离 单位m：米，km：千米，mi：英里，ft：英尺</span>
+</span></span><span class=line><span class=cl>geodist china:city shanghai beijing km
+</span></span><span class=line><span class=cl><span class=c1>#georadius以给定的经纬度为中心，找key范围内的元素</span>
+</span></span><span class=line><span class=cl><span class=c1>#后面跟withdist为直线距离 withcoord为显示经纬度 count设置获取多少个</span>
+</span></span><span class=line><span class=cl>georadius china:city <span class=m>116</span> <span class=m>30</span> <span class=m>1000</span> km withdist withcoord count <span class=m>3</span>
+</span></span><span class=line><span class=cl><span class=c1>#以已有元素位置为中心，找范围内的元素 其他参数与georadius一样</span>
+</span></span><span class=line><span class=cl>georadiusbymember china:city beijing <span class=m>1000</span> km
+</span></span><span class=line><span class=cl><span class=c1>#将二维的经纬度转换为一维的字符串，如果字符串越接近，那么距离越近</span>
+</span></span><span class=line><span class=cl>geohash china:city beijing</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=hyperloglog基数统计算法><span>hyperloglog（基数统计算法）</span>
+<a href=#hyperloglog%e5%9f%ba%e6%95%b0%e7%bb%9f%e8%ae%a1%e7%ae%97%e6%b3%95 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>什么是基数
+A{1,3,5,7,8,7,8}
+B{1,3,5,7,8,8}
+基数（不重复的元素的个数）=5，可以接受误差</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#添加元素</span>
+</span></span><span class=line><span class=cl>pfadd mykey a b c d e f g
+</span></span><span class=line><span class=cl><span class=c1>#统计元素的个数</span>
+</span></span><span class=line><span class=cl>pfcount mykey
+</span></span><span class=line><span class=cl><span class=c1>#合并两个集合为mykey3（去掉重复元素）</span>
+</span></span><span class=line><span class=cl>pfmerge mykey3 mykey mykey2</span></span></code></pre></td></tr></table></div></div></div><h2 class=heading-element id=bitmaps><span>bitmaps</span>
+<a href=#bitmaps class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>位存储
+一般用于存储0和1两种状态</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#设置位存储 第一位表示下标 第二位存1或者0</span>
+</span></span><span class=line><span class=cl>setbit sign <span class=m>0</span> <span class=m>0</span>
+</span></span><span class=line><span class=cl><span class=c1>#查询某一位的状态</span>
+</span></span><span class=line><span class=cl>getbit sign <span class=m>0</span>
+</span></span><span class=line><span class=cl><span class=c1>#统计为1的状态</span>
+</span></span><span class=line><span class=cl>bitcount sign</span></span></code></pre></td></tr></table></div></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span title="更新于 2026-09-29 08:03:28">更新于 2026-09-29&nbsp;</span></div><div class=post-info-license><span><a rel="license external nofollow noopener noreferrer" href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank>CC BY-NC-SA 4.0</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a href=/posts/redis-command/index.md title=阅读原始文档 class=link-to-markdown>阅读原始文档</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 X" data-sharer=twitter data-url=https://blog.2nfree.com/posts/redis-command/ data-title="Redis 命令与数据类型" data-hashtags=Linux,Shell,Redis><i class="fa-brands fa-x-twitter" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://blog.2nfree.com/posts/redis-command/ data-hashtag=Linux><i class="fa-brands fa-facebook-square" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://blog.2nfree.com/posts/redis-command/ data-title="Redis 命令与数据类型"><i class="fa-brands fa-weibo" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fa-solid fa-tags me-1" aria-hidden=true></i><a href=/tags/linux/ class=post-tag title="标签 - Linux">Linux</a><a href=/tags/shell/ class=post-tag title="标签 - Shell">Shell</a><a href=/tags/redis/ class=post-tag title="标签 - Redis">Redis</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/install-redis/ class=post-nav-item rel=prev title="Redis 编译安装"><i class="fa-solid fa-angle-left" aria-hidden=true></i>Redis 编译安装</a><a href=/posts/redis-config/ class=post-nav-item rel=next title="Redis 高级功能">Redis 高级功能<i class="fa-solid fa-angle-right" aria-hidden=true></i></a></div></div></article><aside class="toc animate__animated animate__fadeIn animate__faster" id=toc-auto aria-label=目录><h2 class=toc-title><span>目录<i class="toc-icon fa-solid fa-angle-down ms-1" aria-hidden=true></i></span>
+<button type=button class=toc-print-btn onclick=event.stopPropagation(),window.print() aria-label=打印><i class="fa-solid fa-print" aria-hidden=true></i></button></h2><div class=toc-content id=toc-content-auto></div></aside></main><footer class=footer><div class=footer-container><div class="footer-line powered">由 <a href="https://github.com/gohugoio/hugo?v=0.167.0" target=_blank rel="external nofollow noopener noreferrer" title="Hugo 0.167.0"><img class=hugo-icon src=/images/hugo.min.svg alt="Hugo logo"> Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt?v=v1.0.0-alpha.3" target=_blank rel=external title="FixIt v1.0.0-alpha.3"><img class=fixit-icon src=/images/fixit.min.svg alt="FixIt logo"> FixIt</a></div><div class="footer-line copyright" itemscope itemtype=http://schema.org/CreativeWork><i class="fa-regular fa-copyright" aria-hidden=true></i>
+<span itemprop=copyrightYear>2025 - 2026</span><span class=author itemprop=copyrightHolder>
+<a href=https://blog.2nfree.com/>komorebi</a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank>CC BY-NC-SA 4.0</a></span></div></div></footer></div><div class=widgets><div id=mask></div><dialog id=nav-dialog aria-labelledby=nav-dialog-title closedby=any><button type=button class=nav-close-btn aria-label="Close 导航"><i class="fa-solid fa-xmark fa-lg" aria-hidden=true></i></button><div class=toc><h2 class=toc-title id=nav-dialog-title>导航</h2><div class=toc-content id=toc-content-drawer></div></div></dialog><dialog id=search-dialog class=search-dialog aria-label=搜索 closedby=any><div class=search-modal><div class=search-modal-header><span class=search-delimiter></span>
+<button type=button class=search-close-btn aria-label="Close Search Dialog"><i class="fa-solid fa-xmark" aria-hidden=true></i></button></div><div class=search-source-footer><div class=search-shortcuts><span class=search-shortcut><kbd><i class=lucide-arrow-up aria-hidden=true></i></kbd>
+<kbd><i class=lucide-arrow-down aria-hidden=true></i></kbd>
+切换
+</span><span class=search-shortcut><kbd><i class=lucide-corner-down-left aria-hidden=true></i></kbd>
+选择
+</span><span class=search-shortcut><kbd>ESC</kbd>
+关闭</span></div><span class=search-engine>搜索引擎 <a href=https://fusejs.io/ target=_blank rel="external nofollow noopener noreferrer">Fuse.js</a></span></div></div></dialog><div class=fixed-buttons><button type=button class="fixed-button back-to-top animate__faster hidden" aria-label=回到顶部><i class="fa-solid fa-arrow-up" aria-hidden=true></i></button><button type=button id=nav-drawer-button class="fixed-button nav-drawer-button hidden" aria-label=导航 aria-controls=nav-dialog aria-expanded=false><i class="fa-solid fa-bars" aria-hidden=true></i></button></div><noscript><div class="noscript-warning bg-danger text-white text-base font-bold fixed text-center inset-x-0 bottom-0 w-full z-fixed">该网站在启用 JavaScript 的情况下效果最佳。</div></noscript></div><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><script src=/lib/autocomplete-js/index.production.js defer></script><script src=/js/lib/fuse.min.js defer></script><script src=/lib/sharer/sharer.min.js async defer></script><script src=/lib/cookieconsent/cookieconsent.min.js defer></script><script src=/js/lib/cookieconsent.min.js defer></script><script src=/lib/cell-tooltip/cell-tooltip.umd.js defer></script><script src=/js/config/f80aae3d1fea91c28c4d55f0876b23fb.min.js defer></script><script src=/js/lib/file-tree.min.js defer></script><script src=/js/main.min.js defer></script><script src=/js/custom.min.js defer></script></body></html>

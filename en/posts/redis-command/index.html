@@ -1,0 +1,371 @@
+<!doctype html><html itemscope itemtype=http://schema.org/WebPage lang=en-US dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=2"><title>Redis Commands and Data Types - Gengar's Pokeball</title><meta name=author content="komorebi"><meta name=description content="Explanation of Redis common commands and related data type manipulation commands"><meta name=robots content="index, follow"><meta name=keywords content='Linux,Shell,Redis'><meta itemprop=name content="Redis Commands and Data Types"><meta itemprop=description content="Explanation of Redis common commands and related data type manipulation commands"><meta itemprop=datePublished content="2022-06-26T16:03:03+00:00"><meta itemprop=dateModified content="2026-09-29T08:32:15+00:00"><meta itemprop=wordCount content="1351"><meta itemprop=keywords content="Linux,Shell,Redis"><meta property="og:url" content="https://blog.2nfree.com/en/posts/redis-command/"><meta property="og:site_name" content="Gengar's Pokeball"><meta property="og:title" content="Redis Commands and Data Types"><meta property="og:description" content="Explanation of Redis common commands and related data type manipulation commands"><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-06-26T16:03:03+00:00"><meta property="article:modified_time" content="2026-09-29T08:32:15+00:00"><meta property="article:tag" content="Linux"><meta property="article:tag" content="Shell"><meta property="article:tag" content="Redis"><meta name=twitter:card content="summary"><meta name=twitter:title content="Redis Commands and Data Types"><meta name=twitter:description content="Explanation of Redis common commands and related data type manipulation commands"><meta name=application-name content="Hugo FixIt Blog"><meta name=apple-mobile-web-app-title content="Hugo FixIt Blog"><meta name=theme-color data-light=#f8f8f8 data-dark=#252627 content="#f8f8f8"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=canonical type=text/html href=https://blog.2nfree.com/en/posts/redis-command/ title="Redis Commands and Data Types - Gengar's Pokeball"><link rel=prev type=text/html href=https://blog.2nfree.com/en/posts/install-redis/ title="Install Redis"><link rel=next type=text/html href=https://blog.2nfree.com/en/posts/redis-config/ title="Redis Transactions And Configuration"><link rel=alternate type=text/markdown href=https://blog.2nfree.com/en/posts/redis-command/index.md><link rel=stylesheet href=/css/unocss.min.css><link rel=stylesheet href=/css/main.min.css><link rel=stylesheet href=/css/pages/posts.min.css><link rel=stylesheet href=/css/custom.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><link rel=preload href=/js/main.min.js as=script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Redis Commands and Data Types","inLanguage":"en-US","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/blog.2nfree.com\/en\/posts\/redis-command\/"},"genre":"posts","keywords":"Linux, Shell, Redis","wordcount":1351,"url":"https:\/\/blog.2nfree.com\/en\/posts\/redis-command\/","datePublished":"2022-06-26T16:03:03+00:00","dateModified":"2026-09-29T08:32:15+00:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"komorebi"},"description":"Explanation of Redis common commands and related data type manipulation commands"}</script><script src=/js/head.min.js></script></head><body data-instant-intensity=viewport data-header-desktop=sticky data-header-mobile=auto><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper><div class=header-title><a href=/en/ title="Gengar's Pokeball" class=header-title-link><img class=logo src=/images/avatar.png alt="Gengar's Pokeball" height=32 width=32><span class=header-title-text>Gengar's Pokeball</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class=menu-item><a class=menu-link href=/en/archives/><i class="fa-solid fa-archive fa-sm" aria-hidden=true></i> Archives</a></li><li class=menu-item><a class=menu-link href=/en/categories/><i class="fa-solid fa-folder-tree fa-sm" aria-hidden=true></i> Categories</a></li><li class=menu-item><a class=menu-link href=/en/tags/><i class="fa-solid fa-tags fa-sm" aria-hidden=true></i> Tags</a></li><li class=menu-item><a class=menu-link href=/en/links/><i class="fa-solid fa-link fa-sm" aria-hidden=true></i> Links</a></li><li class=menu-item><a class=menu-link href=/en/about/><i class="fa-solid fa-heart fa-sm" aria-hidden=true></i> About</a></li><li class="menu-item delimiter"></li><li class="menu-item search"><button type=button class="search-trigger desktop" aria-label=Search title=Search>
+<i class="fa-solid fa-search" aria-hidden=true></i>
+Search
+<kbd></kbd></button></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch-item"><button type=button class=theme-switch aria-label="Switch Theme" title="Switch Theme"><i class="fa-solid fa-adjust" aria-hidden=true></i></button></li><li class="menu-item language-switch"><button type=button aria-label="Select Language" title="Select Language"><i class="fa-solid fa-language" aria-hidden=true></i></button><ul class=sub-menu><li class=menu-item><a href=/posts/redis-command/ class=menu-link title=简体中文>简体中文</a></li><li class=menu-item><span class=text-secondary title=English>English</span></li></ul></li></ul></nav></div></header><header class="mobile animate__faster" id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/en/ title="Gengar's Pokeball" class=header-title-link><img class=logo src=/images/avatar.png alt="Gengar's Pokeball" height=26 width=26><span class=header-title-text>Gengar's Pokeball</span></a><span class=header-subtitle></span></div><button type=button class="search-trigger mobile" aria-label=Search><i class="fa-solid fa-search" aria-hidden=true></i></button><button type=button class=theme-switch aria-label="Switch Theme"><i class="fa-solid fa-adjust" aria-hidden=true></i></button>
+<button type=button class=menu-toggle id=menu-toggle-mobile aria-controls=menu-mobile aria-expanded=false aria-labelledby=menu-mobile>
+<span></span><span></span><span></span></button></div><nav><ul class=menu id=menu-mobile><li class=menu-item><a class=menu-link href=/en/archives/><i class="fa-solid fa-archive fa-sm" aria-hidden=true></i> Archives</a></li><li class=menu-item><a class=menu-link href=/en/categories/><i class="fa-solid fa-folder-tree fa-sm" aria-hidden=true></i> Categories</a></li><li class=menu-item><a class=menu-link href=/en/tags/><i class="fa-solid fa-tags fa-sm" aria-hidden=true></i> Tags</a></li><li class=menu-item><a class=menu-link href=/en/links/><i class="fa-solid fa-link fa-sm" aria-hidden=true></i> Links</a></li><li class=menu-item><a class=menu-link href=/en/about/><i class="fa-solid fa-heart fa-sm" aria-hidden=true></i> About</a></li><li class="menu-item menu-system"><span class="menu-system-item language-switch"><button type=button aria-label="Select Language" title="Select Language">English<i class="dropdown-icon fa-solid fa-chevron-down" aria-hidden=true></i></button>
+<select id=language-select class=language-select onchange="location=this.value"><option value=/posts/redis-command/>简体中文</option><option value=/en/posts/redis-command/ selected disabled>English</option></select></span></li></ul></nav></div></header><main class=fi-container><aside class="aside-collection animate__animated animate__fadeIn animate__faster" aria-label=Collections></aside><article class="page single"><div class=header><h1 class="single-title animate__animated animate__flipInX"><span>Redis Commands and Data Types</span></h1></div><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://blog.2nfree.com/ title=Author rel=author class=author><img class=avatar src=/images/avatar.png alt=komorebi height=16 width=16>&nbsp;komorebi</a></span><span class=post-included-in>&nbsp;included in <a href=/en/categories/redis/ class=post-category title="Category - Redis"><i class="fa-regular fa-folder" aria-hidden=true></i> Redis</a></span></div><div class=post-meta-line><span title="published on 2022-06-26 16:03:03"><i class="fa-solid fa-calendar-days me-1" aria-hidden=true></i><time datetime=2022-06-26>2022-06-26</time></span>&nbsp;<span title="Updated on 2026-09-29 08:32:15"><i class="fa-regular fa-calendar-check me-1" aria-hidden=true></i><time datetime=2026-09-29>2026-09-29</time></span>&nbsp;<span title="1351 words"><i class="fa-solid fa-pencil me-1" aria-hidden=true></i>About 1400 words</span>&nbsp;<span><i class="fa-regular fa-clock me-1" aria-hidden=true></i>3 minutes</span>&nbsp;</div></div><div class="details toc" id=toc-static data-kept=false><div class="details-summary toc-title"><span>Contents</span>
+<span><i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static></div></div><template data-toc><nav id=TableOfContents><ul><li><a href=#string>String</a></li><li><a href=#list>List</a></li><li><a href=#set>Set</a></li><li><a href=#hash>Hash</a></li><li><a href=#zset>Zset</a></li><li><a href=#geospatial>geospatial</a></li><li><a href=#hyperloglog>hyperloglog</a></li><li><a href=#bitmaps>bitmaps</a></li></ul></nav></template><div class=content id=content><h1 class=heading-element id=basic-commands><span>Basic Commands</span>
+<a href=#basic-commands class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># test the connection, return pong for successful connection</span>
+</span></span><span class=line><span class=cl>ping
+</span></span><span class=line><span class=cl><span class=c1># switch databases `select [index]`</span>
+</span></span><span class=line><span class=cl><span class=k>select</span> <span class=m>1</span>
+</span></span><span class=line><span class=cl><span class=c1># view database size</span>
+</span></span><span class=line><span class=cl>dbsize
+</span></span><span class=line><span class=cl><span class=c1># view all keys</span>
+</span></span><span class=line><span class=cl>keys *
+</span></span><span class=line><span class=cl><span class=c1># clear all data</span>
+</span></span><span class=line><span class=cl>flushall
+</span></span><span class=line><span class=cl><span class=c1># clear the current database</span>
+</span></span><span class=line><span class=cl>flushdb
+</span></span><span class=line><span class=cl><span class=c1># whether the key exists `exists [key]`</span>
+</span></span><span class=line><span class=cl>exists name
+</span></span><span class=line><span class=cl><span class=c1># move the key to another database `move [key] [db]`</span>
+</span></span><span class=line><span class=cl>move name <span class=m>1</span>
+</span></span><span class=line><span class=cl><span class=c1># setting the key expiration time `expire [key] [second]`</span>
+</span></span><span class=line><span class=cl>expire name <span class=m>10</span>
+</span></span><span class=line><span class=cl><span class=c1># view key expiration time `ttl [key]`</span>
+</span></span><span class=line><span class=cl>ttl name
+</span></span><span class=line><span class=cl><span class=c1># delete key `del [key]`</span>
+</span></span><span class=line><span class=cl>del name
+</span></span><span class=line><span class=cl><span class=c1># view the type of key `type [key]`</span>
+</span></span><span class=line><span class=cl><span class=nb>type</span> name
+</span></span><span class=line><span class=cl><span class=c1># set key value `set [key] [value]`</span>
+</span></span><span class=line><span class=cl><span class=nb>set</span> name zhangsan
+</span></span><span class=line><span class=cl><span class=c1># get key value</span>
+</span></span><span class=line><span class=cl>get name
+</span></span><span class=line><span class=cl><span class=c1># performance test</span>
+</span></span><span class=line><span class=cl>redis-benchmark -h localhost -p <span class=m>6379</span> -c <span class=m>100</span> -n <span class=m>100000</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h1 class=heading-element id=data-types><span>Data types</span>
+<a href=#data-types class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><h2 class=heading-element id=string><span>String</span>
+<a href=#string class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>String can be a numeric type in addition to a string type, and is generally used for</p><ul><li>Counters</li><li>Counting multi-unit quantities</li><li>Fans</li><li>Object cache storage</li></ul><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># set multiple values `mset [key] [value] [key1] [value2] ....`</span>
+</span></span><span class=line><span class=cl>mset name komorebi name1 komorebi
+</span></span><span class=line><span class=cl><span class=c1># get multiple values `mget [key] [key1]`</span>
+</span></span><span class=line><span class=cl>mget name name1
+</span></span><span class=line><span class=cl><span class=c1># set a value with an expiration time `setex [key] [second] [value]`</span>
+</span></span><span class=line><span class=cl>setex name <span class=m>30</span> hello
+</span></span><span class=line><span class=cl><span class=c1># set a value if it does not exist `setnx [key] [value]`</span>
+</span></span><span class=line><span class=cl>setnx name hello
+</span></span><span class=line><span class=cl><span class=c1># set multiple values, determine if the values exist, and if they do, they are all not created (either they succeed together or fail together)</span>
+</span></span><span class=line><span class=cl><span class=c1># `msetnx [key] [value] [key1] [value2] ....`</span>
+</span></span><span class=line><span class=cl>msetnx name komorebi name1 komorebi
+</span></span><span class=line><span class=cl><span class=c1># append characters to a key of type String, if the appended key does not exist in the current database, it is equivalent to set key</span>
+</span></span><span class=line><span class=cl><span class=c1># `append [key] [value]`</span>
+</span></span><span class=line><span class=cl>append name <span class=s2>&#34;hello&#34;</span>
+</span></span><span class=line><span class=cl><span class=c1># get string length `strlen [key]`</span>
+</span></span><span class=line><span class=cl>strlen name
+</span></span><span class=line><span class=cl><span class=c1># increase by 1 `incr [key]`</span>
+</span></span><span class=line><span class=cl>incr views
+</span></span><span class=line><span class=cl><span class=c1># increase in specified number `incrby [key] [num]`</span>
+</span></span><span class=line><span class=cl>incrby views <span class=m>10</span>
+</span></span><span class=line><span class=cl><span class=c1># decrease by 1 `decr [key]`</span>
+</span></span><span class=line><span class=cl>decr views
+</span></span><span class=line><span class=cl><span class=c1># decrease in specified number `decrby [key] [num]`</span>
+</span></span><span class=line><span class=cl>decrby views <span class=m>10</span>
+</span></span><span class=line><span class=cl><span class=c1># string range, set -1 to open interval `getrange [key] [begin] [end]`</span>
+</span></span><span class=line><span class=cl>getrange name <span class=m>0</span> <span class=m>3</span>
+</span></span><span class=line><span class=cl>getrange name <span class=m>0</span> -1
+</span></span><span class=line><span class=cl><span class=c1># replace the string starting at the specified position `setrange [key] [index] [value]`</span>
+</span></span><span class=line><span class=cl>setrange name <span class=m>1</span> xx
+</span></span><span class=line><span class=cl><span class=c1># set objects</span>
+</span></span><span class=line><span class=cl><span class=c1># `set [key]:[id]{[key1]:[value1],[key2]:[value2]}`</span>
+</span></span><span class=line><span class=cl><span class=c1># `mset [key]:[id]:[key1] [value1] [key]:[id]:[key2] [value2]`</span>
+</span></span><span class=line><span class=cl><span class=nb>set</span> user:1<span class=o>{</span>name:zhangsan,age:3<span class=o>}</span>
+</span></span><span class=line><span class=cl>mset user:1:name zhangsan user:1:age <span class=m>3</span>
+</span></span><span class=line><span class=cl><span class=c1># get the previous value, set the next value,if previous value doesn&#39;t exist, just set `getset [key] [value]`</span>
+</span></span><span class=line><span class=cl>getset name komorebi </span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=list><span>List</span>
+<a href=#list class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># add a value to the list, inserted at the head of the list, the last insertion of the subscript 0 `lpush [key] [value]`</span>
+</span></span><span class=line><span class=cl>lpush list one
+</span></span><span class=line><span class=cl>lpush list two
+</span></span><span class=line><span class=cl>lpush list three
+</span></span><span class=line><span class=cl><span class=c1># adds a value to the end of the list, with the subscript being the last digit `rpush [key] [value]`</span>
+</span></span><span class=line><span class=cl>rpush list right
+</span></span><span class=line><span class=cl><span class=c1># get all values in the list `lrange [key] [begin] [end]`</span>
+</span></span><span class=line><span class=cl>lrange list <span class=m>0</span> -1
+</span></span><span class=line><span class=cl><span class=c1># get the specified value in a list</span>
+</span></span><span class=line><span class=cl>lrange list <span class=m>0</span> <span class=m>1</span>
+</span></span><span class=line><span class=cl><span class=c1># remove the first element of the list `lpop [key]`</span>
+</span></span><span class=line><span class=cl>lpop list
+</span></span><span class=line><span class=cl><span class=c1># 移remove the last element of the list `rpop [key]`</span>
+</span></span><span class=line><span class=cl>rpop list
+</span></span><span class=line><span class=cl><span class=c1># get a value in the list by subscript `lindex [key] [index]`</span>
+</span></span><span class=line><span class=cl>lindex list <span class=m>0</span>
+</span></span><span class=line><span class=cl><span class=c1># Get the length of list `llen [key]`</span>
+</span></span><span class=line><span class=cl>llen list
+</span></span><span class=line><span class=cl><span class=c1># remove a value from the list Numbers can be &gt;0 =0 &lt;0 or other numbers</span>
+</span></span><span class=line><span class=cl>lrem list <span class=m>1</span> one</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=set><span>Set</span>
+<a href=#set class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>The values in set cannot be duplicated</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># add value</span>
+</span></span><span class=line><span class=cl>sadd myset <span class=s2>&#34;hello&#34;</span>
+</span></span><span class=line><span class=cl><span class=c1># view all elements</span>
+</span></span><span class=line><span class=cl>smembers myset
+</span></span><span class=line><span class=cl><span class=c1># determine if the current value exists in set</span>
+</span></span><span class=line><span class=cl>sismember myset hello
+</span></span><span class=line><span class=cl><span class=c1># view the number of current set values</span>
+</span></span><span class=line><span class=cl>scard myset
+</span></span><span class=line><span class=cl><span class=c1># remove an element</span>
+</span></span><span class=line><span class=cl>srem myset hello
+</span></span><span class=line><span class=cl><span class=c1># random selection of elements (number can be specified)</span>
+</span></span><span class=line><span class=cl>srandmember myset <span class=m>2</span>
+</span></span><span class=line><span class=cl><span class=c1># randomly remove an element</span>
+</span></span><span class=line><span class=cl>spop myset
+</span></span><span class=line><span class=cl><span class=c1># moves elements from one set to another</span>
+</span></span><span class=line><span class=cl>smove myset1 myset2 hello
+</span></span><span class=line><span class=cl><span class=c1># find the difference of two sets</span>
+</span></span><span class=line><span class=cl>sdiff myset1 myset2
+</span></span><span class=line><span class=cl><span class=c1># find the intersection of two sets</span>
+</span></span><span class=line><span class=cl>sinter myset1 myset2
+</span></span><span class=line><span class=cl><span class=c1># find the union of two sets</span>
+</span></span><span class=line><span class=cl>sunion myset1 myset2</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=hash><span>Hash</span>
+<a href=#hash class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># create a hash</span>
+</span></span><span class=line><span class=cl>hset myhash field1 hello
+</span></span><span class=line><span class=cl><span class=c1># get hash value</span>
+</span></span><span class=line><span class=cl>hget myhash field1
+</span></span><span class=line><span class=cl><span class=c1># setting multiple values,same name overwrite</span>
+</span></span><span class=line><span class=cl>hmset myhash field1 hello field2 world
+</span></span><span class=line><span class=cl><span class=c1># get multiple values</span>
+</span></span><span class=line><span class=cl>hmget myhash field1 field2
+</span></span><span class=line><span class=cl><span class=c1># get all fields and values</span>
+</span></span><span class=line><span class=cl>hgetall myhash
+</span></span><span class=line><span class=cl><span class=c1># del key</span>
+</span></span><span class=line><span class=cl>hdel myhash field1
+</span></span><span class=line><span class=cl><span class=c1># get hash value lens</span>
+</span></span><span class=line><span class=cl>hlen myhash
+</span></span><span class=line><span class=cl><span class=c1># determine if the current value exists in hash</span>
+</span></span><span class=line><span class=cl>hexists myhash field1
+</span></span><span class=line><span class=cl><span class=c1># get all fields</span>
+</span></span><span class=line><span class=cl>hkeys myhash
+</span></span><span class=line><span class=cl><span class=c1># get all values</span>
+</span></span><span class=line><span class=cl>hvals myhash
+</span></span><span class=line><span class=cl><span class=c1># self-increase, -1 is equivalent to self-decrease</span>
+</span></span><span class=line><span class=cl>hincrby myhash field1 <span class=m>1</span>
+</span></span><span class=line><span class=cl><span class=c1># determine if the current value exists, create if it doesn&#39;t</span>
+</span></span><span class=line><span class=cl>hsetnx myhash field2 hello</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=zset><span>Zset</span>
+<a href=#zset class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>zset adds sorted values to set</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># add (need to add a number for sorting)</span>
+</span></span><span class=line><span class=cl>zadd myset <span class=m>1</span> one
+</span></span><span class=line><span class=cl>zadd myset <span class=m>2</span> two
+</span></span><span class=line><span class=cl><span class=c1># get all values</span>
+</span></span><span class=line><span class=cl>zrange myset <span class=m>0</span> -1
+</span></span><span class=line><span class=cl><span class=c1># get all values asc</span>
+</span></span><span class=line><span class=cl>zrevrange myset <span class=m>0</span> -1
+</span></span><span class=line><span class=cl><span class=c1># set the range of the query (-inf +inf means negative infinity to positive infinity, withscores means add parameters)</span>
+</span></span><span class=line><span class=cl>zrangebyscore myset -inf +inf
+</span></span><span class=line><span class=cl>zrangebyscore myset <span class=m>1</span> <span class=m>2</span> withscores
+</span></span><span class=line><span class=cl><span class=c1># view how many elements exist</span>
+</span></span><span class=line><span class=cl>zcard myset
+</span></span><span class=line><span class=cl><span class=c1># remove element</span>
+</span></span><span class=line><span class=cl>zrem myset hello
+</span></span><span class=line><span class=cl><span class=c1># determine how many elements are in the interval</span>
+</span></span><span class=line><span class=cl>zcount myset <span class=m>1</span> <span class=m>3</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=geospatial><span>geospatial</span>
+<a href=#geospatial class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>Redis geospatial indexes let you store coordinates and search for them. This data structure is useful for finding nearby points within a given radius or bounding box
+The principle of geo is actually Zset, you can use the zset command to operate geo</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># adds a location to a given geospatial index (note that longitude comes before latitude with this command).</span>
+</span></span><span class=line><span class=cl>geoadd china:city 121.47 31.23 shanghai
+</span></span><span class=line><span class=cl><span class=c1># get latitude and longitude</span>
+</span></span><span class=line><span class=cl>geopos china:city shanghai
+</span></span><span class=line><span class=cl><span class=c1># get the distance between two places</span>
+</span></span><span class=line><span class=cl>geodist china:city shanghai beijing km
+</span></span><span class=line><span class=cl><span class=c1># find the elements in the key range centered on the given latitude and longitude</span>
+</span></span><span class=line><span class=cl><span class=c1># withdist for straight line distance, withcoord for displaying latitude and longitude, count set how many to get</span>
+</span></span><span class=line><span class=cl>georadius china:city <span class=m>116</span> <span class=m>30</span> <span class=m>1000</span> km withdist withcoord count <span class=m>3</span>
+</span></span><span class=line><span class=cl><span class=c1># finds elements within a range centered on the position of an existing element Other parameters are the same as georadius</span>
+</span></span><span class=line><span class=cl>georadiusbymember china:city beijing <span class=m>1000</span> km
+</span></span><span class=line><span class=cl><span class=c1># converts two-dimensional latitude and longitude to a one-dimensional string, if the strings are closer together, then the closer the distance is</span>
+</span></span><span class=line><span class=cl>geohash china:city beijing</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=hyperloglog><span>hyperloglog</span>
+<a href=#hyperloglog class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>HyperLogLog is a probabilistic data structure that estimates the cardinality of a set. As a probabilistic data structure, HyperLogLog trades perfect accuracy for efficient space utilization.
+A{1,3,5,7,8,7,8}
+B{1,3,5,7,8,8}
+Base (number of elements that are not repeated) = 5, acceptable error</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># add elements</span>
+</span></span><span class=line><span class=cl>pfadd mykey a b c d e f g
+</span></span><span class=line><span class=cl><span class=c1># count the number of elements</span>
+</span></span><span class=line><span class=cl>pfcount mykey
+</span></span><span class=line><span class=cl><span class=c1># merge two collections into mykey3 (remove duplicate elements)</span>
+</span></span><span class=line><span class=cl>pfmerge mykey3 mykey mykey2</span></span></code></pre></td></tr></table></div></div></div><h2 class=heading-element id=bitmaps><span>bitmaps</span>
+<a href=#bitmaps class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>generally used to store both 0 and 1 states</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># the first bit indicates the subscript and the second bit stores 1 or 0.</span>
+</span></span><span class=line><span class=cl>setbit sign <span class=m>0</span> <span class=m>0</span>
+</span></span><span class=line><span class=cl><span class=c1># get the status of a bit</span>
+</span></span><span class=line><span class=cl>getbit sign <span class=m>0</span>
+</span></span><span class=line><span class=cl><span class=c1># states of 1</span>
+</span></span><span class=line><span class=cl>bitcount sign</span></span></code></pre></td></tr></table></div></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span title="Updated on 2026-09-29 08:32:15">Updated on 2026-09-29&nbsp;</span></div><div class=post-info-license><span><a rel="license external nofollow noopener noreferrer" href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank>CC BY-NC-SA 4.0</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a href=/en/posts/redis-command/index.md title="Read Markdown" class=link-to-markdown>Read Markdown</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="Share on X" data-sharer=twitter data-url=https://blog.2nfree.com/en/posts/redis-command/ data-title="Redis Commands and Data Types" data-hashtags=Linux,Shell,Redis><i class="fa-brands fa-x-twitter" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="Share on Facebook" data-sharer=facebook data-url=https://blog.2nfree.com/en/posts/redis-command/ data-hashtag=Linux><i class="fa-brands fa-facebook-square" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="Share on 微博" data-sharer=weibo data-url=https://blog.2nfree.com/en/posts/redis-command/ data-title="Redis Commands and Data Types"><i class="fa-brands fa-weibo" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fa-solid fa-tags me-1" aria-hidden=true></i><a href=/en/tags/linux/ class=post-tag title="Tags - Linux">Linux</a><a href=/en/tags/shell/ class=post-tag title="Tags - Shell">Shell</a><a href=/en/tags/redis/ class=post-tag title="Tags - Redis">Redis</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>Back</a></span>&nbsp;|&nbsp;<span><a href=/en/>Home</a></span></section></div><div class=post-nav><a href=/en/posts/install-redis/ class=post-nav-item rel=prev title="Install Redis"><i class="fa-solid fa-angle-left" aria-hidden=true></i>Install Redis</a><a href=/en/posts/redis-config/ class=post-nav-item rel=next title="Redis Transactions and Configuration">Redis Transactions and Configuration<i class="fa-solid fa-angle-right" aria-hidden=true></i></a></div></div></article><aside class="toc animate__animated animate__fadeIn animate__faster" id=toc-auto aria-label=Contents><h2 class=toc-title><span>Contents<i class="toc-icon fa-solid fa-angle-down ms-1" aria-hidden=true></i></span>
+<button type=button class=toc-print-btn onclick=event.stopPropagation(),window.print() aria-label=Print><i class="fa-solid fa-print" aria-hidden=true></i></button></h2><div class=toc-content id=toc-content-auto></div></aside></main><footer class=footer><div class=footer-container><div class="footer-line powered">Powered by <a href="https://github.com/gohugoio/hugo?v=0.167.0" target=_blank rel="external nofollow noopener noreferrer" title="Hugo 0.167.0"><img class=hugo-icon src=/images/hugo.min.svg alt="Hugo logo"> Hugo</a> | Theme - <a href="https://github.com/hugo-fixit/FixIt?v=v1.0.0-alpha.3" target=_blank rel=external title="FixIt v1.0.0-alpha.3"><img class=fixit-icon src=/images/fixit.min.svg alt="FixIt logo"> FixIt</a></div><div class="footer-line copyright" itemscope itemtype=http://schema.org/CreativeWork><i class="fa-regular fa-copyright" aria-hidden=true></i>
+<span itemprop=copyrightYear>2025 - 2026</span><span class=author itemprop=copyrightHolder>
+<a href=https://blog.2nfree.com/>komorebi</a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank>CC BY-NC-SA 4.0</a></span></div></div></footer></div><div class=widgets><div id=mask></div><dialog id=nav-dialog aria-labelledby=nav-dialog-title closedby=any><button type=button class=nav-close-btn aria-label="Close Navigation"><i class="fa-solid fa-xmark fa-lg" aria-hidden=true></i></button><div class=toc><h2 class=toc-title id=nav-dialog-title>Navigation</h2><div class=toc-content id=toc-content-drawer></div></div></dialog><dialog id=search-dialog class=search-dialog aria-label=Search closedby=any><div class=search-modal><div class=search-modal-header><span class=search-delimiter></span>
+<button type=button class=search-close-btn aria-label="Close Search Dialog"><i class="fa-solid fa-xmark" aria-hidden=true></i></button></div><div class=search-source-footer><div class=search-shortcuts><span class=search-shortcut><kbd><i class=lucide-arrow-up aria-hidden=true></i></kbd>
+<kbd><i class=lucide-arrow-down aria-hidden=true></i></kbd>
+Navigate
+</span><span class=search-shortcut><kbd><i class=lucide-corner-down-left aria-hidden=true></i></kbd>
+Select
+</span><span class=search-shortcut><kbd>ESC</kbd>
+Close</span></div><span class=search-engine>Search by <a href=https://fusejs.io/ target=_blank rel="external nofollow noopener noreferrer">Fuse.js</a></span></div></div></dialog><div class=fixed-buttons><button type=button class="fixed-button back-to-top animate__faster hidden" aria-label="Back to Top"><i class="fa-solid fa-arrow-up" aria-hidden=true></i></button><button type=button id=nav-drawer-button class="fixed-button nav-drawer-button hidden" aria-label=Navigation aria-controls=nav-dialog aria-expanded=false><i class="fa-solid fa-bars" aria-hidden=true></i></button></div><noscript><div class="noscript-warning bg-danger text-white text-base font-bold fixed text-center inset-x-0 bottom-0 w-full z-fixed">This website works best with JavaScript enabled.</div></noscript></div><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><script src=/lib/autocomplete-js/index.production.js defer></script><script src=/js/lib/fuse.min.js defer></script><script src=/lib/sharer/sharer.min.js async defer></script><script src=/lib/cookieconsent/cookieconsent.min.js defer></script><script src=/js/lib/cookieconsent.min.js defer></script><script src=/lib/cell-tooltip/cell-tooltip.umd.js defer></script><script src=/en/js/config/f80aae3d1fea91c28c4d55f0876b23fb.min.js defer></script><script src=/js/lib/file-tree.min.js defer></script><script src=/js/main.min.js defer></script><script src=/js/custom.min.js defer></script></body></html>

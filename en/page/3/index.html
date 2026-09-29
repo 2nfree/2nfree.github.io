@@ -1,0 +1,832 @@
+<!doctype html><html itemscope itemtype=http://schema.org/WebPage lang=en-US dir=ltr><head><meta name=generator content="Hugo 0.167.0"><meta name=theme content='FixIt v1.0.0-alpha.3'><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=2"><title>Gengar's Pokeball</title><meta name=author content="komorebi"><meta name=description content="Cloud Native, Kubernetes, DevOps and Golang notes."><meta name=robots content="index, follow, max-image-preview:large"><meta name=keywords content='Cloud Native,Kubernetes,DevOps,Golang'><meta itemprop=name content="Gengar's Pokeball"><meta itemprop=description content="Cloud Native, Kubernetes, DevOps and Golang notes."><meta itemprop=datePublished content="2024-09-23T15:33:32+00:00"><meta itemprop=dateModified content="2026-09-29T08:32:15+00:00"><meta property="og:url" content="https://blog.2nfree.com/en/"><meta property="og:site_name" content="Gengar's Pokeball"><meta property="og:title" content="Gengar's Pokeball"><meta property="og:description" content="Cloud Native, Kubernetes, DevOps and Golang notes."><meta property="og:locale" content="en_US"><meta property="og:type" content="website"><meta name=twitter:card content="summary"><meta name=twitter:title content="Gengar's Pokeball"><meta name=twitter:description content="Cloud Native, Kubernetes, DevOps and Golang notes."><meta name=application-name content="Hugo FixIt Blog"><meta name=apple-mobile-web-app-title content="Hugo FixIt Blog"><meta name=theme-color data-light=#f8f8f8 data-dark=#252627 content="#f8f8f8"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=canonical type=text/html href=https://blog.2nfree.com/en/ title="Gengar's Pokeball"><link rel=alternate type=application/rss+xml href=https://blog.2nfree.com/en/index.xml><link rel=search type=application/json href=https://blog.2nfree.com/en/search.json><link rel=stylesheet href=/css/unocss.min.css><link rel=stylesheet href=/css/main.min.css><link rel=stylesheet href=/css/pages/home.min.css><link rel=stylesheet href=/css/custom.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><link rel=preload href=/js/main.min.js as=script><script type=application/ld+json>{"@context":"http://schema.org","@type":"WebSite","url":"https:\/\/blog.2nfree.com\/en\/","inLanguage":"en-US","author":{"@type":"Person","name":"komorebi"},"description":"Cloud Native, Kubernetes, DevOps and Golang notes.","name":"Gengar's Pokeball"}</script><script src=/js/head.min.js></script></head><body data-instant-intensity=viewport data-header-desktop=sticky data-header-mobile=auto><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper><div class=header-title><a href=/en/ title="Gengar's Pokeball" class=header-title-link><img class=logo src=/images/avatar.png alt="Gengar's Pokeball" height=32 width=32><span class=header-title-text>Gengar's Pokeball</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class=menu-item><a class=menu-link href=/en/archives/><i class="fa-solid fa-archive fa-sm" aria-hidden=true></i> Archives</a></li><li class=menu-item><a class=menu-link href=/en/categories/><i class="fa-solid fa-folder-tree fa-sm" aria-hidden=true></i> Categories</a></li><li class=menu-item><a class=menu-link href=/en/tags/><i class="fa-solid fa-tags fa-sm" aria-hidden=true></i> Tags</a></li><li class=menu-item><a class=menu-link href=/en/links/><i class="fa-solid fa-link fa-sm" aria-hidden=true></i> Links</a></li><li class=menu-item><a class=menu-link href=/en/about/><i class="fa-solid fa-heart fa-sm" aria-hidden=true></i> About</a></li><li class="menu-item delimiter"></li><li class="menu-item search"><button type=button class="search-trigger desktop" aria-label=Search title=Search>
+<i class="fa-solid fa-search" aria-hidden=true></i>
+Search
+<kbd></kbd></button></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch-item"><button type=button class=theme-switch aria-label="Switch Theme" title="Switch Theme"><i class="fa-solid fa-adjust" aria-hidden=true></i></button></li><li class="menu-item language-switch"><button type=button aria-label="Select Language" title="Select Language"><i class="fa-solid fa-language" aria-hidden=true></i></button><ul class=sub-menu><li class=menu-item><a href=/ class=menu-link title=简体中文>简体中文</a></li><li class=menu-item><span class=text-secondary title=English>English</span></li></ul></li></ul></nav></div></header><header class="mobile animate__faster" id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/en/ title="Gengar's Pokeball" class=header-title-link><img class=logo src=/images/avatar.png alt="Gengar's Pokeball" height=26 width=26><span class=header-title-text>Gengar's Pokeball</span></a><span class=header-subtitle></span></div><button type=button class="search-trigger mobile" aria-label=Search><i class="fa-solid fa-search" aria-hidden=true></i></button><button type=button class=theme-switch aria-label="Switch Theme"><i class="fa-solid fa-adjust" aria-hidden=true></i></button>
+<button type=button class=menu-toggle id=menu-toggle-mobile aria-controls=menu-mobile aria-expanded=false aria-labelledby=menu-mobile>
+<span></span><span></span><span></span></button></div><nav><ul class=menu id=menu-mobile><li class=menu-item><a class=menu-link href=/en/archives/><i class="fa-solid fa-archive fa-sm" aria-hidden=true></i> Archives</a></li><li class=menu-item><a class=menu-link href=/en/categories/><i class="fa-solid fa-folder-tree fa-sm" aria-hidden=true></i> Categories</a></li><li class=menu-item><a class=menu-link href=/en/tags/><i class="fa-solid fa-tags fa-sm" aria-hidden=true></i> Tags</a></li><li class=menu-item><a class=menu-link href=/en/links/><i class="fa-solid fa-link fa-sm" aria-hidden=true></i> Links</a></li><li class=menu-item><a class=menu-link href=/en/about/><i class="fa-solid fa-heart fa-sm" aria-hidden=true></i> About</a></li><li class="menu-item menu-system"><span class="menu-system-item language-switch"><button type=button aria-label="Select Language" title="Select Language">English<i class="dropdown-icon fa-solid fa-chevron-down" aria-hidden=true></i></button>
+<select id=language-select class=language-select onchange="location=this.value"><option value=/>简体中文</option><option value=/en/ selected disabled>English</option></select></span></li></ul></nav></div></header><main class=fi-container><div class="page home posts"><div class=home-profile><div class=home-avatar><a href=/en/archives/ title=Archives><img src=/images/avatar.png alt="Home avatar" height=96 width=96></a></div><h1 class=home-title>komorebi</h1><p class=home-subtitle>Cloud Native, Kubernetes, DevOps and Golang notes.</p><div class=links><a href=https://github.com/2Nfree title=GitHub target=_blank rel="me external nofollow noopener noreferrer"><i class="fa-brands fa-github" aria-hidden=true></i>
+</a><a href=/en/index.xml title=RSS target=_blank rel=me><i class="fa-solid fa-rss" aria-hidden=true></i></a></div></div><article class="single summary" itemscope itemtype=http://schema.org/Article><h2 class=single-title itemprop="name headline"><a href=/en/posts/common-command-lines-for-ceph/>Ceph 常用命令</a></h2><div class=post-meta><span class=post-author><a href=https://blog.2nfree.com/ title=Author rel=author class=author><img class=avatar src=/images/avatar.png alt=komorebi height=16 width=16>&nbsp;komorebi</a></span>&nbsp;<span class=post-publish title='2024-02-02 12:19:15'>published on <time datetime=2024-02-02>2024-02-02</time></span><span class=post-included-in>&nbsp;included in <a href=/en/categories/cloudnative/ class=post-category title="Category - CloudNative"><i class="fa-regular fa-folder" aria-hidden=true></i> CloudNative</a></span></div><div class=content><h3 class=heading-element id=cluster data-decreased><span>Cluster</span>
+<a href=#cluster class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 显示集群的状态</span>
+</span></span><span class=line><span class=cl>ceph status 或 ceph -s
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 显示集群健康状况</span>
+</span></span><span class=line><span class=cl>ceph health
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 查看集群磁盘空间的使用情况</span>
+</span></span><span class=line><span class=cl>ceph df
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 显示集群中正在运行的 Ceph 版本</span>
+</span></span><span class=line><span class=cl>ceph version
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 列出所有认证密钥</span>
+</span></span><span class=line><span class=cl>ceph auth list
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 用于部署一个或多个集群服务实例，例如 MGR、MON、OSD、RGW 等</span>
+</span></span><span class=line><span class=cl>ceph orch apply &lt;service_type&gt; <span class=o>[</span>options<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 显示集群中当前运行的所有服务及其状态</span>
+</span></span><span class=line><span class=cl>ceph orch ps
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 列出集群中配置的所有服务</span>
+</span></span><span class=line><span class=cl>ceph orch ls
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 添加一个或多个 OSD 守护进程</span>
+</span></span><span class=line><span class=cl>ceph orch daemon add osd &lt;host&gt;:&lt;path&gt; <span class=o>[</span>--data-devices &lt;devices&gt;<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 移除一个 OSD 守护进程</span>
+</span></span><span class=line><span class=cl>ceph orch daemon rm osd &lt;osd_id&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 列出集群中每个主机上的所有设备及其状态</span>
+</span></span><span class=line><span class=cl>ceph orch device ls
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#  向集群中添加特定类型的守护进程</span>
+</span></span><span class=line><span class=cl>ceph orch daemon add &lt;daemon_type&gt; &lt;host&gt; <span class=o>[</span>options<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 从集群中删除特定类型的守护进程</span>
+</span></span><span class=line><span class=cl>ceph orch daemon rm &lt;daemon_type&gt; &lt;host&gt; <span class=o>[</span>options<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 重启特定类型的守护进程</span>
+</span></span><span class=line><span class=cl>ceph orch daemon restart &lt;daemon_type&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 重新配置特定类型的守护进程</span>
+</span></span><span class=line><span class=cl>ceph orch daemon reconfig &lt;daemon_type&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 使用指定的容器镜像开始升级集群</span>
+</span></span><span class=line><span class=cl>ceph orch upgrade start --image &lt;container_image&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 停止正在进行的集群升级</span>
+</span></span><span class=line><span class=cl>ceph orch upgrade stop
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取当前集群升级的状态信息</span>
+</span></span><span class=line><span class=cl>ceph orch upgrade status
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 检查 Orchestrator 的状态和当前在用的后端</span>
+</span></span><span class=line><span class=cl>ceph orch status
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 列出集群中已知的主机</span>
+</span></span><span class=line><span class=cl>ceph orch host ls
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 将新主机添加到集群</span>
+</span></span><span class=line><span class=cl>ceph orch host add &lt;hostname&gt; &lt;ip&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 从集群中删除一个主机</span>
+</span></span><span class=line><span class=cl>ceph orch host rm &lt;hostname&gt;</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h3 class=heading-element id=osd data-decreased><span>OSD</span>
+<a href=#osd class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 查看每个 OSD 的上线/下线状态</span>
+</span></span><span class=line><span class=cl>ceph osd status
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 查看集群 OSD 映射和状态</span>
+</span></span><span class=line><span class=cl>ceph osd tree
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 将指定的 OSD 设置为 out 状态，启动数据迁移</span>
+</span></span><span class=line><span class=cl>ceph osd out &lt;osd.?&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 将指定的 OSD 设置为 in 状态</span>
+</span></span><span class=line><span class=cl>ceph osd in &lt;osd.?&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 移除指定的 OSD</span>
+</span></span><span class=line><span class=cl>ceph osd rm &lt;osd.?&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 重新设置 OSD 的权重</span>
+</span></span><span class=line><span class=cl>ceph osd reweight &lt;osd.?&gt; &lt;weight&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 设置 OSD 的特定标志，例如 noout, noscrub 等</span>
+</span></span><span class=line><span class=cl>ceph osd <span class=nb>set</span> &lt;flag&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 列出所有存储池</span>
+</span></span><span class=line><span class=cl>ceph osd lspools
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建一个新的存储池</span>
+</span></span><span class=line><span class=cl>ceph osd pool create &lt;pool_name&gt; &lt;pg_num&gt; &lt;pgp_num&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 删除存储池</span>
+</span></span><span class=line><span class=cl>ceph osd pool delete &lt;pool_name&gt; &lt;pool_name&gt; --yes-i-really-really-mean-it
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 设置存储池的参数</span>
+</span></span><span class=line><span class=cl>ceph osd pool <span class=nb>set</span> &lt;pool_name&gt; &lt;key&gt; &lt;value&gt;</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h3 class=heading-element id=mon data-decreased><span>MON</span>
+<a href=#mon class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 显示监控守护进程状态</span>
+</span></span><span class=line><span class=cl>ceph mon stat
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 添加新的监控守护进程</span>
+</span></span><span class=line><span class=cl>ceph mon add &lt;name&gt; &lt;ip:port&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 移除监控守护进程</span>
+</span></span><span class=line><span class=cl>ceph mon rm &lt;name&gt;</span></span></code></pre></td></tr></table></div></div></div><h3 class=heading-element id=mds data-decreased><span>MDS</span>
+<a href=#mds class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 显示元数据服务器状态</span>
+</span></span><span class=line><span class=cl>ceph mds stat
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 列出所有 Ceph 文件系统</span>
+</span></span><span class=line><span class=cl>ceph fs ls
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建新的 Ceph 文件系统</span>
+</span></span><span class=line><span class=cl>ceph fs new &lt;fs_name&gt; &lt;metadata_pool&gt; &lt;data_pool&gt;</span></span></code></pre></td></tr></table></div></div></div><h3 class=heading-element id=crash data-decreased><span>Crash</span>
+<a href=#crash class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 查看最近组件崩溃的历史</span>
+</span></span><span class=line><span class=cl>ceph crash ls-new
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 查看所有组件崩溃的历史</span>
+</span></span><span class=line><span class=cl>ceph crash ls
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 查看对应崩溃的详情</span>
+</span></span><span class=line><span class=cl>ceph crash info &lt;id&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 归档对应的崩溃</span>
+</span></span><span class=line><span class=cl>ceph crash archive &lt;id&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 归档所有</span>
+</span></span><span class=line><span class=cl>ceph crash archive-all</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div></div><div class=post-footer><a href=/en/posts/common-command-lines-for-ceph/>Read More</a><div class=post-tags><i class="fa-solid fa-tags me-1" aria-hidden=true></i><a href=/en/tags/ceph/ class=post-tag>Ceph</a><a href=/en/tags/storage/ class=post-tag>Storage</a></div></div></article><article class="single summary" itemscope itemtype=http://schema.org/Article><h2 class=single-title itemprop="name headline"><a href=/en/posts/deploy-ceph-by-cephadm/>Kubernetes 接入基于 Cephadm 部署的 Ceph 集群</a></h2><div class=post-meta><span class=post-author><a href=https://blog.2nfree.com/ title=Author rel=author class=author><img class=avatar src=/images/avatar.png alt=komorebi height=16 width=16>&nbsp;komorebi</a></span>&nbsp;<span class=post-publish title='2024-01-12 11:32:51'>published on <time datetime=2024-01-12>2024-01-12</time></span><span class=post-included-in>&nbsp;included in <a href=/en/categories/cloudnative/ class=post-category title="Category - CloudNative"><i class="fa-regular fa-folder" aria-hidden=true></i> CloudNative</a></span></div><div class=content><h3 class=heading-element id=前置条件 data-decreased><span>前置条件</span>
+<a href=#%e5%89%8d%e7%bd%ae%e6%9d%a1%e4%bb%b6 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><h3 class=heading-element id=准备工作><span>准备工作</span>
+<a href=#%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><ol><li>部署完毕的 Kubernetes 集群</li><li>在 Ceph 集群节点上安装：docker，cephadm，并且更新 cephadm 到最新版本，以及配置 Ceph 节点之间的 ssh 互信</li></ol><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 生成公钥并导入到注册到每台服务器</span>
+</span></span><span class=line><span class=cl>ssh-keygen
+</span></span><span class=line><span class=cl>cat ~/.ssh/id_rsa.pub
+</span></span><span class=line><span class=cl>vim ~/.ssh/authorized_keys
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 互相连接测试</span>
+</span></span><span class=line><span class=cl>ssh root@10.0.16.33
+</span></span><span class=line><span class=cl>ssh root@10.0.16.34
+</span></span><span class=line><span class=cl>ssh root@10.0.16.35
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 添加 /etc/hosts</span>
+</span></span><span class=line><span class=cl>10.0.16.33 ceph1
+</span></span><span class=line><span class=cl>10.0.16.34 ceph2
+</span></span><span class=line><span class=cl>10.0.16.35 ceph3
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># docker 安装</span>
+</span></span><span class=line><span class=cl>apt-get update
+</span></span><span class=line><span class=cl>apt-get install -y <span class=se>\
+</span></span></span><span class=line><span class=cl>    apt-transport-https <span class=se>\
+</span></span></span><span class=line><span class=cl>    ca-certificates <span class=se>\
+</span></span></span><span class=line><span class=cl>    curl <span class=se>\
+</span></span></span><span class=line><span class=cl>    gnupg-agent <span class=se>\
+</span></span></span><span class=line><span class=cl>    software-properties-common
+</span></span><span class=line><span class=cl>curl -fsSL https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/gpg <span class=p>|</span> sudo apt-key add -
+</span></span><span class=line><span class=cl>add-apt-repository -y <span class=se>\
+</span></span></span><span class=line><span class=cl>   <span class=s2>&#34;deb [arch=amd64] https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/ \
+</span></span></span><span class=line><span class=cl><span class=s2>  </span><span class=k>$(</span>lsb_release -cs<span class=k>)</span><span class=s2> \
+</span></span></span><span class=line><span class=cl><span class=s2>  stable&#34;</span>
+</span></span><span class=line><span class=cl>apt-get update
+</span></span><span class=line><span class=cl>apt-get install -y docker-ce docker-ce-cli containerd.io
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># cephadm 安装</span>
+</span></span><span class=line><span class=cl>apt-get install -y cephadm
+</span></span><span class=line><span class=cl>cephadm add-repo --release reef
+</span></span><span class=line><span class=cl>cephadm install
+</span></span><span class=line><span class=cl>cephadm version</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><div class="details admonition danger open"><div class="details-summary admonition-title"><i class="icon fa-solid fa-bolt" aria-hidden=true></i>Danger<i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></div><div class=details-content><div class=admonition-content><p><strong>最好不要修改 ceph 集群服务器的 ssh 默认端口，否则会导致 ceph 集群引导失败，如果修改了 ssh 的默认端口，则需要创建对应的 ssh 配置</strong>
+如：</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>mkdir -pv /etc/ceph/
+</span></span><span class=line><span class=cl>cat &gt; /etc/ceph/ceph.ssh_config <span class=s>&lt;&lt;EOF
+</span></span></span><span class=line><span class=cl><span class=s>Host *
+</span></span></span><span class=line><span class=cl><span class=s>  Port 2222
+</span></span></span><span class=line><span class=cl><span class=s>  StrictHostKeyChecking no
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span></span></span></code></pre></td></tr></table></div></div></div><p>并在启动引导指定对应的 config</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>cephadm bootstrap --ssh-config /etc/ceph/ceph.ssh_config ......</span></span></code></pre></td></tr></table></div></div></div></div></div></div></div><div class=post-footer><a href=/en/posts/deploy-ceph-by-cephadm/>Read More</a><div class=post-tags><i class="fa-solid fa-tags me-1" aria-hidden=true></i><a href=/en/tags/kubernetes/ class=post-tag>Kubernetes</a><a href=/en/tags/storage/ class=post-tag>Storage</a><a href=/en/tags/ceph/ class=post-tag>Ceph</a></div></div></article><article class="single summary" itemscope itemtype=http://schema.org/Article><h2 class=single-title itemprop="name headline"><a href=/en/posts/spark-operator/>Spark Operator</a></h2><div class=post-meta><span class=post-author><a href=https://blog.2nfree.com/ title=Author rel=author class=author><img class=avatar src=/images/avatar.png alt=komorebi height=16 width=16>&nbsp;komorebi</a></span>&nbsp;<span class=post-publish title='2023-08-02 12:25:16'>published on <time datetime=2023-08-02>2023-08-02</time></span><span class=post-included-in>&nbsp;included in <a href=/en/categories/bigdata/ class=post-category title="Category - BigData"><i class="fa-regular fa-folder" aria-hidden=true></i> BigData</a></span></div><div class=content><h3 class=heading-element id=前言 data-decreased><span>前言</span>
+<a href=#%e5%89%8d%e8%a8%80 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p>在 Kubernetes 中运行 Spark 有很多种方式</p><p>如直接部署 Deployment 运行 Spark 集群容器（这种方式相当于只是使用 Kubernetes 托管了运行 Spark 集群的容器，本身 Kubernetes 与 Spark 集群无任何交互）</p></div><div class=post-footer><a href=/en/posts/spark-operator/>Read More</a><div class=post-tags><i class="fa-solid fa-tags me-1" aria-hidden=true></i><a href=/en/tags/kubernetes/ class=post-tag>Kubernetes</a><a href=/en/tags/spark/ class=post-tag>Spark</a></div></div></article><article class="single summary" itemscope itemtype=http://schema.org/Article><h2 class=single-title itemprop="name headline"><a href=/en/posts/useful-kubernetes-commands/>Useful Kubernetes Commands</a></h2><div class=post-meta><span class=post-author><a href=https://blog.2nfree.com/ title=Author rel=author class=author><img class=avatar src=/images/avatar.png alt=komorebi height=16 width=16>&nbsp;komorebi</a></span>&nbsp;<span class=post-publish title='2023-07-07 17:54:39'>published on <time datetime=2023-07-07>2023-07-07</time></span><span class=post-included-in>&nbsp;included in <a href=/en/categories/cloudnative/ class=post-category title="Category - CloudNative"><i class="fa-regular fa-folder" aria-hidden=true></i> CloudNative</a></span></div><div class=content><h3 class=heading-element id=resources data-decreased><span>Resources</span>
+<a href=#resources class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><h3 class=heading-element id=get-resource-requests-and-limits-for-all-pods-in-namespace><span>Get resource requests and limits for all pods in namespace</span>
+<a href=#get-resource-requests-and-limits-for-all-pods-in-namespace class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fa-solid fa-circle-info" aria-hidden=true></i>Info<i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></div><div class=details-content><div class=admonition-content>If you need to get all the resource requests and limits of cluster, just use <code>kubectl get pods -A ...</code></div></div></div><h4 class=heading-element id=cpu-requests><span>CPU Requests</span>
+<a href=#cpu-requests class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl get pods -n <span class=si>${</span><span class=nv>namespace</span><span class=si>}</span> -o<span class=o>=</span><span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{.items[*].spec.containers[*].resources.requests.cpu}&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>tr -s <span class=s1>&#39;[:space:]&#39;</span> <span class=s1>&#39;\n&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>awk <span class=s1>&#39;BEGIN{sum=0}{
+</span></span></span><span class=line><span class=cl><span class=s1>    if(tolower($1) ~ /mi?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>        sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1)/1000; 
+</span></span></span><span class=line><span class=cl><span class=s1>    else 
+</span></span></span><span class=line><span class=cl><span class=s1>        sum += $1
+</span></span></span><span class=line><span class=cl><span class=s1>    } 
+</span></span></span><span class=line><span class=cl><span class=s1>    END{print sum &#34; CPU Cores&#34;}&#39;</span></span></span></code></pre></td></tr></table></div></div></div><h4 class=heading-element id=cpu-limits><span>CPU Limits</span>
+<a href=#cpu-limits class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl get pods -n <span class=si>${</span><span class=nv>namespace</span><span class=si>}</span> -o<span class=o>=</span><span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{.items[*].spec.containers[*].resources.limits.cpu}&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>tr -s <span class=s1>&#39;[:space:]&#39;</span> <span class=s1>&#39;\n&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>awk <span class=s1>&#39;BEGIN{sum=0}{
+</span></span></span><span class=line><span class=cl><span class=s1>    if(tolower($1) ~ /mi?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>        sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1)/1000; 
+</span></span></span><span class=line><span class=cl><span class=s1>    else 
+</span></span></span><span class=line><span class=cl><span class=s1>        sum += $1
+</span></span></span><span class=line><span class=cl><span class=s1>    } 
+</span></span></span><span class=line><span class=cl><span class=s1>    END{print sum &#34; CPU Cores&#34;}&#39;</span></span></span></code></pre></td></tr></table></div></div></div><h4 class=heading-element id=mem-requests-units-gi><span>Mem Requests (Units: Gi)</span>
+<a href=#mem-requests-units-gi class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl get pods -n <span class=si>${</span><span class=nv>namespace</span><span class=si>}</span> -o<span class=o>=</span><span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{.items[*].spec.containers[*].resources.requests.memory}&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>tr -s <span class=s1>&#39;[:space:]&#39;</span> <span class=s1>&#39;\n&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>awk <span class=s1>&#39;BEGIN{sum=0}{
+</span></span></span><span class=line><span class=cl><span class=s1>    if(tolower($1) ~ /ki?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>        sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1)/1048576; 
+</span></span></span><span class=line><span class=cl><span class=s1>    else if(tolower($1) ~ /mi?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>        sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1)/1024; 
+</span></span></span><span class=line><span class=cl><span class=s1>    else if(tolower($1) ~ /gi?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>        sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1); 
+</span></span></span><span class=line><span class=cl><span class=s1>    else if(tolower($1) ~ /ti?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>        sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1)*1024; 
+</span></span></span><span class=line><span class=cl><span class=s1>    else 
+</span></span></span><span class=line><span class=cl><span class=s1>        sum += $1
+</span></span></span><span class=line><span class=cl><span class=s1>    } 
+</span></span></span><span class=line><span class=cl><span class=s1>    END{print sum &#34; GiB&#34;}&#39;</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h4 class=heading-element id=mem-limits-units-gi><span>Mem Limits (Units: Gi)</span>
+<a href=#mem-limits-units-gi class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h4><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl get pods -n <span class=si>${</span><span class=nv>namespace</span><span class=si>}</span> -o<span class=o>=</span><span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{.items[*].spec.containers[*].resources.limits.memory}&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>tr -s <span class=s1>&#39;[:space:]&#39;</span> <span class=s1>&#39;\n&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>awk <span class=s1>&#39;BEGIN{sum=0}{
+</span></span></span><span class=line><span class=cl><span class=s1>    if(tolower($1) ~ /ki?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>        sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1)/1048576; 
+</span></span></span><span class=line><span class=cl><span class=s1>    else if(tolower($1) ~ /mi?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>        sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1)/1024; 
+</span></span></span><span class=line><span class=cl><span class=s1>    else if(tolower($1) ~ /gi?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>        sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1); 
+</span></span></span><span class=line><span class=cl><span class=s1>    else if(tolower($1) ~ /ti?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>        sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1)*1024; 
+</span></span></span><span class=line><span class=cl><span class=s1>    else 
+</span></span></span><span class=line><span class=cl><span class=s1>        sum += $1
+</span></span></span><span class=line><span class=cl><span class=s1>    } 
+</span></span></span><span class=line><span class=cl><span class=s1>    END{print sum &#34; GiB&#34;}&#39;</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h3 class=heading-element id=get-the-resources-for-each-namespace><span>Get the resources for each namespace</span>
+<a href=#get-the-resources-for-each-namespace class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=cp>#!/bin/bash
+</span></span></span><span class=line><span class=cl><span class=nb>set</span> -e
+</span></span><span class=line><span class=cl><span class=nv>namespaces</span><span class=o>=(</span><span class=k>$(</span>kubectl get ns --no-headers <span class=p>|</span> awk <span class=s1>&#39;{print $1}&#39;</span><span class=k>)</span><span class=o>)</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> namespace in <span class=s2>&#34;</span><span class=si>${</span><span class=nv>namespaces</span><span class=p>[@]</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>;</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>    <span class=nv>request_cpu</span><span class=o>=</span><span class=k>$(</span>
+</span></span><span class=line><span class=cl>        kubectl get pods -n <span class=si>${</span><span class=nv>namespace</span><span class=si>}</span> -o<span class=o>=</span><span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{.items[*].spec.containers[*].resources.requests.cpu}&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>        tr -s <span class=s1>&#39;[:space:]&#39;</span> <span class=s1>&#39;\n&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>        awk <span class=s1>&#39;BEGIN{sum=0}{
+</span></span></span><span class=line><span class=cl><span class=s1>            if(tolower($1) ~ /mi?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>                sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1)/1000; 
+</span></span></span><span class=line><span class=cl><span class=s1>            else 
+</span></span></span><span class=line><span class=cl><span class=s1>                sum += $1
+</span></span></span><span class=line><span class=cl><span class=s1>            } 
+</span></span></span><span class=line><span class=cl><span class=s1>            END{print sum &#34; CPU Cores&#34;}&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=k>)</span>
+</span></span><span class=line><span class=cl>    <span class=nv>request_memory</span><span class=o>=</span><span class=k>$(</span>
+</span></span><span class=line><span class=cl>        kubectl get pods -n <span class=si>${</span><span class=nv>namespace</span><span class=si>}</span> -o<span class=o>=</span><span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{.items[*].spec.containers[*].resources.requests.memory}&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>        tr -s <span class=s1>&#39;[:space:]&#39;</span> <span class=s1>&#39;\n&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>        awk <span class=s1>&#39;BEGIN{sum=0}{
+</span></span></span><span class=line><span class=cl><span class=s1>            if(tolower($1) ~ /ki?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>                sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1)/1048576; 
+</span></span></span><span class=line><span class=cl><span class=s1>            else if(tolower($1) ~ /mi?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>                sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1)/1024; 
+</span></span></span><span class=line><span class=cl><span class=s1>            else if(tolower($1) ~ /gi?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>                sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1); 
+</span></span></span><span class=line><span class=cl><span class=s1>            else if(tolower($1) ~ /ti?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>                sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1)*1024; 
+</span></span></span><span class=line><span class=cl><span class=s1>            else 
+</span></span></span><span class=line><span class=cl><span class=s1>                sum += $1
+</span></span></span><span class=line><span class=cl><span class=s1>            } 
+</span></span></span><span class=line><span class=cl><span class=s1>            END{print sum &#34; GiB&#34;}&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=k>)</span>
+</span></span><span class=line><span class=cl>    <span class=nv>limit_cpu</span><span class=o>=</span><span class=k>$(</span>
+</span></span><span class=line><span class=cl>        kubectl get pods -n <span class=si>${</span><span class=nv>namespace</span><span class=si>}</span> -o<span class=o>=</span><span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{.items[*].spec.containers[*].resources.limits.cpu}&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>        tr -s <span class=s1>&#39;[:space:]&#39;</span> <span class=s1>&#39;\n&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>        awk <span class=s1>&#39;BEGIN{sum=0}{
+</span></span></span><span class=line><span class=cl><span class=s1>            if(tolower($1) ~ /mi?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>                sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1)/1000; 
+</span></span></span><span class=line><span class=cl><span class=s1>            else 
+</span></span></span><span class=line><span class=cl><span class=s1>                sum += $1
+</span></span></span><span class=line><span class=cl><span class=s1>            } 
+</span></span></span><span class=line><span class=cl><span class=s1>            END{print sum &#34; CPU Cores&#34;}&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=k>)</span>
+</span></span><span class=line><span class=cl>    <span class=nv>limit_memory</span><span class=o>=</span><span class=k>$(</span>
+</span></span><span class=line><span class=cl>        kubectl get pods -n <span class=si>${</span><span class=nv>namespace</span><span class=si>}</span> -o<span class=o>=</span><span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{.items[*].spec.containers[*].resources.limits.memory}&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>        tr -s <span class=s1>&#39;[:space:]&#39;</span> <span class=s1>&#39;\n&#39;</span> <span class=p>|</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>        awk <span class=s1>&#39;BEGIN{sum=0}{
+</span></span></span><span class=line><span class=cl><span class=s1>            if(tolower($1) ~ /ki?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>                sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1)/1048576; 
+</span></span></span><span class=line><span class=cl><span class=s1>            else if(tolower($1) ~ /mi?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>                sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1)/1024; 
+</span></span></span><span class=line><span class=cl><span class=s1>            else if(tolower($1) ~ /gi?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>                sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1); 
+</span></span></span><span class=line><span class=cl><span class=s1>            else if(tolower($1) ~ /ti?/) 
+</span></span></span><span class=line><span class=cl><span class=s1>                sum += gensub(/[^0-9.]/, &#34;&#34;, &#34;g&#34;, $1)*1024; 
+</span></span></span><span class=line><span class=cl><span class=s1>            else 
+</span></span></span><span class=line><span class=cl><span class=s1>                sum += $1
+</span></span></span><span class=line><span class=cl><span class=s1>            } 
+</span></span></span><span class=line><span class=cl><span class=s1>            END{print sum &#34; GiB&#34;}&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=k>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;</span><span class=si>${</span><span class=nv>namespace</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;request cpu：</span><span class=si>${</span><span class=nv>request_cpu</span><span class=si>}</span><span class=s2> request mem：</span><span class=si>${</span><span class=nv>request_memory</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;limit cpu：</span><span class=si>${</span><span class=nv>limit_cpu</span><span class=si>}</span><span class=s2> limit mem：</span><span class=si>${</span><span class=nv>limit_memory</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;------------------------------------------&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>done</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h3 class=heading-element id=storage data-decreased><span>Storage</span>
+<a href=#storage class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><h3 class=heading-element id=get-the-total-request-size-for-all-pvcs><span>Get the total request size for all PVCs</span>
+<a href=#get-the-total-request-size-for-all-pvcs class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl get pvc --no-headers -A <span class=p>|</span> awk <span class=s1>&#39;
+</span></span></span><span class=line><span class=cl><span class=s1>{
+</span></span></span><span class=line><span class=cl><span class=s1>    size = $5
+</span></span></span><span class=line><span class=cl><span class=s1>    unit = substr(size, length(size))
+</span></span></span><span class=line><span class=cl><span class=s1>    value = substr(size, 1, length(size) - 1)
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>    if (unit == &#34;Ki&#34;) value /= 1024 * 1024
+</span></span></span><span class=line><span class=cl><span class=s1>    else if (unit == &#34;Mi&#34;) value /= 1024
+</span></span></span><span class=line><span class=cl><span class=s1>    else if (unit == &#34;Gi&#34;) value = value
+</span></span></span><span class=line><span class=cl><span class=s1>    else if (unit == &#34;Ti&#34;) value *= 1024
+</span></span></span><span class=line><span class=cl><span class=s1>    else if (unit == &#34;Pi&#34;) value *= 1024 * 1024
+</span></span></span><span class=line><span class=cl><span class=s1>    else if (unit == &#34;Ei&#34;) value *= 1024 * 1024 * 1024
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>    total += value
+</span></span></span><span class=line><span class=cl><span class=s1>}
+</span></span></span><span class=line><span class=cl><span class=s1>END {print &#34;Total PVC Size (Gi):&#34;, total}&#39;</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h3 class=heading-element id=get-the-total-request-size-for-all-pvcs-in-namespace><span>Get the total request size for all PVCs in namespace</span>
+<a href=#get-the-total-request-size-for-all-pvcs-in-namespace class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl get pvc --no-headers -n <span class=si>${</span><span class=nv>namespace</span><span class=si>}</span> <span class=p>|</span> awk <span class=s1>&#39;
+</span></span></span><span class=line><span class=cl><span class=s1>{
+</span></span></span><span class=line><span class=cl><span class=s1>    size = $4
+</span></span></span><span class=line><span class=cl><span class=s1>    unit = substr(size, length(size))
+</span></span></span><span class=line><span class=cl><span class=s1>    value = substr(size, 1, length(size) - 1)
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>    # convert to Gi
+</span></span></span><span class=line><span class=cl><span class=s1>    if (unit == &#34;Ki&#34;) value /= 1024 * 1024
+</span></span></span><span class=line><span class=cl><span class=s1>    else if (unit == &#34;Mi&#34;) value /= 1024
+</span></span></span><span class=line><span class=cl><span class=s1>    else if (unit == &#34;Gi&#34;) value = value
+</span></span></span><span class=line><span class=cl><span class=s1>    else if (unit == &#34;Ti&#34;) value *= 1024
+</span></span></span><span class=line><span class=cl><span class=s1>    else if (unit == &#34;Pi&#34;) value *= 1024 * 1024
+</span></span></span><span class=line><span class=cl><span class=s1>    else if (unit == &#34;Ei&#34;) value *= 1024 * 1024 * 1024
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>    total += value
+</span></span></span><span class=line><span class=cl><span class=s1>}
+</span></span></span><span class=line><span class=cl><span class=s1>END {print &#34;Total PVC Size (Gi):&#34;, total}&#39;</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h3 class=heading-element id=container-images data-decreased><span>Container Images</span>
+<a href=#container-images class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><h3 class=heading-element id=list-all-container-images-used-by-pods-in-namespace><span>List all container images used by PODs in namespace</span>
+<a href=#list-all-container-images-used-by-pods-in-namespace class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl get pods -n <span class=si>${</span><span class=nv>namespace</span><span class=si>}</span> -o <span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{range .items[*]}{&#34;\n&#34;}{.metadata.name}{&#34;:\t&#34;}{range .spec.containers[*]}{.image}{&#34;, &#34;}{end}{end}&#39;</span> <span class=p>|</span> sort</span></span></code></pre></td></tr></table></div></div></div></div><div class=post-footer><a href=/en/posts/useful-kubernetes-commands/>Read More</a><div class=post-tags><i class="fa-solid fa-tags me-1" aria-hidden=true></i><a href=/en/tags/kubernetes/ class=post-tag>Kubernetes</a><a href=/en/tags/devops/ class=post-tag>DevOps</a></div></div></article><article class="single summary" itemscope itemtype=http://schema.org/Article><h2 class=single-title itemprop="name headline"><a href=/en/posts/common-ops-for-kubernetes/>常见 Kubernetes 维护场景</a></h2><div class=post-meta><span class=post-author><a href=https://blog.2nfree.com/ title=Author rel=author class=author><img class=avatar src=/images/avatar.png alt=komorebi height=16 width=16>&nbsp;komorebi</a></span>&nbsp;<span class=post-publish title='2023-05-22 15:08:39'>published on <time datetime=2023-05-22>2023-05-22</time></span><span class=post-included-in>&nbsp;included in <a href=/en/categories/cloudnative/ class=post-category title="Category - CloudNative"><i class="fa-regular fa-folder" aria-hidden=true></i> CloudNative</a></span></div><div class=content><h3 class=heading-element id=kubeadm更新证书 data-decreased><span>Kubeadm更新证书</span>
+<a href=#kubeadm%e6%9b%b4%e6%96%b0%e8%af%81%e4%b9%a6 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 创建用于备份的相关文件夹，防止出现问题</span>
+</span></span><span class=line><span class=cl>mkdir -pv /data/kube-config-backup/<span class=o>{</span>kubernetes,kube,yaml<span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 备份配置文件</span>
+</span></span><span class=line><span class=cl>cp -ra /etc/kubernetes/ /data/kube-config-backup/kubernetes/
+</span></span><span class=line><span class=cl>cp -ra ~/.kube/ /data/kube-config-backup/kube/
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 重新生成证书</span>
+</span></span><span class=line><span class=cl>kubeadm certs renew all
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 检查证书时间</span>
+</span></span><span class=line><span class=cl>kubeadm certs check-expiration
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 重新生成配置</span>
+</span></span><span class=line><span class=cl>kubeadm init phase kubeconfig all
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 复制管理配置</span>
+</span></span><span class=line><span class=cl>rm -rf /root/.kube/*
+</span></span><span class=line><span class=cl>cp -i /etc/kubernetes/admin.conf <span class=nv>$HOME</span>/.kube/config
+</span></span><span class=line><span class=cl>chown <span class=k>$(</span>id -u<span class=k>)</span>:<span class=k>$(</span>id -g<span class=k>)</span> <span class=nv>$HOME</span>/.kube/config
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 重启 kube-system，将 manifests 中的配置移除并移入来重启</span>
+</span></span><span class=line><span class=cl>mv /etc/kubernetes/manifests/*.yaml /data/kube-config-backup/yaml/
+</span></span><span class=line><span class=cl>mv /data/kube-config-backup/yaml/*.yaml /etc/kubernetes/manifests/
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 在所有节点重启 kubelet</span>
+</span></span><span class=line><span class=cl>systemctl restart kubelet
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 重启 prometheus</span>
+</span></span><span class=line><span class=cl>kubectl rollout restart -n monitoring deploy
+</span></span><span class=line><span class=cl>kubectl rollout restart -n monitoring statefulsets
+</span></span><span class=line><span class=cl>kubectl rollout restart -n monitoring daemonset</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h3 class=heading-element id=kubeadm-添加新节点 data-decreased><span>kubeadm 添加新节点</span>
+<a href=#kubeadm-%e6%b7%bb%e5%8a%a0%e6%96%b0%e8%8a%82%e7%82%b9 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><h3 class=heading-element id=简单方法><span>简单方法</span>
+<a href=#%e7%ae%80%e5%8d%95%e6%96%b9%e6%b3%95 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 生成token并打印join语句</span>
+</span></span><span class=line><span class=cl>kubeadm token create --print-join-command
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 使用生成的 join 语句在对应节点执行添加</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 加入 node</span>
+</span></span><span class=line><span class=cl>kubeadm join <span class=o>[</span>ControlPlaneAddress<span class=o>]</span> --token <span class=o>[</span>Token<span class=o>]</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>--discovery-token-ca-cert-hash <span class=o>[</span>TokenCAHash<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 加入 master</span>
+</span></span><span class=line><span class=cl>kubeadm join <span class=o>[</span>ControlPlaneAddress<span class=o>]</span> --token <span class=o>[</span>Token<span class=o>]</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>        --discovery-token-ca-cert-hash <span class=o>[</span>TokenCAHash<span class=o>]</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>        --control-plane --certificate-key <span class=o>[</span>Cert<span class=o>]</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h3 class=heading-element id=手动生成><span>手动生成</span>
+<a href=#%e6%89%8b%e5%8a%a8%e7%94%9f%e6%88%90 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 生成 token (1)</span>
+</span></span><span class=line><span class=cl>kubeadm token create
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取 --discovery-token-ca-cert-hash 值(2)</span>
+</span></span><span class=line><span class=cl>openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt <span class=p>|</span> openssl rsa -pubin -outform der 2&gt;/dev/null <span class=p>|</span> openssl dgst -sha256 -hex <span class=p>|</span> sed <span class=s1>&#39;s/^.* //&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 生成 upload-certs (3)</span>
+</span></span><span class=line><span class=cl>kubeadm init phase upload-certs --upload-certs
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 加入 node</span>
+</span></span><span class=line><span class=cl>kubeadm join <span class=o>[</span>ControlPlaneAddress<span class=o>]</span> --token <span class=o>[</span>1的值<span class=o>]</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>--discovery-token-ca-cert-hash <span class=o>[</span>2的值<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 加入 master</span>
+</span></span><span class=line><span class=cl>kubeadm join <span class=o>[</span>ControlPlaneAddress<span class=o>]</span> --token <span class=o>[</span>1的值<span class=o>]</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>        --discovery-token-ca-cert-hash <span class=o>[</span>2的值<span class=o>]</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>        --control-plane --certificate-key <span class=o>[</span>3的值<span class=o>]</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h3 class=heading-element id=deployment的rollout与rollback data-decreased><span>Deployment的Rollout与Rollback</span>
+<a href=#deployment%e7%9a%84rollout%e4%b8%8erollback class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class="details admonition tip open"><div class="details-summary admonition-title"><i class="icon fa-regular fa-lightbulb" aria-hidden=true></i>Tip<i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></div><div class=details-content><div class=admonition-content>Deployment 的 rollout 当且仅当 Deployment 的 pod template（例如.spec.template）中的 label 更新或者镜像更改时被触发
+其他更新，例如:扩容 Deployment 不会触发 rollout</div></div></div><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#查看 rollout 的状态</span>
+</span></span><span class=line><span class=cl>kubectl rollout status deployment <span class=o>[</span>deployment名称<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#查看 rollout 的历史版本</span>
+</span></span><span class=line><span class=cl>kubectl rollout <span class=nb>history</span> deployment <span class=o>[</span>deployment名称<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#查看单个版本的详细信息</span>
+</span></span><span class=line><span class=cl>kubectl rollout <span class=nb>history</span> deployment <span class=o>[</span>deployment名称<span class=o>]</span> --revision<span class=o>=</span><span class=m>2</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#回退当前的 rollout 到之前的版本</span>
+</span></span><span class=line><span class=cl>kubectl rollout undo deployment <span class=o>[</span>deployment名称<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#也可以使用 —revision 参数指定某个历史版本</span>
+</span></span><span class=line><span class=cl>kubectl rollout undo deployment <span class=o>[</span>deployment名称<span class=o>]</span> --to-revision<span class=o>=</span><span class=m>2</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h3 class=heading-element id=kubernetes-污点和容忍度 data-decreased><span>Kubernetes 污点和容忍度</span>
+<a href=#kubernetes-%e6%b1%a1%e7%82%b9%e5%92%8c%e5%ae%b9%e5%bf%8d%e5%ba%a6 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><h3 class=heading-element id=污点相关命令><span>污点相关命令</span>
+<a href=#%e6%b1%a1%e7%82%b9%e7%9b%b8%e5%85%b3%e5%91%bd%e4%bb%a4 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#查看污点</span>
+</span></span><span class=line><span class=cl>kubectl describe nodes <span class=o>[</span>node name<span class=o>]</span> <span class=p>|</span> grep Taints
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#删除污点</span>
+</span></span><span class=line><span class=cl>kubectl taint node <span class=o>[</span>node name<span class=o>]</span> <span class=o>[</span>Taint name<span class=o>]</span>-
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#添加污点</span>
+</span></span><span class=line><span class=cl>kubectl taint node <span class=o>[</span>node name<span class=o>]</span> <span class=o>[</span>Taint name<span class=o>]</span>:<span class=o>[</span>Taint value<span class=o>]</span></span></span></code></pre></td></tr></table></div></div></div><h3 class=heading-element id=容忍度><span>容忍度</span>
+<a href=#%e5%ae%b9%e5%bf%8d%e5%ba%a6 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p>配置容忍度需要在工作负载上声明 Toleration
+下面两个 Toleration 都被设置为可以容忍具有污点的 Node，使 Pod 能够调度到有污点的节点上</p></div><div class=post-footer><a href=/en/posts/common-ops-for-kubernetes/>Read More</a><div class=post-tags><i class="fa-solid fa-tags me-1" aria-hidden=true></i><a href=/en/tags/kubernetes/ class=post-tag>Kubernetes</a><a href=/en/tags/devops/ class=post-tag>DevOps</a></div></div></article><article class="single summary" itemscope itemtype=http://schema.org/Article><h2 class=single-title itemprop="name headline"><a href=/en/posts/flink-operator/>Apache Flink Kubernetes Operator</a></h2><div class=post-meta><span class=post-author><a href=https://blog.2nfree.com/ title=Author rel=author class=author><img class=avatar src=/images/avatar.png alt=komorebi height=16 width=16>&nbsp;komorebi</a></span>&nbsp;<span class=post-publish title='2023-04-05 12:08:57'>published on <time datetime=2023-04-05>2023-04-05</time></span><span class=post-included-in>&nbsp;included in <a href=/en/categories/bigdata/ class=post-category title="Category - BigData"><i class="fa-regular fa-folder" aria-hidden=true></i> BigData</a></span></div><div class=content><h3 class=heading-element id=前言 data-decreased><span>前言</span>
+<a href=#%e5%89%8d%e8%a8%80 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p>Flink Kubernetes Operator 扩展了 Kubernetes API，能够管理和操作 Flink 部署，该 Operator 具有以下特点：</p><ul><li>部署和监控 Flink Application 和 Session 的 Kubernetes Deployment</li><li>升级、暂停和删除 Kubernetes Deployment</li><li>完整的日志记录和指标集成</li><li>灵活的部署以及与 Kubernetes 工具的本机集成</li></ul><a class=lightgallery target=_blank href=/en/posts/flink-operator/overview.webp title=/en/posts/flink-operator/overview.webp data-thumbnail=/en/posts/flink-operator/overview.webp data-sub-html="<h2>/en/posts/flink-operator/overview.webp</h2>"><img loading=lazy src=/en/posts/flink-operator/overview.webp alt=/en/posts/flink-operator/overview.webp height=403 width=842></a><h3 class=heading-element id=部署-flink-operator data-decreased><span>部署 flink operator</span>
+<a href=#%e9%83%a8%e7%bd%b2-flink-operator class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><h3 class=heading-element id=安装-cert-manager><span>安装 cert-manager</span>
+<a href=#%e5%ae%89%e8%a3%85-cert-manager class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><p>在安装 flink operator 之前，需要在 Kubernetes 集群中安装 cert-manager，如果集群之前已经安装过 cert-manager，则无需安装</p></div><div class=post-footer><a href=/en/posts/flink-operator/>Read More</a><div class=post-tags><i class="fa-solid fa-tags me-1" aria-hidden=true></i><a href=/en/tags/kubernetes/ class=post-tag>Kubernetes</a><a href=/en/tags/flink/ class=post-tag>Flink</a></div></div></article><ul class=pagination><li class=page-item><span class=page-link><a href=/en/>1</a></span></li><li class=page-item><span class=page-link><a href=/en/page/2/>2</a></span></li><li class="page-item active"><span class=page-link><a href=/en/page/3/>3</a></span></li><li class=page-item><span class=page-link><a href=/en/page/4/>4</a></span></li><li class=page-item><span class=page-link><a href=/en/page/5/>5</a></span></li></ul></div></main><footer class=footer><div class=footer-container><div class="footer-line powered">Powered by <a href="https://github.com/gohugoio/hugo?v=0.167.0" target=_blank rel="external nofollow noopener noreferrer" title="Hugo 0.167.0"><img class=hugo-icon src=/images/hugo.min.svg alt="Hugo logo"> Hugo</a> | Theme - <a href="https://github.com/hugo-fixit/FixIt?v=v1.0.0-alpha.3" target=_blank rel=external title="FixIt v1.0.0-alpha.3"><img class=fixit-icon src=/images/fixit.min.svg alt="FixIt logo"> FixIt</a></div><div class="footer-line copyright" itemscope itemtype=http://schema.org/CreativeWork><i class="fa-regular fa-copyright" aria-hidden=true></i>
+<span itemprop=copyrightYear>2025 - 2026</span><span class=author itemprop=copyrightHolder>
+<a href=https://blog.2nfree.com/>komorebi</a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank>CC BY-NC-SA 4.0</a></span></div></div></footer></div><div class=widgets><div id=mask></div><dialog id=search-dialog class=search-dialog aria-label=Search closedby=any><div class=search-modal><div class=search-modal-header><span class=search-delimiter></span>
+<button type=button class=search-close-btn aria-label="Close Search Dialog"><i class="fa-solid fa-xmark" aria-hidden=true></i></button></div><div class=search-source-footer><div class=search-shortcuts><span class=search-shortcut><kbd><i class=lucide-arrow-up aria-hidden=true></i></kbd>
+<kbd><i class=lucide-arrow-down aria-hidden=true></i></kbd>
+Navigate
+</span><span class=search-shortcut><kbd><i class=lucide-corner-down-left aria-hidden=true></i></kbd>
+Select
+</span><span class=search-shortcut><kbd>ESC</kbd>
+Close</span></div><span class=search-engine>Search by <a href=https://fusejs.io/ target=_blank rel="external nofollow noopener noreferrer">Fuse.js</a></span></div></div></dialog><div class=fixed-buttons><button type=button class="fixed-button back-to-top animate__faster hidden" aria-label="Back to Top"><i class="fa-solid fa-arrow-up" aria-hidden=true></i></button></div><noscript><div class="noscript-warning bg-danger text-white text-base font-bold fixed text-center inset-x-0 bottom-0 w-full z-fixed">This website works best with JavaScript enabled.</div></noscript></div><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><script src=/lib/autocomplete-js/index.production.js defer></script><script src=/js/lib/fuse.min.js defer></script><script src=/lib/cookieconsent/cookieconsent.min.js defer></script><script src=/js/lib/cookieconsent.min.js defer></script><script src=/lib/cell-tooltip/cell-tooltip.umd.js defer></script><script>window.config={cookieconsent:{content:{dismiss:"Got it!",link:"Learn more",message:"This website uses Cookies to improve your experience."},enable:!0,palette:{button:{background:"#f0f0f0"},popup:{background:"#1aa3ff"}},theme:"edgeless"},print:{expandAdmonition:!0,expandCode:!0,expandDetails:!0,expandFileTree:!1},search:{clearText:"Clear",distance:100,findAllMatches:!1,fuseIndexURL:"/en/search.json",highlightTag:"em",ignoreFieldNorm:!1,ignoreLocation:!1,isCaseSensitive:!1,location:0,maxResultLength:10,minMatchCharLength:2,noResultsFound:"No results found",placeholder:"Search titles or contents ...",snippetLength:30,threshold:.3,type:"fuse",useExtendedSearch:!1},tooltip:!0,version:"v1.0.0-alpha.3"}</script><script src=/js/lib/file-tree.min.js defer></script><script src=/js/main.min.js defer></script><script src=/js/custom.min.js defer></script></body></html>

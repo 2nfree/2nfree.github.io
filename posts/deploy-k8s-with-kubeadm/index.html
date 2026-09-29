@@ -1,0 +1,568 @@
+<!doctype html><html itemscope itemtype=http://schema.org/WebPage lang=zh-CN dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=2"><title>基于kubeadm的k8s部署 - 蒜头耿鬼's Blog</title><meta name=author content="komorebi"><meta name=description content="Kubernetes 是一个可移植、可扩展的开源平台，用于管理容器化的工作负载和服务，可促进声明式配置和自动化。"><meta name=robots content="index, follow"><meta name=keywords content='Kubernetes,DevOps'><meta itemprop=name content="基于kubeadm的k8s部署"><meta itemprop=description content="Kubernetes 是一个可移植、可扩展的开源平台，用于管理容器化的工作负载和服务，可促进声明式配置和自动化。"><meta itemprop=datePublished content="2023-02-17T16:10:04+00:00"><meta itemprop=dateModified content="2026-09-29T08:03:28+00:00"><meta itemprop=wordCount content="2534"><meta itemprop=keywords content="Kubernetes,DevOps"><meta property="og:url" content="https://blog.2nfree.com/posts/deploy-k8s-with-kubeadm/"><meta property="og:site_name" content="蒜头耿鬼's Blog"><meta property="og:title" content="基于kubeadm的k8s部署"><meta property="og:description" content="Kubernetes 是一个可移植、可扩展的开源平台，用于管理容器化的工作负载和服务，可促进声明式配置和自动化。"><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-02-17T16:10:04+00:00"><meta property="article:modified_time" content="2026-09-29T08:03:28+00:00"><meta property="article:tag" content="Kubernetes"><meta property="article:tag" content="DevOps"><meta name=twitter:card content="summary"><meta name=twitter:title content="基于kubeadm的k8s部署"><meta name=twitter:description content="Kubernetes 是一个可移植、可扩展的开源平台，用于管理容器化的工作负载和服务，可促进声明式配置和自动化。"><meta name=application-name content="Hugo FixIt Blog"><meta name=apple-mobile-web-app-title content="Hugo FixIt Blog"><meta name=theme-color data-light=#f8f8f8 data-dark=#252627 content="#f8f8f8"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=canonical type=text/html href=https://blog.2nfree.com/posts/deploy-k8s-with-kubeadm/ title="基于kubeadm的k8s部署 - 蒜头耿鬼's Blog"><link rel=prev type=text/html href=https://blog.2nfree.com/posts/redis-config/ title="Redis 高级功能"><link rel=next type=text/html href=https://blog.2nfree.com/about/ title=关于><link rel=alternate type=text/markdown href=https://blog.2nfree.com/posts/deploy-k8s-with-kubeadm/index.md><link rel=stylesheet href=/css/unocss.min.css><link rel=stylesheet href=/css/main.min.css><link rel=stylesheet href=/css/pages/posts.min.css><link rel=stylesheet href=/css/custom.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><link rel=preload href=/js/main.min.js as=script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"基于kubeadm的k8s部署","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/blog.2nfree.com\/posts\/deploy-k8s-with-kubeadm\/"},"genre":"posts","keywords":"Kubernetes, DevOps","wordcount":2534,"url":"https:\/\/blog.2nfree.com\/posts\/deploy-k8s-with-kubeadm\/","datePublished":"2023-02-17T16:10:04+00:00","dateModified":"2026-09-29T08:03:28+00:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"komorebi"},"description":"Kubernetes 是一个可移植、可扩展的开源平台，用于管理容器化的工作负载和服务，可促进声明式配置和自动化。"}</script><script src=/js/head.min.js></script></head><body data-instant-intensity=viewport data-header-desktop=sticky data-header-mobile=auto><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="蒜头耿鬼's Blog" class=header-title-link><img class=logo src=/images/avatar.png alt="蒜头耿鬼's Blog" height=32 width=32><span class=header-title-text>蒜头耿鬼's Blog</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class=menu-item><a class=menu-link href=/archives/><i class="fa-solid fa-archive fa-sm" aria-hidden=true></i> 归档</a></li><li class=menu-item><a class=menu-link href=/categories/><i class="fa-solid fa-folder-tree fa-sm" aria-hidden=true></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class="fa-solid fa-tags fa-sm" aria-hidden=true></i> 标签</a></li><li class=menu-item><a class=menu-link href=/links/><i class="fa-solid fa-link fa-sm" aria-hidden=true></i> 友情链接</a></li><li class=menu-item><a class=menu-link href=/about/><i class="fa-solid fa-heart fa-sm" aria-hidden=true></i> 关于</a></li><li class="menu-item delimiter"></li><li class="menu-item search"><button type=button class="search-trigger desktop" aria-label=搜索 title=搜索>
+<i class="fa-solid fa-search" aria-hidden=true></i>
+搜索
+<kbd></kbd></button></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch-item"><button type=button class=theme-switch aria-label=切换主题 title=切换主题><i class="fa-solid fa-adjust" aria-hidden=true></i></button></li><li class="menu-item language-switch"><button type=button aria-label=选择语言 title=选择语言><i class="fa-solid fa-language" aria-hidden=true></i></button><ul class=sub-menu><li class=menu-item><span class=text-secondary title=简体中文>简体中文</span></li><li class=menu-item><a href=/en/posts/deploy-k8s-with-kubeadm/ class=menu-link title=English>English</a></li></ul></li></ul></nav></div></header><header class="mobile animate__faster" id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title="蒜头耿鬼's Blog" class=header-title-link><img class=logo src=/images/avatar.png alt="蒜头耿鬼's Blog" height=26 width=26><span class=header-title-text>蒜头耿鬼's Blog</span></a><span class=header-subtitle></span></div><button type=button class="search-trigger mobile" aria-label=搜索><i class="fa-solid fa-search" aria-hidden=true></i></button><button type=button class=theme-switch aria-label=切换主题><i class="fa-solid fa-adjust" aria-hidden=true></i></button>
+<button type=button class=menu-toggle id=menu-toggle-mobile aria-controls=menu-mobile aria-expanded=false aria-labelledby=menu-mobile>
+<span></span><span></span><span></span></button></div><nav><ul class=menu id=menu-mobile><li class=menu-item><a class=menu-link href=/archives/><i class="fa-solid fa-archive fa-sm" aria-hidden=true></i> 归档</a></li><li class=menu-item><a class=menu-link href=/categories/><i class="fa-solid fa-folder-tree fa-sm" aria-hidden=true></i> 分类</a></li><li class=menu-item><a class=menu-link href=/tags/><i class="fa-solid fa-tags fa-sm" aria-hidden=true></i> 标签</a></li><li class=menu-item><a class=menu-link href=/links/><i class="fa-solid fa-link fa-sm" aria-hidden=true></i> 友情链接</a></li><li class=menu-item><a class=menu-link href=/about/><i class="fa-solid fa-heart fa-sm" aria-hidden=true></i> 关于</a></li><li class="menu-item menu-system"><span class="menu-system-item language-switch"><button type=button aria-label=选择语言 title=选择语言>简体中文<i class="dropdown-icon fa-solid fa-chevron-down" aria-hidden=true></i></button>
+<select id=language-select class=language-select onchange="location=this.value"><option value=/posts/deploy-k8s-with-kubeadm/ selected disabled>简体中文</option><option value=/en/posts/deploy-k8s-with-kubeadm/>English</option></select></span></li></ul></nav></div></header><main class=fi-container><aside class="aside-collection animate__animated animate__fadeIn animate__faster" aria-label=合集></aside><article class="page single"><div class=header><h1 class="single-title animate__animated animate__flipInX"><span>基于kubeadm的k8s部署</span></h1></div><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://blog.2nfree.com/ title=作者 rel=author class=author><img class=avatar src=/images/avatar.png alt=komorebi height=16 width=16>&nbsp;komorebi</a></span><span class=post-included-in>&nbsp;收录于 <a href=/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/ class=post-category title="分类 - 云原生"><i class="fa-regular fa-folder" aria-hidden=true></i> 云原生</a></span></div><div class=post-meta-line><span title="发布于 2023-02-17 16:10:04"><i class="fa-solid fa-calendar-days me-1" aria-hidden=true></i><time datetime=2023-02-17>2023-02-17</time></span>&nbsp;<span title="更新于 2026-09-29 08:03:28"><i class="fa-regular fa-calendar-check me-1" aria-hidden=true></i><time datetime=2026-09-29>2026-09-29</time></span>&nbsp;<span title="2534 字"><i class="fa-solid fa-pencil me-1" aria-hidden=true></i>约 2600 字</span>&nbsp;<span><i class="fa-regular fa-clock me-1" aria-hidden=true></i>预计阅读 6 分钟</span>&nbsp;</div></div><div class="details toc" id=toc-static data-kept=false><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static></div></div><template data-toc><nav id=TableOfContents><ul><li><a href=#kubernetes-概述>Kubernetes 概述</a></li></ul><ul><li><a href=#服务器清单>服务器清单</a></li><li><a href=#服务器端口>服务器端口</a></li><li><a href=#安装基础工具>安装基础工具</a></li></ul><ul><li><a href=#关闭selinux>关闭selinux</a></li><li><a href=#关闭swap交换分区>关闭swap交换分区</a></li><li><a href=#将桥接的ipv4流量传递到iptables>将桥接的IPV4流量传递到iptables</a></li><li><a href=#设置ipvs代理模式>设置ipvs代理模式</a></li><li><a href=#设置时间同步一般云服务厂商已经设置本地服务器需配置一下>设置时间同步（一般云服务厂商已经设置，本地服务器需配置一下）</a></li></ul><ul><li><a href=#配置kubernetes组件的yum源>配置kubernetes组件的yum源</a></li><li><a href=#启动kubelet>启动kubelet</a></li></ul><ul><li><a href=#查看镜像版本>查看镜像版本</a></li><li><a href=#下载镜像>下载镜像</a></li></ul><ul><li><a href=#在master1中执行开启控制平面>在master1中执行开启控制平面</a></li><li><a href=#在master2中执行加入控制平面>在master2中执行加入控制平面</a></li><li><a href=#在所有master执行配置>在所有master执行配置</a></li></ul></nav></template><div class=content id=content><h1 class=heading-element id=前言><span>前言</span>
+<a href=#%e5%89%8d%e8%a8%80 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><h2 class=heading-element id=kubernetes-概述><span>Kubernetes 概述</span>
+<a href=#kubernetes-%e6%a6%82%e8%bf%b0 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>Kubernetes 是一个可移植、可扩展的开源平台，用于管理容器化的工作负载和服务，可促进声明式配置和自动化。 Kubernetes 拥有一个庞大且快速增长的生态，其服务、支持和工具的使用范围相当广泛。</p><p>Kubernetes 这个名字源于希腊语，意为“舵手”或“飞行员”。k8s 这个缩写是因为 k 和 s 之间有八个字符的关系。 Google 在 2014 年开源了 Kubernetes 项目。 Kubernetes 建立在 Google 大规模运行生产工作负载十几年经验的基础上， 结合了社区中最优秀的想法和实践。</p><h1 class=heading-element id=准备工作><span>准备工作</span>
+<a href=#%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><h2 class=heading-element id=服务器清单><span>服务器清单</span>
+<a href=#%e6%9c%8d%e5%8a%a1%e5%99%a8%e6%b8%85%e5%8d%95 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class=table-wrapper><table data-sortable><thead><tr><th><strong>主机名</strong></th><th><strong>内网IP</strong></th><th><strong>操作系统</strong></th></tr></thead><tbody><tr><td>master1</td><td>192.168.1.10</td><td>centos7</td></tr><tr><td>master2</td><td>192.168.1.11</td><td>centos7</td></tr><tr><td>node1</td><td>192.168.1.20</td><td>centos7</td></tr><tr><td>node2</td><td>192.168.1.21</td><td>centos7</td></tr></tbody></table></div><h2 class=heading-element id=服务器端口><span>服务器端口</span>
+<a href=#%e6%9c%8d%e5%8a%a1%e5%99%a8%e7%ab%af%e5%8f%a3 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>防火墙开放相关端口号，云主机修改安全组，本地服务器修改防火墙规则</p><p>测试可以直接开启互信、关闭防火墙</p><div class=table-wrapper><table data-sortable><thead><tr><th><strong>组件</strong></th><th><strong>默认端口号</strong></th></tr></thead><tbody><tr><td>API Server</td><td>8080（http）<br>6443（https）</td></tr><tr><td>Controller Manager</td><td>10252</td></tr><tr><td>Scheduler</td><td>10251</td></tr><tr><td>kubelet</td><td>10250<br>10255（read only）</td></tr><tr><td>etcd</td><td>2379（client）<br>2380（etcd cluster）</td></tr><tr><td>集群DNS</td><td>53（UDP TCP）</td></tr><tr><td>CNI Calico</td><td>179</td></tr></tbody></table></div><h2 class=heading-element id=安装基础工具><span>安装基础工具</span>
+<a href=#%e5%ae%89%e8%a3%85%e5%9f%ba%e7%a1%80%e5%b7%a5%e5%85%b7 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#更新yum源</span>
+</span></span><span class=line><span class=cl>yum update -y
+</span></span><span class=line><span class=cl><span class=c1>#安装相关依赖和工具</span>
+</span></span><span class=line><span class=cl>yum install net-tools curl wget epel-release vim gcc wget make libtool expat-devel pcre-devel openssl-devel libxml2-devel -y
+</span></span><span class=line><span class=cl>yum install git lsof ncdu psmisc htop openssl lrzsz -y
+</span></span><span class=line><span class=cl>yum install conntrack ipvsadm ipset jq sysstat iptables libseccomp -y</span></span></code></pre></td></tr></table></div></div></div><h1 class=heading-element id=安装容器运行时><span>安装容器运行时</span>
+<a href=#%e5%ae%89%e8%a3%85%e5%ae%b9%e5%99%a8%e8%bf%90%e8%a1%8c%e6%97%b6 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fa-solid fa-circle-info" aria-hidden=true></i>容器运行时<i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></div><div class=details-content><div class=admonition-content><p>Kubernetes 的运行需要容器运行时的支持，所以我们需要在服务器上安装容器运行时</p><p>一般用的较多的容器运行时是Docker，但是官方推荐的容器运行时是Containerd</p></div></div></div><div class="details admonition tip open"><div class="details-summary admonition-title"><i class="icon fa-regular fa-lightbulb" aria-hidden=true></i>技巧<i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></div><div class=details-content><div class=admonition-content>PS：K8S在1.24版本，取消了对docker-shim的支持，如果安装K8S的版本高于1.24版本，建议安装Containerd</div></div></div><div class=shortcode-tabs><tab-container default-tab=0 placement=top type=underline><button class=tab-button type=button role=tab id=tab-id-1 aria-selected=true>Docker</button><button class=tab-button type=button role=tab id=tab-id-2 aria-selected=false>Containerd</button><div role=tabpanel aria-labelledby=tab-id-1 class=tab-panel><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#安装yum工具</span>
+</span></span><span class=line><span class=cl>yum install -y yum-utils <span class=se>\
+</span></span></span><span class=line><span class=cl>  device-mapper-persistent-data <span class=se>\
+</span></span></span><span class=line><span class=cl>  lvm2
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#官方仓库（国外服务器使用）</span>
+</span></span><span class=line><span class=cl>yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+</span></span><span class=line><span class=cl><span class=c1>#阿里云仓库（国内服务器使用）</span>
+</span></span><span class=line><span class=cl>yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#安装docker</span>
+</span></span><span class=line><span class=cl>yum install -y docker-ce docker-ce-cli containerd.io
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>mkdir -pv /etc/docker
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>cat &gt; /etc/docker/daemon.json &lt;&lt;<span class=s2>&#34;EOF&#34;</span>
+</span></span><span class=line><span class=cl><span class=o>{</span>
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;log-driver&#34;</span>:<span class=s2>&#34;json-file&#34;</span>,
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;log-opts&#34;</span>: <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;max-size&#34;</span>: <span class=s2>&#34;5m&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;max-file&#34;</span>:<span class=s2>&#34;3&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=o>}</span>,
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;exec-opts&#34;</span>: <span class=o>[</span><span class=s2>&#34;native.cgroupdriver=systemd&#34;</span><span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>EOF
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#启动docker</span>
+</span></span><span class=line><span class=cl>systemctl start docker
+</span></span><span class=line><span class=cl>systemctl <span class=nb>enable</span> docker
+</span></span><span class=line><span class=cl>systemctl status docker</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div></div><div role=tabpanel aria-labelledby=tab-id-2 class=tab-panel><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#加载模块</span>
+</span></span><span class=line><span class=cl>modprobe overlay
+</span></span><span class=line><span class=cl>modprobe br_netfilter
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>cat <span class=s>&lt;&lt;EOF | sudo tee /etc/modules-load.d/containerd.conf
+</span></span></span><span class=line><span class=cl><span class=s>overlay
+</span></span></span><span class=line><span class=cl><span class=s>br_netfilter
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#安装nerdctl工具包</span>
+</span></span><span class=line><span class=cl>wget https://github.com/containerd/nerdctl/releases/download/v1.0.0/nerdctl-full-1.0.0-linux-amd64.tar.gz
+</span></span><span class=line><span class=cl>tar Cxzvvf /usr/local nerdctl-full-1.0.0-linux-amd64.tar.gz
+</span></span><span class=line><span class=cl>systemctl <span class=nb>enable</span> --now containerd
+</span></span><span class=line><span class=cl>systemctl <span class=nb>enable</span> --now buildkit
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>sudo mkdir -p /etc/containerd
+</span></span><span class=line><span class=cl>sudo containerd config default <span class=p>|</span> sudo tee /etc/containerd/config.toml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#修改如下配置</span>
+</span></span><span class=line><span class=cl><span class=nv>SystemdCgroup</span> <span class=o>=</span> <span class=nb>true</span>
+</span></span><span class=line><span class=cl>....
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>plugins.<span class=s2>&#34;io.containerd.grpc.v1.cri&#34;</span>.registry<span class=o>]</span>
+</span></span><span class=line><span class=cl>      <span class=nv>config_path</span> <span class=o>=</span> <span class=s2>&#34;/etc/containerd/certs.d&#34;</span>  <span class=c1># 镜像地址配置文件</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#创建相应目录</span>
+</span></span><span class=line><span class=cl>mkdir /etc/containerd/certs.d/docker.io -pv
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>cat &gt; /etc/containerd/certs.d/docker.io/hosts.toml <span class=s>&lt;&lt; EOF
+</span></span></span><span class=line><span class=cl><span class=s>server = &#34;https://docker.io&#34;
+</span></span></span><span class=line><span class=cl><span class=s>[host.&#34;https://docker.mirrors.ustc.edu.cn&#34;]
+</span></span></span><span class=line><span class=cl><span class=s>  capabilities = [&#34;pull&#34;, &#34;resolve&#34;]
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>systemctl restart containerd</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div></div></tab-container></div><h1 class=heading-element id=服务器系统配置><span>服务器系统配置</span>
+<a href=#%e6%9c%8d%e5%8a%a1%e5%99%a8%e7%b3%bb%e7%bb%9f%e9%85%8d%e7%bd%ae class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><h2 class=heading-element id=关闭selinux><span>关闭selinux</span>
+<a href=#%e5%85%b3%e9%97%adselinux class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#永久关闭</span>
+</span></span><span class=line><span class=cl>sed -i <span class=s1>&#39;s/enforcing/disable/&#39;</span> /etc/selinux/config
+</span></span><span class=line><span class=cl><span class=c1>#临时关闭</span>
+</span></span><span class=line><span class=cl>setenforce <span class=m>0</span></span></span></code></pre></td></tr></table></div></div></div><h2 class=heading-element id=关闭swap交换分区><span>关闭swap交换分区</span>
+<a href=#%e5%85%b3%e9%97%adswap%e4%ba%a4%e6%8d%a2%e5%88%86%e5%8c%ba class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#（部分云服务默认关闭，可以用free命令查看或者查看/etc/fstab）</span>
+</span></span><span class=line><span class=cl><span class=c1>#临时关闭</span>
+</span></span><span class=line><span class=cl>swapoff -a
+</span></span><span class=line><span class=cl><span class=c1>#永久关闭</span>
+</span></span><span class=line><span class=cl>sed -ri <span class=s1>&#39;s/.*swap.*/#&amp;/&#39;</span> /etc/fstab</span></span></code></pre></td></tr></table></div></div></div><h2 class=heading-element id=将桥接的ipv4流量传递到iptables><span>将桥接的IPV4流量传递到iptables</span>
+<a href=#%e5%b0%86%e6%a1%a5%e6%8e%a5%e7%9a%84ipv4%e6%b5%81%e9%87%8f%e4%bc%a0%e9%80%92%e5%88%b0iptables class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#加载网桥过滤(安装containerd时已经配置)</span>
+</span></span><span class=line><span class=cl>modprobe br_netfilter
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>cat &gt; /etc/sysctl.d/kubernetes.conf <span class=s>&lt;&lt;EOF
+</span></span></span><span class=line><span class=cl><span class=s>net.bridge.bridge-nf-call-ip6tables = 1
+</span></span></span><span class=line><span class=cl><span class=s>net.bridge.bridge-nf-call-iptables = 1
+</span></span></span><span class=line><span class=cl><span class=s>net.ipv4.ip_forward = 1
+</span></span></span><span class=line><span class=cl><span class=s>vm.swappiness=0
+</span></span></span><span class=line><span class=cl><span class=s>vm.overcommit_memory = 1
+</span></span></span><span class=line><span class=cl><span class=s>vm.panic_on_oom = 0
+</span></span></span><span class=line><span class=cl><span class=s>fs.inotify.max_user_watches = 89100
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#生效配置</span>
+</span></span><span class=line><span class=cl>sysctl -p /etc/sysctl.d/kubernetes.conf</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=设置ipvs代理模式><span>设置ipvs代理模式</span>
+<a href=#%e8%ae%be%e7%bd%aeipvs%e4%bb%a3%e7%90%86%e6%a8%a1%e5%bc%8f class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>在kubernetes中service有两种代理模型，一种是基于iptables的，一种是基于ipvs的
+两者比较的话，ipvs的性能明显要高一些，但是如果要使用它，需要手动载入ipvs模块</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>yum install ipset ipvsadmin -y</span></span></code></pre></td></tr></table></div></div></div><p>开启模块<div class=shortcode-tabs><tab-container default-tab=0 placement=top type=underline><button class=tab-button type=button role=tab id=tab-id-3 aria-selected=true>低内核版本</button><button class=tab-button type=button role=tab id=tab-id-4 aria-selected=false>高内核版本</button><div role=tabpanel aria-labelledby=tab-id-3 class=tab-panel><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>cat &gt; /etc/sysconfig/modules/ipvs.modules <span class=s>&lt;&lt;EOF
+</span></span></span><span class=line><span class=cl><span class=s>#!/bin/bash
+</span></span></span><span class=line><span class=cl><span class=s>modprobe -- ip_vs
+</span></span></span><span class=line><span class=cl><span class=s>modprobe -- ip_vs_rr
+</span></span></span><span class=line><span class=cl><span class=s>modprobe -- ip_vs_wrr
+</span></span></span><span class=line><span class=cl><span class=s>modprobe -- ip_vs_sh
+</span></span></span><span class=line><span class=cl><span class=s>modprobe -- nf_conntrack_ipv4
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#添加可执行权限并执行</span>
+</span></span><span class=line><span class=cl>chmod +x /etc/sysconfig/modules/ipvs.modules
+</span></span><span class=line><span class=cl>sh /etc/sysconfig/modules/ipvs.modules</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div></div><div role=tabpanel aria-labelledby=tab-id-4 class=tab-panel><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>cat &gt; /etc/sysconfig/modules/ipvs.modules <span class=s>&lt;&lt;EOF
+</span></span></span><span class=line><span class=cl><span class=s>#!/bin/bash
+</span></span></span><span class=line><span class=cl><span class=s>modprobe -- ip_vs
+</span></span></span><span class=line><span class=cl><span class=s>modprobe -- ip_vs_rr
+</span></span></span><span class=line><span class=cl><span class=s>modprobe -- ip_vs_wrr
+</span></span></span><span class=line><span class=cl><span class=s>modprobe -- ip_vs_sh
+</span></span></span><span class=line><span class=cl><span class=s>modprobe -- nf_conntrack
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#添加可执行权限并执行</span>
+</span></span><span class=line><span class=cl>chmod +x /etc/sysconfig/modules/ipvs.modules
+</span></span><span class=line><span class=cl>sh /etc/sysconfig/modules/ipvs.modules</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div></div></tab-container></div></p><h2 class=heading-element id=设置时间同步一般云服务厂商已经设置本地服务器需配置一下><span>设置时间同步（一般云服务厂商已经设置，本地服务器需配置一下）</span>
+<a href=#%e8%ae%be%e7%bd%ae%e6%97%b6%e9%97%b4%e5%90%8c%e6%ad%a5%e4%b8%80%e8%88%ac%e4%ba%91%e6%9c%8d%e5%8a%a1%e5%8e%82%e5%95%86%e5%b7%b2%e7%bb%8f%e8%ae%be%e7%bd%ae%e6%9c%ac%e5%9c%b0%e6%9c%8d%e5%8a%a1%e5%99%a8%e9%9c%80%e9%85%8d%e7%bd%ae%e4%b8%80%e4%b8%8b class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>yum -y install chrony
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#开启服务</span>
+</span></span><span class=line><span class=cl>systemctl start chronyd
+</span></span><span class=line><span class=cl>systemctl <span class=nb>enable</span> chronyd</span></span></code></pre></td></tr></table></div></div></div><h1 class=heading-element id=安装kubernetes组件><span>安装kubernetes组件</span>
+<a href=#%e5%ae%89%e8%a3%85kubernetes%e7%bb%84%e4%bb%b6 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><h2 class=heading-element id=配置kubernetes组件的yum源><span>配置kubernetes组件的yum源</span>
+<a href=#%e9%85%8d%e7%bd%aekubernetes%e7%bb%84%e4%bb%b6%e7%9a%84yum%e6%ba%90 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class=shortcode-tabs><tab-container default-tab=0 placement=top type=underline><button class=tab-button type=button role=tab id=tab-id-5 aria-selected=true>官方源</button><button class=tab-button type=button role=tab id=tab-id-6 aria-selected=false>镜像源</button><div role=tabpanel aria-labelledby=tab-id-5 class=tab-panel><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>cat &gt; /etc/yum.repos.d/kubernetes.repo <span class=s>&lt;&lt;EOF
+</span></span></span><span class=line><span class=cl><span class=s>[kubernetes]
+</span></span></span><span class=line><span class=cl><span class=s>name=Kubernetes
+</span></span></span><span class=line><span class=cl><span class=s>baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+</span></span></span><span class=line><span class=cl><span class=s>enabled=1
+</span></span></span><span class=line><span class=cl><span class=s>gpgcheck=1
+</span></span></span><span class=line><span class=cl><span class=s>repo_gpgcheck=1
+</span></span></span><span class=line><span class=cl><span class=s>gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+</span></span></span><span class=line><span class=cl><span class=s>exclude=kube*
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>yum install -y kubectl kubeadm kubelet --disableexcludes<span class=o>=</span>kubernetes
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#安装指定版本</span>
+</span></span><span class=line><span class=cl><span class=c1>#查看版本</span>
+</span></span><span class=line><span class=cl>yum search kubeadm --showduplicates
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>yum install -y kubectl-1.21.11-0.x86_64 kubeadm-1.21.11-0.x86_64 kubelet-1.21.11-0.x86_64 --disableexcludes<span class=o>=</span>kubernetes</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div></div><div role=tabpanel aria-labelledby=tab-id-6 class=tab-panel><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>cat &gt; /etc/yum.repos.d/kubernetes.repo <span class=s>&lt;&lt;EOF
+</span></span></span><span class=line><span class=cl><span class=s>[kubernetes]
+</span></span></span><span class=line><span class=cl><span class=s>name=Kubernetes
+</span></span></span><span class=line><span class=cl><span class=s>baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
+</span></span></span><span class=line><span class=cl><span class=s>enabled=1
+</span></span></span><span class=line><span class=cl><span class=s>gpgcheck=1
+</span></span></span><span class=line><span class=cl><span class=s>repo_gpgcheck=0
+</span></span></span><span class=line><span class=cl><span class=s>gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>yum install -y kubectl kubeadm kubelet --nogpgcheck
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#安装指定版本</span>
+</span></span><span class=line><span class=cl><span class=c1>#查看版本</span>
+</span></span><span class=line><span class=cl>yum search kubeadm --showduplicates
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>yum install -y kubectl-1.21.11-0.x86_64 kubeadm-1.21.11-0.x86_64 kubelet-1.21.11-0.x86_64 --nogpgcheck</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div></div></tab-container></div><h2 class=heading-element id=启动kubelet><span>启动kubelet</span>
+<a href=#%e5%90%af%e5%8a%a8kubelet class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>systemctl start kubelet
+</span></span><span class=line><span class=cl>systemctl <span class=nb>enable</span> kubelet
+</span></span><span class=line><span class=cl><span class=c1>#kubelet显示报错是正常的，因为当前集群节点没有启动</span>
+</span></span><span class=line><span class=cl>systemctl status kubelet</span></span></code></pre></td></tr></table></div></div></div><h1 class=heading-element id=集群镜像准备><span>集群镜像准备</span>
+<a href=#%e9%9b%86%e7%be%a4%e9%95%9c%e5%83%8f%e5%87%86%e5%a4%87 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><h2 class=heading-element id=查看镜像版本><span>查看镜像版本</span>
+<a href=#%e6%9f%a5%e7%9c%8b%e9%95%9c%e5%83%8f%e7%89%88%e6%9c%ac class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#查看当前镜像列表，此处加上 --kubernetes-version=v1.21.11 可以指定版本，--v=5可以检查网卡状态</span>
+</span></span><span class=line><span class=cl>kubeadm config images list
+</span></span><span class=line><span class=cl>kubeadm config images list --kubernetes-version<span class=o>=</span>v1.21.11
+</span></span><span class=line><span class=cl>kubeadm config images list --kubernetes-version<span class=o>=</span>v1.21.11 --v<span class=o>=</span><span class=m>5</span></span></span></code></pre></td></tr></table></div></div></div><h2 class=heading-element id=下载镜像><span>下载镜像</span>
+<a href=#%e4%b8%8b%e8%bd%bd%e9%95%9c%e5%83%8f class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class=shortcode-tabs><tab-container default-tab=0 placement=top type=underline><button class=tab-button type=button role=tab id=tab-id-7 aria-selected=true>官方下载</button><button class=tab-button type=button role=tab id=tab-id-8 aria-selected=false>镜像源下载</button><div role=tabpanel aria-labelledby=tab-id-7 class=tab-panel><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubeadm config images pull --kubernetes-version<span class=o>=</span>v1.21.11
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#检查镜像</span>
+</span></span><span class=line><span class=cl>docker images</span></span></code></pre></td></tr></table></div></div></div></div><div role=tabpanel aria-labelledby=tab-id-8 class=tab-panel><p>镜像源可以使用脚本下载(注意版本对应)</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=cp>#!/bin/bash
+</span></span></span><span class=line><span class=cl><span class=nv>images</span><span class=o>=(</span>
+</span></span><span class=line><span class=cl>kube-apiserver:v1.21.11
+</span></span><span class=line><span class=cl>kube-controller-manager:v1.21.11
+</span></span><span class=line><span class=cl>kube-scheduler:v1.21.11
+</span></span><span class=line><span class=cl>kube-proxy:v1.21.11
+</span></span><span class=line><span class=cl>pause:3.4.1
+</span></span><span class=line><span class=cl>etcd:3.4.13-0
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>)</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> imageName in <span class=si>${</span><span class=nv>images</span><span class=p>[@]</span><span class=si>}</span> <span class=p>;</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/<span class=si>${</span><span class=nv>imageName</span><span class=si>}</span>
+</span></span><span class=line><span class=cl>docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/<span class=si>${</span><span class=nv>imageName</span><span class=si>}</span> k8s.gcr.io/<span class=si>${</span><span class=nv>imageName</span><span class=si>}</span>
+</span></span><span class=line><span class=cl>docker rmi registry.cn-hangzhou.aliyuncs.com/google_containers/<span class=si>${</span><span class=nv>imageName</span><span class=si>}</span>
+</span></span><span class=line><span class=cl><span class=k>done</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:v1.8.0
+</span></span><span class=line><span class=cl>docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:v1.8.0 k8s.gcr.io/coredns/coredns:v1.8.0
+</span></span><span class=line><span class=cl>docker rmi registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:v1.8.0</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div></div></tab-container></div><h1 class=heading-element id=启动k8s控制平面control-plane><span>启动K8S控制平面（Control plane）</span>
+<a href=#%e5%90%af%e5%8a%a8k8s%e6%8e%a7%e5%88%b6%e5%b9%b3%e9%9d%a2control-plane class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><h2 class=heading-element id=在master1中执行开启控制平面><span>在master1中执行开启控制平面</span>
+<a href=#%e5%9c%a8master1%e4%b8%ad%e6%89%a7%e8%a1%8c%e5%bc%80%e5%90%af%e6%8e%a7%e5%88%b6%e5%b9%b3%e9%9d%a2 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#docker作为容器运行时（高版本中docker-shim被废弃，建议使用containerd）</span>
+</span></span><span class=line><span class=cl>kubeadm init <span class=se>\
+</span></span></span><span class=line><span class=cl>  --control-plane-endpoint 192.168.1.10:6443 <span class=se>\
+</span></span></span><span class=line><span class=cl>  --kubernetes-version<span class=o>=</span>v1.21.11  <span class=se>\
+</span></span></span><span class=line><span class=cl>  --pod-network-cidr<span class=o>=</span>10.244.0.0/16 <span class=se>\
+</span></span></span><span class=line><span class=cl>  --service-cidr<span class=o>=</span>10.96.0.0/12 --upload-certs
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#containerd</span>
+</span></span><span class=line><span class=cl>kubeadm init <span class=se>\
+</span></span></span><span class=line><span class=cl>  --kubernetes-version v1.21.11  <span class=se>\
+</span></span></span><span class=line><span class=cl>  --control-plane-endpoint 192.168.1.10:6443 <span class=se>\
+</span></span></span><span class=line><span class=cl>  --image-repository registry.aliyuncs.com/google_containers <span class=se>\
+</span></span></span><span class=line><span class=cl>  --pod-network-cidr 10.244.0.0/16 <span class=se>\
+</span></span></span><span class=line><span class=cl>  --cri-socket /run/containerd/containerd.sock <span class=se>\
+</span></span></span><span class=line><span class=cl>  --service-cidr<span class=o>=</span>10.96.0.0/12 --upload-certs</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><p>保留以下数据</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#暂时保留以下数据</span>
+</span></span><span class=line><span class=cl>Your Kubernetes control-plane has initialized successfully!
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>To start using your cluster, you need to run the following as a regular user:
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  mkdir -p <span class=nv>$HOME</span>/.kube
+</span></span><span class=line><span class=cl>  sudo cp -i /etc/kubernetes/admin.conf <span class=nv>$HOME</span>/.kube/config
+</span></span><span class=line><span class=cl>  sudo chown <span class=k>$(</span>id -u<span class=k>)</span>:<span class=k>$(</span>id -g<span class=k>)</span> <span class=nv>$HOME</span>/.kube/config
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Alternatively, <span class=k>if</span> you are the root user, you can run:
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nb>export</span> <span class=nv>KUBECONFIG</span><span class=o>=</span>/etc/kubernetes/admin.conf
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>You should now deploy a pod network to the cluster.
+</span></span><span class=line><span class=cl>Run <span class=s2>&#34;kubectl apply -f [podnetwork].yaml&#34;</span> with one of the options listed at:
+</span></span><span class=line><span class=cl>  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>You can now join any number of the control-plane node running the following <span class=nb>command</span> on each as root:
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> kubeadm join 192.168.1.10:6443 --token grjzmr.ttkq7t4l3w9r2fb7<span class=se>\ </span>       --discovery-token-ca-cert-hash sha256:d9f4a8c6d14584b998a3ca86fd7e727f7d9d779f80e834dcf19e9116f22f3fad <span class=se>\
+</span></span></span><span class=line><span class=cl>        --control-plane --certificate-key 2346e1d55aa63ab30c3d7dca7529e9f91097383322e36336483a42ffa76e4c27
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Please note that the certificate-key gives access to cluster sensitive data, keep it secret!
+</span></span><span class=line><span class=cl>As a safeguard, uploaded-certs will be deleted in two hours<span class=p>;</span> If necessary, you can use
+</span></span><span class=line><span class=cl><span class=s2>&#34;kubeadm init phase upload-certs --upload-certs&#34;</span> to reload certs afterward.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Then you can join any number of worker nodes by running the following on each as root:
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>kubeadm join 192.168.1.10:6443 --token grjzmr.ttkq7t4l3w9r2fb7 <span class=se>\
+</span></span></span><span class=line><span class=cl>        --discovery-token-ca-cert-hash sha256:d9f4a8c6d14584b998a3ca86fd7e727f7d9d779f80e834dcf19e9116f22f3fad</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=在master2中执行加入控制平面><span>在master2中执行加入控制平面</span>
+<a href=#%e5%9c%a8master2%e4%b8%ad%e6%89%a7%e8%a1%8c%e5%8a%a0%e5%85%a5%e6%8e%a7%e5%88%b6%e5%b9%b3%e9%9d%a2 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubeadm join 192.168.1.10:6443 --token grjzmr.ttkq7t4l3w9r2fb7 <span class=se>\
+</span></span></span><span class=line><span class=cl>        --discovery-token-ca-cert-hash sha256:d9f4a8c6d14584b998a3ca86fd7e727f7d9d779f80e834dcf19e9116f22f3fad <span class=se>\
+</span></span></span><span class=line><span class=cl>        --control-plane --certificate-key 2346e1d55aa63ab30c3d7dca7529e9f91097383322e36336483a42ffa76e4c27</span></span></code></pre></td></tr></table></div></div></div><h2 class=heading-element id=在所有master执行配置><span>在所有master执行配置</span>
+<a href=#%e5%9c%a8%e6%89%80%e6%9c%89master%e6%89%a7%e8%a1%8c%e9%85%8d%e7%bd%ae class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>mkdir -p <span class=nv>$HOME</span>/.kube
+</span></span><span class=line><span class=cl>cp -i /etc/kubernetes/admin.conf <span class=nv>$HOME</span>/.kube/config
+</span></span><span class=line><span class=cl>chown <span class=k>$(</span>id -u<span class=k>)</span>:<span class=k>$(</span>id -g<span class=k>)</span> <span class=nv>$HOME</span>/.kube/config</span></span></code></pre></td></tr></table></div></div></div><h1 class=heading-element id=将node加入集群><span>将node加入集群</span>
+<a href=#%e5%b0%86node%e5%8a%a0%e5%85%a5%e9%9b%86%e7%be%a4 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubeadm join 192.168.1.10:6443 --token grjzmr.ttkq7t4l3w9r2fb7 <span class=se>\
+</span></span></span><span class=line><span class=cl>        --discovery-token-ca-cert-hash sha256:d9f4a8c6d14584b998a3ca86fd7e727f7d9d779f80e834dcf19e9116f22f3fad</span></span></code></pre></td></tr></table></div></div></div><h1 class=heading-element id=安装cni网络插件在master1上进行就好><span>安装CNI网络插件（在master1上进行就好）</span>
+<a href=#%e5%ae%89%e8%a3%85cni%e7%bd%91%e7%bb%9c%e6%8f%92%e4%bb%b6%e5%9c%a8master1%e4%b8%8a%e8%bf%9b%e8%a1%8c%e5%b0%b1%e5%a5%bd class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#查看节点信息，发现当前节点not ready，需要安装CNI网络插件，这里选择Calico，也可以使用其他网络插件</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#下载配置</span>
+</span></span><span class=line><span class=cl>wget https://docs.projectcalico.org/manifests/calico.yaml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#安装</span>
+</span></span><span class=line><span class=cl>kubectl apply -f calico.yaml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#国内无法连接calico，下载下面网址的镜像，导入到docker中，或者导入到镜像仓库中</span>
+</span></span><span class=line><span class=cl>https://github.com/projectcalico/calico
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#下载对应版本的，查看版本</span>
+</span></span><span class=line><span class=cl>cat calico.yaml <span class=p>|</span> grep image
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#重新查看节点信息</span>
+</span></span><span class=line><span class=cl>kubectl get nodes</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h1 class=heading-element id=使用ipvs代理><span>使用IPVS代理</span>
+<a href=#%e4%bd%bf%e7%94%a8ipvs%e4%bb%a3%e7%90%86 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label=切换行号 title=切换行号><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label=切换自动换行 title=切换自动换行><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label=切换可编辑代码块 title=切换可编辑代码块><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label=复制到剪贴板 title=复制到剪贴板 data-copied-text=已复制><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#查看当前ipvs规则发现没有使用ipvs</span>
+</span></span><span class=line><span class=cl>ipvsadm -L -n
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#修改kubeproxy配置</span>
+</span></span><span class=line><span class=cl>kubectl edit configmap -n kube-system kube-proxy
+</span></span><span class=line><span class=cl><span class=c1>#修改部分为mode: &#34;ipvs&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#删除重启kubeproxy</span>
+</span></span><span class=line><span class=cl>kubectl get pod -n kube-system -o wide <span class=p>|</span> grep kube-proxy
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#查看ipvs规则</span>
+</span></span><span class=line><span class=cl>ipvsadm -L -n</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label=展开或折叠代码块><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><p>至此K8S集群已经搭建完毕，云主机可以通过配置NLB实现对外访问ApiService，本地服务器可以配置Keepalived+HAProxy对ApiService进行代理</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span title="更新于 2026-09-29 08:03:28">更新于 2026-09-29&nbsp;</span></div><div class=post-info-license><span><a rel="license external nofollow noopener noreferrer" href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank>CC BY-NC-SA 4.0</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a href=/posts/deploy-k8s-with-kubeadm/index.md title=阅读原始文档 class=link-to-markdown>阅读原始文档</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 X" data-sharer=twitter data-url=https://blog.2nfree.com/posts/deploy-k8s-with-kubeadm/ data-title=基于kubeadm的k8s部署 data-hashtags=Kubernetes,DevOps><i class="fa-brands fa-x-twitter" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://blog.2nfree.com/posts/deploy-k8s-with-kubeadm/ data-hashtag=Kubernetes><i class="fa-brands fa-facebook-square" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://blog.2nfree.com/posts/deploy-k8s-with-kubeadm/ data-title=基于kubeadm的k8s部署><i class="fa-brands fa-weibo" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fa-solid fa-tags me-1" aria-hidden=true></i><a href=/tags/kubernetes/ class=post-tag title="标签 - Kubernetes">Kubernetes</a><a href=/tags/devops/ class=post-tag title="标签 - DevOps">DevOps</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/redis-config/ class=post-nav-item rel=prev title="Redis 高级功能"><i class="fa-solid fa-angle-left" aria-hidden=true></i>Redis 高级功能</a><a href=/posts/deploy-rook-ceph-on-k8s/ class=post-nav-item rel=next title="安装Rook Ceph作为K8S的存储服务">安装Rook Ceph作为K8S的存储服务<i class="fa-solid fa-angle-right" aria-hidden=true></i></a></div></div></article><aside class="toc animate__animated animate__fadeIn animate__faster" id=toc-auto aria-label=目录><h2 class=toc-title><span>目录<i class="toc-icon fa-solid fa-angle-down ms-1" aria-hidden=true></i></span>
+<button type=button class=toc-print-btn onclick=event.stopPropagation(),window.print() aria-label=打印><i class="fa-solid fa-print" aria-hidden=true></i></button></h2><div class=toc-content id=toc-content-auto></div></aside></main><footer class=footer><div class=footer-container><div class="footer-line powered">由 <a href="https://github.com/gohugoio/hugo?v=0.167.0" target=_blank rel="external nofollow noopener noreferrer" title="Hugo 0.167.0"><img class=hugo-icon src=/images/hugo.min.svg alt="Hugo logo"> Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt?v=v1.0.0-alpha.3" target=_blank rel=external title="FixIt v1.0.0-alpha.3"><img class=fixit-icon src=/images/fixit.min.svg alt="FixIt logo"> FixIt</a></div><div class="footer-line copyright" itemscope itemtype=http://schema.org/CreativeWork><i class="fa-regular fa-copyright" aria-hidden=true></i>
+<span itemprop=copyrightYear>2025 - 2026</span><span class=author itemprop=copyrightHolder>
+<a href=https://blog.2nfree.com/>komorebi</a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank>CC BY-NC-SA 4.0</a></span></div></div></footer></div><div class=widgets><div id=mask></div><dialog id=nav-dialog aria-labelledby=nav-dialog-title closedby=any><button type=button class=nav-close-btn aria-label="Close 导航"><i class="fa-solid fa-xmark fa-lg" aria-hidden=true></i></button><div class=toc><h2 class=toc-title id=nav-dialog-title>导航</h2><div class=toc-content id=toc-content-drawer></div></div></dialog><dialog id=search-dialog class=search-dialog aria-label=搜索 closedby=any><div class=search-modal><div class=search-modal-header><span class=search-delimiter></span>
+<button type=button class=search-close-btn aria-label="Close Search Dialog"><i class="fa-solid fa-xmark" aria-hidden=true></i></button></div><div class=search-source-footer><div class=search-shortcuts><span class=search-shortcut><kbd><i class=lucide-arrow-up aria-hidden=true></i></kbd>
+<kbd><i class=lucide-arrow-down aria-hidden=true></i></kbd>
+切换
+</span><span class=search-shortcut><kbd><i class=lucide-corner-down-left aria-hidden=true></i></kbd>
+选择
+</span><span class=search-shortcut><kbd>ESC</kbd>
+关闭</span></div><span class=search-engine>搜索引擎 <a href=https://fusejs.io/ target=_blank rel="external nofollow noopener noreferrer">Fuse.js</a></span></div></div></dialog><div class=fixed-buttons><button type=button class="fixed-button back-to-top animate__faster hidden" aria-label=回到顶部><i class="fa-solid fa-arrow-up" aria-hidden=true></i></button><button type=button id=nav-drawer-button class="fixed-button nav-drawer-button hidden" aria-label=导航 aria-controls=nav-dialog aria-expanded=false><i class="fa-solid fa-bars" aria-hidden=true></i></button></div><noscript><div class="noscript-warning bg-danger text-white text-base font-bold fixed text-center inset-x-0 bottom-0 w-full z-fixed">该网站在启用 JavaScript 的情况下效果最佳。</div></noscript></div><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><script src=/lib/autocomplete-js/index.production.js defer></script><script src=/js/lib/fuse.min.js defer></script><script src=/lib/sharer/sharer.min.js async defer></script><script src=/lib/tab-container-element/bundle.js defer type=module></script><script src=/lib/cookieconsent/cookieconsent.min.js defer></script><script src=/js/lib/cookieconsent.min.js defer></script><script src=/lib/cell-tooltip/cell-tooltip.umd.js defer></script><script src=/js/lib/table-sort.min.js defer></script><script src=/js/config/9be9388e253bd6a9c1156f11f8fc3b92.min.js defer></script><script src=/js/lib/file-tree.min.js defer></script><script src=/js/main.min.js defer></script><script src=/js/custom.min.js defer></script></body></html>

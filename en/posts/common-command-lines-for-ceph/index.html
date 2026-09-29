@@ -1,0 +1,272 @@
+<!doctype html><html itemscope itemtype=http://schema.org/WebPage lang=en-US dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=2"><title>Ceph 常用命令 - Gengar's Pokeball</title><meta name=author content="komorebi"><meta name=description content="整理了一些常用的 Ceph 管理命令"><meta name=robots content="index, follow"><meta name=keywords content='Ceph,Storage'><meta itemprop=name content="Ceph 常用命令"><meta itemprop=description content="整理了一些常用的 Ceph 管理命令"><meta itemprop=datePublished content="2024-02-02T12:19:15+00:00"><meta itemprop=dateModified content="2026-09-29T08:32:15+00:00"><meta itemprop=wordCount content="863"><meta itemprop=keywords content="Ceph,Storage"><meta property="og:url" content="https://blog.2nfree.com/en/posts/common-command-lines-for-ceph/"><meta property="og:site_name" content="Gengar's Pokeball"><meta property="og:title" content="Ceph 常用命令"><meta property="og:description" content="整理了一些常用的 Ceph 管理命令"><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-02-02T12:19:15+00:00"><meta property="article:modified_time" content="2026-09-29T08:32:15+00:00"><meta property="article:tag" content="Ceph"><meta property="article:tag" content="Storage"><meta name=twitter:card content="summary"><meta name=twitter:title content="Ceph 常用命令"><meta name=twitter:description content="整理了一些常用的 Ceph 管理命令"><meta name=application-name content="Hugo FixIt Blog"><meta name=apple-mobile-web-app-title content="Hugo FixIt Blog"><meta name=theme-color data-light=#f8f8f8 data-dark=#252627 content="#f8f8f8"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=canonical type=text/html href=https://blog.2nfree.com/en/posts/common-command-lines-for-ceph/ title="Ceph 常用命令 - Gengar's Pokeball"><link rel=prev type=text/html href=https://blog.2nfree.com/en/posts/deploy-ceph-by-cephadm/ title="Kubernetes 接入基于 Cephadm 部署的 Ceph 集群"><link rel=next type=text/html href=https://blog.2nfree.com/en/posts/cicd-in-cloud-native/ title=云原生体系下的CI/CD介绍><link rel=alternate type=text/markdown href=https://blog.2nfree.com/en/posts/common-command-lines-for-ceph/index.md><link rel=stylesheet href=/css/unocss.min.css><link rel=stylesheet href=/css/main.min.css><link rel=stylesheet href=/css/pages/posts.min.css><link rel=stylesheet href=/css/custom.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><link rel=preload href=/js/main.min.js as=script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Ceph 常用命令","inLanguage":"en-US","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/blog.2nfree.com\/en\/posts\/common-command-lines-for-ceph\/"},"genre":"posts","keywords":"Ceph, Storage","wordcount":863,"url":"https:\/\/blog.2nfree.com\/en\/posts\/common-command-lines-for-ceph\/","datePublished":"2024-02-02T12:19:15+00:00","dateModified":"2026-09-29T08:32:15+00:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"komorebi"},"description":"整理了一些常用的 Ceph 管理命令"}</script><script src=/js/head.min.js></script></head><body data-instant-intensity=viewport data-header-desktop=sticky data-header-mobile=auto><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper><div class=header-title><a href=/en/ title="Gengar's Pokeball" class=header-title-link><img class=logo src=/images/avatar.png alt="Gengar's Pokeball" height=32 width=32><span class=header-title-text>Gengar's Pokeball</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class=menu-item><a class=menu-link href=/en/archives/><i class="fa-solid fa-archive fa-sm" aria-hidden=true></i> Archives</a></li><li class=menu-item><a class=menu-link href=/en/categories/><i class="fa-solid fa-folder-tree fa-sm" aria-hidden=true></i> Categories</a></li><li class=menu-item><a class=menu-link href=/en/tags/><i class="fa-solid fa-tags fa-sm" aria-hidden=true></i> Tags</a></li><li class=menu-item><a class=menu-link href=/en/links/><i class="fa-solid fa-link fa-sm" aria-hidden=true></i> Links</a></li><li class=menu-item><a class=menu-link href=/en/about/><i class="fa-solid fa-heart fa-sm" aria-hidden=true></i> About</a></li><li class="menu-item delimiter"></li><li class="menu-item search"><button type=button class="search-trigger desktop" aria-label=Search title=Search>
+<i class="fa-solid fa-search" aria-hidden=true></i>
+Search
+<kbd></kbd></button></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch-item"><button type=button class=theme-switch aria-label="Switch Theme" title="Switch Theme"><i class="fa-solid fa-adjust" aria-hidden=true></i></button></li><li class="menu-item language-switch"><button type=button aria-label="Select Language" title="Select Language"><i class="fa-solid fa-language" aria-hidden=true></i></button><ul class=sub-menu><li class=menu-item><a href=/posts/common-command-lines-for-ceph/ class=menu-link title=简体中文>简体中文</a></li><li class=menu-item><span class=text-secondary title=English>English</span></li></ul></li></ul></nav></div></header><header class="mobile animate__faster" id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/en/ title="Gengar's Pokeball" class=header-title-link><img class=logo src=/images/avatar.png alt="Gengar's Pokeball" height=26 width=26><span class=header-title-text>Gengar's Pokeball</span></a><span class=header-subtitle></span></div><button type=button class="search-trigger mobile" aria-label=Search><i class="fa-solid fa-search" aria-hidden=true></i></button><button type=button class=theme-switch aria-label="Switch Theme"><i class="fa-solid fa-adjust" aria-hidden=true></i></button>
+<button type=button class=menu-toggle id=menu-toggle-mobile aria-controls=menu-mobile aria-expanded=false aria-labelledby=menu-mobile>
+<span></span><span></span><span></span></button></div><nav><ul class=menu id=menu-mobile><li class=menu-item><a class=menu-link href=/en/archives/><i class="fa-solid fa-archive fa-sm" aria-hidden=true></i> Archives</a></li><li class=menu-item><a class=menu-link href=/en/categories/><i class="fa-solid fa-folder-tree fa-sm" aria-hidden=true></i> Categories</a></li><li class=menu-item><a class=menu-link href=/en/tags/><i class="fa-solid fa-tags fa-sm" aria-hidden=true></i> Tags</a></li><li class=menu-item><a class=menu-link href=/en/links/><i class="fa-solid fa-link fa-sm" aria-hidden=true></i> Links</a></li><li class=menu-item><a class=menu-link href=/en/about/><i class="fa-solid fa-heart fa-sm" aria-hidden=true></i> About</a></li><li class="menu-item menu-system"><span class="menu-system-item language-switch"><button type=button aria-label="Select Language" title="Select Language">English<i class="dropdown-icon fa-solid fa-chevron-down" aria-hidden=true></i></button>
+<select id=language-select class=language-select onchange="location=this.value"><option value=/posts/common-command-lines-for-ceph/>简体中文</option><option value=/en/posts/common-command-lines-for-ceph/ selected disabled>English</option></select></span></li></ul></nav></div></header><main class=fi-container><aside class="aside-collection animate__animated animate__fadeIn animate__faster" aria-label=Collections></aside><article class="page single"><div class=header><h1 class="single-title animate__animated animate__flipInX"><span>Ceph 常用命令</span></h1></div><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://blog.2nfree.com/ title=Author rel=author class=author><img class=avatar src=/images/avatar.png alt=komorebi height=16 width=16>&nbsp;komorebi</a></span><span class=post-included-in>&nbsp;included in <a href=/en/categories/cloudnative/ class=post-category title="Category - CloudNative"><i class="fa-regular fa-folder" aria-hidden=true></i> CloudNative</a></span></div><div class=post-meta-line><span title="published on 2024-02-02 12:19:15"><i class="fa-solid fa-calendar-days me-1" aria-hidden=true></i><time datetime=2024-02-02>2024-02-02</time></span>&nbsp;<span title="Updated on 2026-09-29 08:32:15"><i class="fa-regular fa-calendar-check me-1" aria-hidden=true></i><time datetime=2026-09-29>2026-09-29</time></span>&nbsp;<span title="863 words"><i class="fa-solid fa-pencil me-1" aria-hidden=true></i>About 900 words</span>&nbsp;<span><i class="fa-regular fa-clock me-1" aria-hidden=true></i>2 minutes</span>&nbsp;</div></div><div class=content id=content><h1 class=heading-element id=cluster><span>Cluster</span>
+<a href=#cluster class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 显示集群的状态</span>
+</span></span><span class=line><span class=cl>ceph status 或 ceph -s
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 显示集群健康状况</span>
+</span></span><span class=line><span class=cl>ceph health
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 查看集群磁盘空间的使用情况</span>
+</span></span><span class=line><span class=cl>ceph df
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 显示集群中正在运行的 Ceph 版本</span>
+</span></span><span class=line><span class=cl>ceph version
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 列出所有认证密钥</span>
+</span></span><span class=line><span class=cl>ceph auth list
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 用于部署一个或多个集群服务实例，例如 MGR、MON、OSD、RGW 等</span>
+</span></span><span class=line><span class=cl>ceph orch apply &lt;service_type&gt; <span class=o>[</span>options<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 显示集群中当前运行的所有服务及其状态</span>
+</span></span><span class=line><span class=cl>ceph orch ps
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 列出集群中配置的所有服务</span>
+</span></span><span class=line><span class=cl>ceph orch ls
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 添加一个或多个 OSD 守护进程</span>
+</span></span><span class=line><span class=cl>ceph orch daemon add osd &lt;host&gt;:&lt;path&gt; <span class=o>[</span>--data-devices &lt;devices&gt;<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 移除一个 OSD 守护进程</span>
+</span></span><span class=line><span class=cl>ceph orch daemon rm osd &lt;osd_id&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 列出集群中每个主机上的所有设备及其状态</span>
+</span></span><span class=line><span class=cl>ceph orch device ls
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#  向集群中添加特定类型的守护进程</span>
+</span></span><span class=line><span class=cl>ceph orch daemon add &lt;daemon_type&gt; &lt;host&gt; <span class=o>[</span>options<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 从集群中删除特定类型的守护进程</span>
+</span></span><span class=line><span class=cl>ceph orch daemon rm &lt;daemon_type&gt; &lt;host&gt; <span class=o>[</span>options<span class=o>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 重启特定类型的守护进程</span>
+</span></span><span class=line><span class=cl>ceph orch daemon restart &lt;daemon_type&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 重新配置特定类型的守护进程</span>
+</span></span><span class=line><span class=cl>ceph orch daemon reconfig &lt;daemon_type&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 使用指定的容器镜像开始升级集群</span>
+</span></span><span class=line><span class=cl>ceph orch upgrade start --image &lt;container_image&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 停止正在进行的集群升级</span>
+</span></span><span class=line><span class=cl>ceph orch upgrade stop
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取当前集群升级的状态信息</span>
+</span></span><span class=line><span class=cl>ceph orch upgrade status
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 检查 Orchestrator 的状态和当前在用的后端</span>
+</span></span><span class=line><span class=cl>ceph orch status
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 列出集群中已知的主机</span>
+</span></span><span class=line><span class=cl>ceph orch host ls
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 将新主机添加到集群</span>
+</span></span><span class=line><span class=cl>ceph orch host add &lt;hostname&gt; &lt;ip&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 从集群中删除一个主机</span>
+</span></span><span class=line><span class=cl>ceph orch host rm &lt;hostname&gt;</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h1 class=heading-element id=osd><span>OSD</span>
+<a href=#osd class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 查看每个 OSD 的上线/下线状态</span>
+</span></span><span class=line><span class=cl>ceph osd status
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 查看集群 OSD 映射和状态</span>
+</span></span><span class=line><span class=cl>ceph osd tree
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 将指定的 OSD 设置为 out 状态，启动数据迁移</span>
+</span></span><span class=line><span class=cl>ceph osd out &lt;osd.?&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 将指定的 OSD 设置为 in 状态</span>
+</span></span><span class=line><span class=cl>ceph osd in &lt;osd.?&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 移除指定的 OSD</span>
+</span></span><span class=line><span class=cl>ceph osd rm &lt;osd.?&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 重新设置 OSD 的权重</span>
+</span></span><span class=line><span class=cl>ceph osd reweight &lt;osd.?&gt; &lt;weight&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 设置 OSD 的特定标志，例如 noout, noscrub 等</span>
+</span></span><span class=line><span class=cl>ceph osd <span class=nb>set</span> &lt;flag&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 列出所有存储池</span>
+</span></span><span class=line><span class=cl>ceph osd lspools
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建一个新的存储池</span>
+</span></span><span class=line><span class=cl>ceph osd pool create &lt;pool_name&gt; &lt;pg_num&gt; &lt;pgp_num&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 删除存储池</span>
+</span></span><span class=line><span class=cl>ceph osd pool delete &lt;pool_name&gt; &lt;pool_name&gt; --yes-i-really-really-mean-it
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 设置存储池的参数</span>
+</span></span><span class=line><span class=cl>ceph osd pool <span class=nb>set</span> &lt;pool_name&gt; &lt;key&gt; &lt;value&gt;</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h1 class=heading-element id=mon><span>MON</span>
+<a href=#mon class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 显示监控守护进程状态</span>
+</span></span><span class=line><span class=cl>ceph mon stat
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 添加新的监控守护进程</span>
+</span></span><span class=line><span class=cl>ceph mon add &lt;name&gt; &lt;ip:port&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 移除监控守护进程</span>
+</span></span><span class=line><span class=cl>ceph mon rm &lt;name&gt;</span></span></code></pre></td></tr></table></div></div></div><h1 class=heading-element id=mds><span>MDS</span>
+<a href=#mds class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 显示元数据服务器状态</span>
+</span></span><span class=line><span class=cl>ceph mds stat
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 列出所有 Ceph 文件系统</span>
+</span></span><span class=line><span class=cl>ceph fs ls
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建新的 Ceph 文件系统</span>
+</span></span><span class=line><span class=cl>ceph fs new &lt;fs_name&gt; &lt;metadata_pool&gt; &lt;data_pool&gt;</span></span></code></pre></td></tr></table></div></div></div><h1 class=heading-element id=crash><span>Crash</span>
+<a href=#crash class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 查看最近组件崩溃的历史</span>
+</span></span><span class=line><span class=cl>ceph crash ls-new
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 查看所有组件崩溃的历史</span>
+</span></span><span class=line><span class=cl>ceph crash ls
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 查看对应崩溃的详情</span>
+</span></span><span class=line><span class=cl>ceph crash info &lt;id&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 归档对应的崩溃</span>
+</span></span><span class=line><span class=cl>ceph crash archive &lt;id&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 归档所有</span>
+</span></span><span class=line><span class=cl>ceph crash archive-all</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span title="Updated on 2026-09-29 08:32:15">Updated on 2026-09-29&nbsp;</span></div><div class=post-info-license><span><a rel="license external nofollow noopener noreferrer" href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank>CC BY-NC-SA 4.0</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a href=/en/posts/common-command-lines-for-ceph/index.md title="Read Markdown" class=link-to-markdown>Read Markdown</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="Share on X" data-sharer=twitter data-url=https://blog.2nfree.com/en/posts/common-command-lines-for-ceph/ data-title="Ceph 常用命令" data-hashtags=Ceph,Storage><i class="fa-brands fa-x-twitter" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="Share on Facebook" data-sharer=facebook data-url=https://blog.2nfree.com/en/posts/common-command-lines-for-ceph/ data-hashtag=Ceph><i class="fa-brands fa-facebook-square" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="Share on 微博" data-sharer=weibo data-url=https://blog.2nfree.com/en/posts/common-command-lines-for-ceph/ data-title="Ceph 常用命令"><i class="fa-brands fa-weibo" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fa-solid fa-tags me-1" aria-hidden=true></i><a href=/en/tags/ceph/ class=post-tag title="Tags - Ceph">Ceph</a><a href=/en/tags/storage/ class=post-tag title="Tags - Storage">Storage</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>Back</a></span>&nbsp;|&nbsp;<span><a href=/en/>Home</a></span></section></div><div class=post-nav><a href=/en/posts/deploy-ceph-by-cephadm/ class=post-nav-item rel=prev title="Kubernetes 接入基于 Cephadm 部署的 Ceph 集群"><i class="fa-solid fa-angle-left" aria-hidden=true></i>Kubernetes 接入基于 Cephadm 部署的 Ceph 集群</a><a href=/en/posts/cicd-in-cloud-native/ class=post-nav-item rel=next title=云原生体系下的CI/CD介绍>云原生体系下的CI/CD介绍<i class="fa-solid fa-angle-right" aria-hidden=true></i></a></div></div></article><aside class="toc animate__animated animate__fadeIn animate__faster" id=toc-auto aria-label=Contents></aside></main><footer class=footer><div class=footer-container><div class="footer-line powered">Powered by <a href="https://github.com/gohugoio/hugo?v=0.167.0" target=_blank rel="external nofollow noopener noreferrer" title="Hugo 0.167.0"><img class=hugo-icon src=/images/hugo.min.svg alt="Hugo logo"> Hugo</a> | Theme - <a href="https://github.com/hugo-fixit/FixIt?v=v1.0.0-alpha.3" target=_blank rel=external title="FixIt v1.0.0-alpha.3"><img class=fixit-icon src=/images/fixit.min.svg alt="FixIt logo"> FixIt</a></div><div class="footer-line copyright" itemscope itemtype=http://schema.org/CreativeWork><i class="fa-regular fa-copyright" aria-hidden=true></i>
+<span itemprop=copyrightYear>2025 - 2026</span><span class=author itemprop=copyrightHolder>
+<a href=https://blog.2nfree.com/>komorebi</a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank>CC BY-NC-SA 4.0</a></span></div></div></footer></div><div class=widgets><div id=mask></div><dialog id=search-dialog class=search-dialog aria-label=Search closedby=any><div class=search-modal><div class=search-modal-header><span class=search-delimiter></span>
+<button type=button class=search-close-btn aria-label="Close Search Dialog"><i class="fa-solid fa-xmark" aria-hidden=true></i></button></div><div class=search-source-footer><div class=search-shortcuts><span class=search-shortcut><kbd><i class=lucide-arrow-up aria-hidden=true></i></kbd>
+<kbd><i class=lucide-arrow-down aria-hidden=true></i></kbd>
+Navigate
+</span><span class=search-shortcut><kbd><i class=lucide-corner-down-left aria-hidden=true></i></kbd>
+Select
+</span><span class=search-shortcut><kbd>ESC</kbd>
+Close</span></div><span class=search-engine>Search by <a href=https://fusejs.io/ target=_blank rel="external nofollow noopener noreferrer">Fuse.js</a></span></div></div></dialog><div class=fixed-buttons><button type=button class="fixed-button back-to-top animate__faster hidden" aria-label="Back to Top"><i class="fa-solid fa-arrow-up" aria-hidden=true></i></button></div><noscript><div class="noscript-warning bg-danger text-white text-base font-bold fixed text-center inset-x-0 bottom-0 w-full z-fixed">This website works best with JavaScript enabled.</div></noscript></div><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><script src=/lib/autocomplete-js/index.production.js defer></script><script src=/js/lib/fuse.min.js defer></script><script src=/lib/sharer/sharer.min.js async defer></script><script src=/lib/cookieconsent/cookieconsent.min.js defer></script><script src=/js/lib/cookieconsent.min.js defer></script><script src=/lib/cell-tooltip/cell-tooltip.umd.js defer></script><script src=/en/js/config/a30cc27761205d2e6801eefa7304da55.min.js defer></script><script src=/js/lib/file-tree.min.js defer></script><script src=/js/main.min.js defer></script><script src=/js/custom.min.js defer></script></body></html>

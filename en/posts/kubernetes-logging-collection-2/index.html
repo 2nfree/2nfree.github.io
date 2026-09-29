@@ -1,0 +1,1074 @@
+<!doctype html><html itemscope itemtype=http://schema.org/WebPage lang=en-US dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=2"><title>Kubernetes 日志收集（二）- 基于 Logging Operator 的日志收集 - Gengar's Pokeball</title><meta name=author content="komorebi"><meta name=description content="Logging Operator 通过自动部署和配置 Kubernetes 日志管道来解决 Kubernetes 环境中与日志记录相关的问题。"><meta name=robots content="index, follow"><meta name=keywords content='Kubernetes,Logging'><meta itemprop=name content="Kubernetes 日志收集（二）- 基于 Logging operator 的日志收集"><meta itemprop=description content="Logging Operator 通过自动部署和配置 Kubernetes 日志管道来解决 Kubernetes 环境中与日志记录相关的问题。"><meta itemprop=datePublished content="2024-03-21T11:26:58+00:00"><meta itemprop=dateModified content="2026-09-29T08:32:15+00:00"><meta itemprop=wordCount content="3774"><meta itemprop=keywords content="Kubernetes,Logging"><meta property="og:url" content="https://blog.2nfree.com/en/posts/kubernetes-logging-collection-2/"><meta property="og:site_name" content="Gengar's Pokeball"><meta property="og:title" content="Kubernetes 日志收集（二）- 基于 Logging operator 的日志收集"><meta property="og:description" content="Logging Operator 通过自动部署和配置 Kubernetes 日志管道来解决 Kubernetes 环境中与日志记录相关的问题。"><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-03-21T11:26:58+00:00"><meta property="article:modified_time" content="2026-09-29T08:32:15+00:00"><meta property="article:tag" content="Kubernetes"><meta property="article:tag" content="Logging"><meta name=twitter:card content="summary"><meta name=twitter:title content="Kubernetes 日志收集（二）- 基于 Logging operator 的日志收集"><meta name=twitter:description content="Logging Operator 通过自动部署和配置 Kubernetes 日志管道来解决 Kubernetes 环境中与日志记录相关的问题。"><meta name=application-name content="Hugo FixIt Blog"><meta name=apple-mobile-web-app-title content="Hugo FixIt Blog"><meta name=theme-color data-light=#f8f8f8 data-dark=#252627 content="#f8f8f8"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=canonical type=text/html href=https://blog.2nfree.com/en/posts/kubernetes-logging-collection-2/ title="Kubernetes 日志收集（二）- 基于 Logging operator 的日志收集 - Gengar's Pokeball"><link rel=prev type=text/html href=https://blog.2nfree.com/en/posts/kubernetes-logging-collection-1/ title="Kubernetes 日志收集（一）- 基于 SideCar 模式的日志收集"><link rel=next type=text/html href=https://blog.2nfree.com/en/posts/keda/ title="KEDA - 基于 Kubernetes 的事件驱动自动缩放器"><link rel=alternate type=text/markdown href=https://blog.2nfree.com/en/posts/kubernetes-logging-collection-2/index.md><link rel=stylesheet href=/css/unocss.min.css><link rel=stylesheet href=/css/main.min.css><link rel=stylesheet href=/css/pages/posts.min.css><link rel=stylesheet href=/css/custom.min.css><link rel=preload href=/lib/fontawesome-free/all.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/fontawesome-free/all.min.css></noscript><link rel=preload href=/lib/animate/animate.min.css as=style onload='this.removeAttribute("onload"),this.rel="stylesheet"'><noscript><link rel=stylesheet href=/lib/animate/animate.min.css></noscript><link rel=preload href=/js/main.min.js as=script><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Kubernetes 日志收集（二）- 基于 Logging operator 的日志收集","inLanguage":"en-US","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/blog.2nfree.com\/en\/posts\/kubernetes-logging-collection-2\/"},"genre":"posts","keywords":"Kubernetes, Logging","wordcount":3774,"url":"https:\/\/blog.2nfree.com\/en\/posts\/kubernetes-logging-collection-2\/","datePublished":"2024-03-21T11:26:58+00:00","dateModified":"2026-09-29T08:32:15+00:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"komorebi"},"description":"Logging Operator 通过自动部署和配置 Kubernetes 日志管道来解决 Kubernetes 环境中与日志记录相关的问题。"}</script><script src=/js/head.min.js></script></head><body data-instant-intensity=viewport data-header-desktop=sticky data-header-mobile=auto><div class=wrapper data-page-style=normal><header class="desktop animate__faster" id=header-desktop><div class=header-wrapper><div class=header-title><a href=/en/ title="Gengar's Pokeball" class=header-title-link><img class=logo src=/images/avatar.png alt="Gengar's Pokeball" height=32 width=32><span class=header-title-text>Gengar's Pokeball</span></a><span class=header-subtitle></span></div><nav><ul class=menu><li class=menu-item><a class=menu-link href=/en/archives/><i class="fa-solid fa-archive fa-sm" aria-hidden=true></i> Archives</a></li><li class=menu-item><a class=menu-link href=/en/categories/><i class="fa-solid fa-folder-tree fa-sm" aria-hidden=true></i> Categories</a></li><li class=menu-item><a class=menu-link href=/en/tags/><i class="fa-solid fa-tags fa-sm" aria-hidden=true></i> Tags</a></li><li class=menu-item><a class=menu-link href=/en/links/><i class="fa-solid fa-link fa-sm" aria-hidden=true></i> Links</a></li><li class=menu-item><a class=menu-link href=/en/about/><i class="fa-solid fa-heart fa-sm" aria-hidden=true></i> About</a></li><li class="menu-item delimiter"></li><li class="menu-item search"><button type=button class="search-trigger desktop" aria-label=Search title=Search>
+<i class="fa-solid fa-search" aria-hidden=true></i>
+Search
+<kbd></kbd></button></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch-item"><button type=button class=theme-switch aria-label="Switch Theme" title="Switch Theme"><i class="fa-solid fa-adjust" aria-hidden=true></i></button></li><li class="menu-item language-switch"><button type=button aria-label="Select Language" title="Select Language"><i class="fa-solid fa-language" aria-hidden=true></i></button><ul class=sub-menu><li class=menu-item><a href=/posts/kubernetes-logging-collection-2/ class=menu-link title=简体中文>简体中文</a></li><li class=menu-item><span class=text-secondary title=English>English</span></li></ul></li></ul></nav></div></header><header class="mobile animate__faster" id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/en/ title="Gengar's Pokeball" class=header-title-link><img class=logo src=/images/avatar.png alt="Gengar's Pokeball" height=26 width=26><span class=header-title-text>Gengar's Pokeball</span></a><span class=header-subtitle></span></div><button type=button class="search-trigger mobile" aria-label=Search><i class="fa-solid fa-search" aria-hidden=true></i></button><button type=button class=theme-switch aria-label="Switch Theme"><i class="fa-solid fa-adjust" aria-hidden=true></i></button>
+<button type=button class=menu-toggle id=menu-toggle-mobile aria-controls=menu-mobile aria-expanded=false aria-labelledby=menu-mobile>
+<span></span><span></span><span></span></button></div><nav><ul class=menu id=menu-mobile><li class=menu-item><a class=menu-link href=/en/archives/><i class="fa-solid fa-archive fa-sm" aria-hidden=true></i> Archives</a></li><li class=menu-item><a class=menu-link href=/en/categories/><i class="fa-solid fa-folder-tree fa-sm" aria-hidden=true></i> Categories</a></li><li class=menu-item><a class=menu-link href=/en/tags/><i class="fa-solid fa-tags fa-sm" aria-hidden=true></i> Tags</a></li><li class=menu-item><a class=menu-link href=/en/links/><i class="fa-solid fa-link fa-sm" aria-hidden=true></i> Links</a></li><li class=menu-item><a class=menu-link href=/en/about/><i class="fa-solid fa-heart fa-sm" aria-hidden=true></i> About</a></li><li class="menu-item menu-system"><span class="menu-system-item language-switch"><button type=button aria-label="Select Language" title="Select Language">English<i class="dropdown-icon fa-solid fa-chevron-down" aria-hidden=true></i></button>
+<select id=language-select class=language-select onchange="location=this.value"><option value=/posts/kubernetes-logging-collection-2/>简体中文</option><option value=/en/posts/kubernetes-logging-collection-2/ selected disabled>English</option></select></span></li></ul></nav></div></header><main class=fi-container><aside class="aside-collection animate__animated animate__fadeIn animate__faster" aria-label=Collections></aside><article class="page single"><div class=header><h1 class="single-title animate__animated animate__flipInX"><span>Kubernetes 日志收集（二）- 基于 Logging Operator 的日志收集</span></h1></div><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://blog.2nfree.com/ title=Author rel=author class=author><img class=avatar src=/images/avatar.png alt=komorebi height=16 width=16>&nbsp;komorebi</a></span><span class=post-included-in>&nbsp;included in <a href=/en/categories/cloudnative/ class=post-category title="Category - CloudNative"><i class="fa-regular fa-folder" aria-hidden=true></i> CloudNative</a></span></div><div class=post-meta-line><span title="published on 2024-03-21 11:26:58"><i class="fa-solid fa-calendar-days me-1" aria-hidden=true></i><time datetime=2024-03-21>2024-03-21</time></span>&nbsp;<span title="Updated on 2026-09-29 08:32:15"><i class="fa-regular fa-calendar-check me-1" aria-hidden=true></i><time datetime=2026-09-29>2026-09-29</time></span>&nbsp;<span title="3774 words"><i class="fa-solid fa-pencil me-1" aria-hidden=true></i>About 3800 words</span>&nbsp;<span><i class="fa-regular fa-clock me-1" aria-hidden=true></i>8 minutes</span>&nbsp;</div></div><div class="details toc" id=toc-static data-kept=false><div class="details-summary toc-title"><span>Contents</span>
+<span><i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static></div></div><template data-toc><nav id=TableOfContents><ul><li><a href=#自定义资源>自定义资源</a><ul><li><a href=#logging>Logging</a></li><li><a href=#flow>Flow</a></li><li><a href=#output>OutPut</a></li></ul></li><li><a href=#官方文档及架构图>官方文档及架构图</a></li></ul><ul><li><a href=#fluentdcrdlogging>Fluentd（CRD：Logging）</a></li><li><a href=#fluent-bitcrdfluentbitagent>Fluent-bit（CRD：FluentbitAgent）</a></li></ul><ul><li><a href=#文件挂载检查>文件挂载检查</a></li><li><a href=#配置检查>配置检查</a></li><li><a href=#日志等级可选>日志等级（可选）</a></li></ul><ul><li><a href=#部署打印测试日志的容器>部署打印测试日志的容器</a></li><li><a href=#配置-flow-和-output-使用logging-operator-test-receiver测试>配置 Flow 和 OutPut （使用logging-operator-test-receiver测试）</a></li></ul><ul><li><a href=#多行日志的初步合并>多行日志的初步合并</a></li><li><a href=#日志的字段格式化>日志的字段格式化</a></li><li><a href=#删除不需要的字段>删除不需要的字段</a></li></ul><ul><li><a href=#elasticsearch-output-配置>ElasticSearch OutPut 配置</a></li><li><a href=#使用动态的索引名称>使用动态的索引名称</a></li><li><a href=#elasticsearch-使用数据流模式>ElasticSearch 使用数据流模式</a></li></ul></nav></template><div class=content id=content><h1 class=heading-element id=logging-operator-介绍><span>Logging Operator 介绍</span>
+<a href=#logging-operator-%e4%bb%8b%e7%bb%8d class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><p>Logging operator 基于 CRD 规定和管理日志收集架构，我们通过相关规定的资源可以在 K8S 中轻松的部署日志采集器、日志转发器与相关的日志路由规则</p><h2 class=heading-element id=自定义资源><span>自定义资源</span>
+<a href=#%e8%87%aa%e5%ae%9a%e4%b9%89%e8%b5%84%e6%ba%90 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>每次修改完相关 CRD 时，对应的资源需要一段时间之后才会收到影响，需要等待一段时间</p><h3 class=heading-element id=logging><span>Logging</span>
+<a href=#logging class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><blockquote><p><code>Logging</code> 定义用于收集和传输日志消息的集群的日志记录基础架构</p></blockquote><ul><li><code>Logging</code> 包含 <code>Fluent Bit</code> 日志收集器（基于 <code>DemonSet</code> 部署）以及 <code>Fluentd</code> 和 <code>Syslog-ng</code> 日志转发器（基于 <code>StatefulSet</code> 部署）的配置，在新版本中，可以使用 <code>FluentbitAgent</code> 代替 <code>Fluent Bit</code> 的配置，将其与日志转发器隔离开</li><li>日志收集器（<code>Fluent Bit</code>）作为 <code>Daemonset</code> 部署在节点上，主要用于收集节点上的日志并传入日志转发器</li><li>日志转发器可以接收、过滤和转换传入的日志，并将它们传输到一个或多个目标输出，Logging Operator 支持 <code>Fluentd</code> 和 <code>Syslog-ng</code> 作为日志转发器，<code>Syslog-ng</code> 支持多线程处理可提供更高的性能，<code>Fluentd</code> 支持丰富的输入输出源以及各种插件，可以根据各种需要选择不同的日志转发器</li><li>在创建 <code>Logging</code> 时，会建立 <code>controlNamespace</code>，即 Logging Operator 的管理命名空间，<code>Fluentd</code>|<code>Syslog-ng</code> 和 <code>Fluent Bit</code> 部署在此命名空间中，默认情况下，仅在此命名空间中评估诸如 <code>ClusterOutput</code> 和 <code>ClusterFlow</code> 之类的全局资源（即使它们在任何其他命名空间，除非 <code>allowClusterResourcesFromAllNamespaces</code> 设置为 true）</li></ul><h3 class=heading-element id=flow><span>Flow</span>
+<a href=#flow class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><blockquote><p><code>Flow</code> 将选定的日志消息路由到指定的输出，它包含了 <code>Flow</code> 与 <code>ClusterFlow</code></p></blockquote><ul><li><code>Flow</code> 是一个 <code>namespaced</code> 资源，因此仅收集来自相同命名空间的日志。可以指定 <code>match</code> 语句根据 Kubernetes labels、容器和主机名来选择或排除日志（匹配语句按照定义和处理的顺序进行评估，直到第一个匹配的 select 或 exclude 规则应用为止）</li><li><code>ClusterFlow</code> 定义了一个没有命名空间限制的 <code>Flow</code>。它也只在 <code>controlNamespace</code> 中有效。 <code>ClusterFlow</code> 从所有命名空间中选择日志</li><li><code>Flow</code> 和 <code>ClusterFlow</code> 是针对 <code>Fluentd Forwarder</code> 的 CRD 资源，如果我们要使用 <code>Syslog-ng</code> 作为 <code>Forwarder</code>，需要将对应的名称改为：<code>SyslogNGFlow</code> 和 <code>SyslogNGClusterFlow</code></li></ul><h3 class=heading-element id=output><span>OutPut</span>
+<a href=#output class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h3><blockquote><p><code>OutPut</code> 是日志转发器将日志消息发送到的目的地，如常用的 Elasticsearch、Loki 或 Kafka 等</p></blockquote><ul><li><code>Output</code> 也是 <code>namespaced</code> 资源，定义了 <code>Flow</code> 可以发送日志消息的输出。意味着只有同一命名空间内的 <code>Flow</code> 可以访问它。可以在这些定义中使用 <code>secrets</code>，但它们也必须位于同一命名空间中。输出是日志转发的最后阶段</li><li><code>ClusterOutput</code> 定义没有命名空间限制的输出</li><li>同 <code>Flow</code>，如果要使用<code>Syslog-ng</code>，要将对应的名称改为：<code>SyslogNGFlow</code> 和 <code>SyslogNGClusterOutput</code></li></ul><h2 class=heading-element id=官方文档及架构图><span>官方文档及架构图</span>
+<a href=#%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3%e5%8f%8a%e6%9e%b6%e6%9e%84%e5%9b%be class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><blockquote><p><a href=https://kube-logging.dev/docs/ target=_blank rel="external nofollow noopener noreferrer">https://kube-logging.dev/docs/</a></p></blockquote><h1 class=heading-element id=logging-operator-安装><span>Logging Operator 安装</span>
+<a href=#logging-operator-%e5%ae%89%e8%a3%85 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><p>需要提前安装 helm</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>helm upgrade --install --wait <span class=se>\
+</span></span></span><span class=line><span class=cl>     --create-namespace --namespace logging <span class=se>\
+</span></span></span><span class=line><span class=cl>     --set testReceiver.enabled<span class=o>=</span><span class=nb>true</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>     logging-operator oci://ghcr.io/kube-logging/helm-charts/logging-operator</span></span></code></pre></td></tr></table></div></div></div><p>以上命令除了安装 Logging Operator 外，还会安装一个测试用的 deployment <code>logging-operator-test-receiver</code>，它侦听 HTTP 端口，接收 JSON 消息，并将它们写入标准输出 (stdout)，我们在配置日志转发器时，可以接入这个服务，一边检查我们的日志格式是否有问题。</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 查看服务运行情况</span>
+</span></span><span class=line><span class=cl>kubectl get deploy -n logging</span></span></code></pre></td></tr></table></div></div></div><h1 class=heading-element id=配置日志收集器和日志转发器><span>配置日志收集器和日志转发器</span>
+<a href=#%e9%85%8d%e7%bd%ae%e6%97%a5%e5%bf%97%e6%94%b6%e9%9b%86%e5%99%a8%e5%92%8c%e6%97%a5%e5%bf%97%e8%bd%ac%e5%8f%91%e5%99%a8 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><div class="details admonition danger open"><div class="details-summary admonition-title"><i class="icon fa-solid fa-bolt" aria-hidden=true></i>Danger<i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></div><div class=details-content><div class=admonition-content>在本文中，我们使用 <code>Fluentd</code> 作为日志转发器</div></div></div><h2 class=heading-element id=fluentdcrdlogging><span>Fluentd（CRD：Logging）</span>
+<a href=#fluentdcrdlogging class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>这里配置了一个三分片的 <code>Fluentd</code> 并且配置了 pod 亲和性使其不调度在一个节点，使用 pvc 对 buffer 数据进行了持久化</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-yaml"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Logging</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>logging-collector</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>controlNamespace</span><span class=p>:</span><span class=w> </span><span class=l>logging</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>fluentd</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>scaling</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>replicas</span><span class=p>:</span><span class=w> </span><span class=m>3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>bufferStorageVolume</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>pvc</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>storageClassName</span><span class=p>:</span><span class=w> </span><span class=l>【这里修改成集群的存储类】</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>accessModes</span><span class=p>:</span><span class=w> </span><span class=p>[</span><span class=w> </span><span class=s2>&#34;ReadWriteOnce&#34;</span><span class=w> </span><span class=p>]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>resources</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>requests</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>storage</span><span class=p>:</span><span class=w> </span><span class=l>5Gi</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>affinity</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>podAntiAffinity</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>requiredDuringSchedulingIgnoredDuringExecution</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span>- <span class=nt>labelSelector</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>matchExpressions</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span>- <span class=nt>key</span><span class=p>:</span><span class=w> </span><span class=l>app.kubernetes.io/name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>operator</span><span class=p>:</span><span class=w> </span><span class=l>In</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>values</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                  </span>- <span class=l>fluentd</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>topologyKey</span><span class=p>:</span><span class=w> </span><span class=l>kubernetes.io/hostname</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=fluent-bitcrdfluentbitagent><span>Fluent-bit（CRD：FluentbitAgent）</span>
+<a href=#fluent-bitcrdfluentbitagent class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>这里额外配置了 <code>/data/docker/containers</code> 是因为修改过 docker 的默认 <code>data-root</code> 文件夹，如果默认的 docker 数据保存在 <code>/var/lib/docker</code> 则不需要添加
+配置 <code>tolerations</code> 使 <code>daemonset</code> 可以调度到 master 上让我们后续可以收集 <code>kube-system</code> 相关日志</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-yaml"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>FluentbitAgent</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>logging-collector-agent</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>extraVolumeMounts</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>source</span><span class=p>:</span><span class=w> </span><span class=l>/data/docker/containers/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>destination</span><span class=p>:</span><span class=w> </span><span class=l>/data/docker/containers/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>readOnly</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>tolerations</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>key</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;node-role.kubernetes.io/master&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>operator</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;Exists&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>effect</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;NoSchedule&#34;</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><blockquote><p>当我们 apply <code>Logging</code> 和 <code>FluentbitAgent</code> 时，会启动名为 <code>logging-collector-fluentd</code> 的 <code>Fluentd</code>（statefulset）和名为 <code>logging-collector-agent-fluentbit</code> 的 <code>Fluent-Bit</code>（daemonset），此时 <code>Fluent-Bit</code> 就会采集节点上的日志到 <code>Fluentd</code> 中</p></blockquote><h1 class=heading-element id=检查><span>检查</span>
+<a href=#%e6%a3%80%e6%9f%a5 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><h2 class=heading-element id=文件挂载检查><span>文件挂载检查</span>
+<a href=#%e6%96%87%e4%bb%b6%e6%8c%82%e8%bd%bd%e6%a3%80%e6%9f%a5 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>查看 <code>daemonset</code> 的详细信息查看我们配置的额外挂载是否生效</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl describe daemonsets.apps -n logging logging-collector-agent-fluentbit</span></span></code></pre></td></tr></table></div></div></div><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-text"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>Volumes:
+</span></span><span class=line><span class=cl>  varlibcontainers:
+</span></span><span class=line><span class=cl>  Type:          HostPath (bare host directory volume)
+</span></span><span class=line><span class=cl>  Path:          /var/lib/docker/containers
+</span></span><span class=line><span class=cl>  HostPathType:
+</span></span><span class=line><span class=cl>  varlogs:
+</span></span><span class=line><span class=cl>  Type:          HostPath (bare host directory volume)
+</span></span><span class=line><span class=cl>  Path:          /var/log
+</span></span><span class=line><span class=cl>  HostPathType:
+</span></span><span class=line><span class=cl>  extravolumemount0:
+</span></span><span class=line><span class=cl>  Type:          HostPath (bare host directory volume)
+</span></span><span class=line><span class=cl>Path:          /data/docker/containers/
+</span></span><span class=line><span class=cl>HostPathType:
+</span></span><span class=line><span class=cl>  config:
+</span></span><span class=line><span class=cl>  Type:        Secret (a volume populated by a Secret)
+</span></span><span class=line><span class=cl>  SecretName:  logging-collector-agent-fluentbit
+</span></span><span class=line><span class=cl>  Optional:    false
+</span></span><span class=line><span class=cl>  positiondb:
+</span></span><span class=line><span class=cl>  Type:       EmptyDir (a temporary directory that shares a pod&#39;s lifetime)
+</span></span><span class=line><span class=cl>  Medium:
+</span></span><span class=line><span class=cl>  SizeLimit:  &lt;unset&gt;
+</span></span><span class=line><span class=cl>  buffers:
+</span></span><span class=line><span class=cl>  Type:       EmptyDir (a temporary directory that shares a pod&#39;s lifetime)
+</span></span><span class=line><span class=cl>  Medium:
+</span></span><span class=line><span class=cl>  SizeLimit:  &lt;unset&gt;</span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=配置检查><span>配置检查</span>
+<a href=#%e9%85%8d%e7%bd%ae%e6%a3%80%e6%9f%a5 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl get secret logging-collector-agent-fluentbit -n logging -o <span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{.data.fluent-bit\.conf}&#39;</span><span class=p>|</span>base64 --decode</span></span></code></pre></td></tr></table></div></div></div><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-ini"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ini data-lang=ini><span class=line><span class=cl><span class=k>[SERVICE]</span>
+</span></span><span class=line><span class=cl>    <span class=na>Flush        1</span>
+</span></span><span class=line><span class=cl>    <span class=na>Grace        5</span>
+</span></span><span class=line><span class=cl>    <span class=na>Daemon       Off</span>
+</span></span><span class=line><span class=cl>    <span class=na>Log_Level    info</span>
+</span></span><span class=line><span class=cl>    <span class=na>Parsers_File /fluent-bit/etc/parsers.conf</span>
+</span></span><span class=line><span class=cl>    <span class=na>Coro_Stack_Size    24576</span>
+</span></span><span class=line><span class=cl>    <span class=na>storage.path  /buffers</span>
+</span></span><span class=line><span class=cl><span class=k>[INPUT]</span>
+</span></span><span class=line><span class=cl>    <span class=na>Name         tail</span>
+</span></span><span class=line><span class=cl>    <span class=na>DB  /tail-db/tail-containers-state.db</span>
+</span></span><span class=line><span class=cl>    <span class=na>DB.locking  true</span>
+</span></span><span class=line><span class=cl>    <span class=na>Mem_Buf_Limit  5MB</span>
+</span></span><span class=line><span class=cl>    <span class=na>Parser  docker</span>
+</span></span><span class=line><span class=cl>    <span class=na>Path  /var/log/containers/*.log</span>
+</span></span><span class=line><span class=cl>    <span class=na>Refresh_Interval  5</span>
+</span></span><span class=line><span class=cl>    <span class=na>Skip_Long_Lines  On</span>
+</span></span><span class=line><span class=cl>    <span class=na>Tag  kubernetes.*</span>
+</span></span><span class=line><span class=cl><span class=k>[FILTER]</span>
+</span></span><span class=line><span class=cl>    <span class=na>Name        kubernetes</span>
+</span></span><span class=line><span class=cl>    <span class=na>Buffer_Size  0</span>
+</span></span><span class=line><span class=cl>    <span class=na>K8S-Logging.Exclude  On</span>
+</span></span><span class=line><span class=cl>    <span class=na>Kube_CA_File  /var/run/secrets/kubernetes.io/serviceaccount/ca.crt</span>
+</span></span><span class=line><span class=cl>    <span class=na>Kube_Tag_Prefix  kubernetes.var.log.containers</span>
+</span></span><span class=line><span class=cl>    <span class=na>Kube_Token_File  /var/run/secrets/kubernetes.io/serviceaccount/token</span>
+</span></span><span class=line><span class=cl>    <span class=na>Kube_Token_TTL  600</span>
+</span></span><span class=line><span class=cl>    <span class=na>Kube_URL  https://kubernetes.default.svc:443</span>
+</span></span><span class=line><span class=cl>    <span class=na>Match  kubernetes.*</span>
+</span></span><span class=line><span class=cl>    <span class=na>Merge_Log  On</span>
+</span></span><span class=line><span class=cl>    <span class=na>Use_Kubelet  Off</span>
+</span></span><span class=line><span class=cl><span class=k>[OUTPUT]</span>
+</span></span><span class=line><span class=cl>    <span class=na>Name tcp</span>
+</span></span><span class=line><span class=cl>    <span class=na>Match *</span>
+</span></span><span class=line><span class=cl>    <span class=na>Host logging-collector-syslog-ng.logging.svc.cluster.local.</span>
+</span></span><span class=line><span class=cl>    <span class=na>Port 601</span>
+</span></span><span class=line><span class=cl>    <span class=na>Format json_lines</span>
+</span></span><span class=line><span class=cl>    <span class=na>json_date_key ts</span>
+</span></span><span class=line><span class=cl>    <span class=na>json_date_format iso8601</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=日志等级可选><span>日志等级（可选）</span>
+<a href=#%e6%97%a5%e5%bf%97%e7%ad%89%e7%ba%a7%e5%8f%af%e9%80%89 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>修改日志级别可以查看采集是否有问题，如下所示将 <code>logLevel</code> 配置为 <code>trace</code></p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-yaml"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>FluentbitAgent</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>logging-collector-agent</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>logLevel</span><span class=p>:</span><span class=w> </span><span class=l>trace</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nn>...</span><span class=l>...</span></span></span></code></pre></td></tr></table></div></div></div><p><code>Fluentd</code> 同上</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-yaml"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Logging</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>logging-collector</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>controlNamespace</span><span class=p>:</span><span class=w> </span><span class=l>logging</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>fluentd</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>logLevel</span><span class=p>:</span><span class=w> </span><span class=l>trace</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=l>......</span></span></span></code></pre></td></tr></table></div></div></div><h1 class=heading-element id=flow-和-output><span>Flow 和 OutPut</span>
+<a href=#flow-%e5%92%8c-output class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><h2 class=heading-element id=部署打印测试日志的容器><span>部署打印测试日志的容器</span>
+<a href=#%e9%83%a8%e7%bd%b2%e6%89%93%e5%8d%b0%e6%b5%8b%e8%af%95%e6%97%a5%e5%bf%97%e7%9a%84%e5%ae%b9%e5%99%a8 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>通过 golang 编写一个一直打印多行错误日志的 Deployment 用于测试，日志格式如下：</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-text"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>2024-03-20 06:31:44.934 ERROR log_test/main.go:19 main.main 日志测试 2024-03-20 06:31:44.934
+</span></span><span class=line><span class=cl>main.main
+</span></span><span class=line><span class=cl>        log_test/main.go:19
+</span></span><span class=line><span class=cl>runtime.main
+</span></span><span class=line><span class=cl>        runtime/proc.go:271</span></span></code></pre></td></tr></table></div></div></div><p>代码如下：</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-golang"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-golang data-lang=golang><span class=line><span class=cl><span class=kn>package</span><span class=w> </span><span class=nx>main</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kn>import</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w> </span><span class=s>&#34;os&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w> </span><span class=s>&#34;time&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w> </span><span class=s>&#34;go.uber.org/zap&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w> </span><span class=s>&#34;go.uber.org/zap/zapcore&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kd>func</span><span class=w> </span><span class=nf>init</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w> </span><span class=nf>InitZapLogger</span><span class=p>()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kd>var</span><span class=w> </span><span class=nx>Logger</span><span class=w> </span><span class=o>*</span><span class=nx>zap</span><span class=p>.</span><span class=nx>Logger</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kd>func</span><span class=w> </span><span class=nf>InitZapLogger</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w> </span><span class=nx>Logger</span><span class=w> </span><span class=p>=</span><span class=w> </span><span class=nx>zap</span><span class=p>.</span><span class=nf>New</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>zapcore</span><span class=p>.</span><span class=nf>NewTee</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>   </span><span class=nx>zapcore</span><span class=p>.</span><span class=nf>NewCore</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nf>encoderConfig</span><span class=p>(),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nx>zapcore</span><span class=p>.</span><span class=nf>AddSync</span><span class=p>(</span><span class=nx>os</span><span class=p>.</span><span class=nx>Stdout</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nx>zapcore</span><span class=p>.</span><span class=nx>DebugLevel</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>   </span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>zap</span><span class=p>.</span><span class=nf>Development</span><span class=p>(),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>zap</span><span class=p>.</span><span class=nf>AddCaller</span><span class=p>(),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>zap</span><span class=p>.</span><span class=nf>AddStacktrace</span><span class=p>(</span><span class=nx>zap</span><span class=p>.</span><span class=nx>ErrorLevel</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w> </span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kd>func</span><span class=w> </span><span class=nf>encoderConfig</span><span class=p>()</span><span class=w> </span><span class=nx>zapcore</span><span class=p>.</span><span class=nx>Encoder</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w> </span><span class=nx>zapEncode</span><span class=w> </span><span class=o>:=</span><span class=w> </span><span class=nx>zapcore</span><span class=p>.</span><span class=nx>EncoderConfig</span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>MessageKey</span><span class=p>:</span><span class=w>          </span><span class=s>&#34;Message&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>LevelKey</span><span class=p>:</span><span class=w>            </span><span class=s>&#34;Level&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>TimeKey</span><span class=p>:</span><span class=w>             </span><span class=s>&#34;Timestamp&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>NameKey</span><span class=p>:</span><span class=w>             </span><span class=s>&#34;Name&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>CallerKey</span><span class=p>:</span><span class=w>           </span><span class=s>&#34;Caller&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>FunctionKey</span><span class=p>:</span><span class=w>         </span><span class=s>&#34;Function&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>StacktraceKey</span><span class=p>:</span><span class=w>       </span><span class=s>&#34;Stacktrace&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>SkipLineEnding</span><span class=p>:</span><span class=w>      </span><span class=kc>false</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>LineEnding</span><span class=p>:</span><span class=w>          </span><span class=nx>zapcore</span><span class=p>.</span><span class=nx>DefaultLineEnding</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>EncodeLevel</span><span class=p>:</span><span class=w>         </span><span class=nx>zapcore</span><span class=p>.</span><span class=nx>CapitalLevelEncoder</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>EncodeTime</span><span class=p>:</span><span class=w>          </span><span class=nx>encodeTime</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>EncodeDuration</span><span class=p>:</span><span class=w>      </span><span class=nx>zapcore</span><span class=p>.</span><span class=nx>SecondsDurationEncoder</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>EncodeCaller</span><span class=p>:</span><span class=w>        </span><span class=nx>zapcore</span><span class=p>.</span><span class=nx>ShortCallerEncoder</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>EncodeName</span><span class=p>:</span><span class=w>          </span><span class=nx>zapcore</span><span class=p>.</span><span class=nx>FullNameEncoder</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>NewReflectedEncoder</span><span class=p>:</span><span class=w> </span><span class=kc>nil</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>ConsoleSeparator</span><span class=p>:</span><span class=w>    </span><span class=s>&#34; &#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w> </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w> </span><span class=k>return</span><span class=w> </span><span class=nx>zapcore</span><span class=p>.</span><span class=nf>NewConsoleEncoder</span><span class=p>(</span><span class=nx>zapEncode</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kd>func</span><span class=w> </span><span class=nf>encodeTime</span><span class=p>(</span><span class=nx>t</span><span class=w> </span><span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>,</span><span class=w> </span><span class=nx>enc</span><span class=w> </span><span class=nx>zapcore</span><span class=p>.</span><span class=nx>PrimitiveArrayEncoder</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w> </span><span class=nx>enc</span><span class=p>.</span><span class=nf>AppendString</span><span class=p>(</span><span class=nx>t</span><span class=p>.</span><span class=nf>Format</span><span class=p>(</span><span class=s>&#34;2006-01-02 15:04:05.000&#34;</span><span class=p>))</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kd>func</span><span class=w> </span><span class=nf>main</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w> </span><span class=nx>ticker</span><span class=w> </span><span class=o>:=</span><span class=w> </span><span class=nx>time</span><span class=p>.</span><span class=nf>NewTicker</span><span class=p>(</span><span class=mi>5</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w> </span><span class=k>defer</span><span class=w> </span><span class=kd>func</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>ticker</span><span class=p>.</span><span class=nf>Stop</span><span class=p>()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w> </span><span class=p>}()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w> </span><span class=k>for</span><span class=w> </span><span class=k>range</span><span class=w> </span><span class=nx>ticker</span><span class=p>.</span><span class=nx>C</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nx>Logger</span><span class=p>.</span><span class=nf>Sugar</span><span class=p>().</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;日志测试 %s&#34;</span><span class=p>,</span><span class=w> </span><span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>().</span><span class=nf>Format</span><span class=p>(</span><span class=s>&#34;2006-01-02 15:04:05.000&#34;</span><span class=p>))</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w> </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-yaml"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>apps/v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Deployment</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>print-logs</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>print-logs</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>logging</span><span class=p>:</span><span class=w> </span><span class=l>golang</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>selector</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>matchLabels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>print-logs</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>replicas</span><span class=p>:</span><span class=w> </span><span class=m>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>template</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>print-logs</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>logging</span><span class=p>:</span><span class=w> </span><span class=l>golang</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>containers</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>print-logs</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=l>print-test-log</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>restartPolicy</span><span class=p>:</span><span class=w> </span><span class=l>Always</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=配置-flow-和-output-使用logging-operator-test-receiver测试><span>配置 Flow 和 OutPut （使用logging-operator-test-receiver测试）</span>
+<a href=#%e9%85%8d%e7%bd%ae-flow-%e5%92%8c-output-%e4%bd%bf%e7%94%a8logging-operator-test-receiver%e6%b5%8b%e8%af%95 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-yaml"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Flow</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>test-logging</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>match</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>select</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>logging</span><span class=p>:</span><span class=w> </span><span class=l>golang</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>localOutputRefs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=l>test-receiver</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Output</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>test-receiver</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>http</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>endpoint</span><span class=p>:</span><span class=w> </span><span class=l>http://logging-operator-test-receiver:8080</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>content_type</span><span class=p>:</span><span class=w> </span><span class=l>application/json</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>buffer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>memory</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>tags</span><span class=p>:</span><span class=w> </span><span class=l>time</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey</span><span class=p>:</span><span class=w> </span><span class=l>1s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey_wait</span><span class=p>:</span><span class=w> </span><span class=l>0s</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><blockquote><p>创建完毕后，会在 <code>default</code> 命名空间创建 <code>Flow：log-generator</code> 和 <code>OutPut：test-receiver</code>，并将 <code>kubernetes label</code> 为 <code>logging=golang</code> 的日志传输到<code>logging-operator-test-receiver</code>打印</p></blockquote><h1 class=heading-element id=日志的格式化><span>日志的格式化</span>
+<a href=#%e6%97%a5%e5%bf%97%e7%9a%84%e6%a0%bc%e5%bc%8f%e5%8c%96 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><h2 class=heading-element id=多行日志的初步合并><span>多行日志的初步合并</span>
+<a href=#%e5%a4%9a%e8%a1%8c%e6%97%a5%e5%bf%97%e7%9a%84%e5%88%9d%e6%ad%a5%e5%90%88%e5%b9%b6 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>在使用 docker 作为 kubernetes 的容器运行时时，容器日志会将每一行打印的日志拆分开
+实际日志为：</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-text"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>2024-03-20 06:31:44.934 ERROR log_test/main.go:19 main.main 日志测试 2024-03-20 06:31:44.934
+</span></span><span class=line><span class=cl>main.main
+</span></span><span class=line><span class=cl>        log_test/main.go:19
+</span></span><span class=line><span class=cl>runtime.main
+</span></span><span class=line><span class=cl>        runtime/proc.go:271</span></span></code></pre></td></tr></table></div></div></div><p>会被拆分成：</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-text"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>{&#34;log&#34;:&#34;2024-03-20 06:31:44.934 ERROR log_test/main.go:19 main.main 日志测试 2024-03-20 06:31:44.934\n&#34;,&#34;stream&#34;:&#34;stdout&#34;,&#34;time&#34;:&#34;2024-03-20T06:29:59.935462228Z&#34;}
+</span></span><span class=line><span class=cl>{&#34;log&#34;:&#34;main.main\n&#34;,&#34;stream&#34;:&#34;stdout&#34;,&#34;time&#34;:&#34;2024-03-20T06:29:59.935581674Z&#34;}
+</span></span><span class=line><span class=cl>{&#34;log&#34;:&#34;\u0009log_test/main.go:19\n&#34;,&#34;stream&#34;:&#34;stdout&#34;,&#34;time&#34;:&#34;2024-03-20T06:29:59.935610097Z&#34;}
+</span></span><span class=line><span class=cl>{&#34;log&#34;:&#34;runtime.main\n&#34;,&#34;stream&#34;:&#34;stdout&#34;,&#34;time&#34;:&#34;2024-03-20T06:29:59.935633418Z&#34;}
+</span></span><span class=line><span class=cl>{&#34;log&#34;:&#34;\u0009runtime/proc.go:271\n&#34;,&#34;stream&#34;:&#34;stdout&#34;,&#34;time&#34;:&#34;2024-03-20T06:29:59.93565774Z&#34;}</span></span></code></pre></td></tr></table></div></div></div><p>需要在日志转发器中先合并相同的 log，再将对应的 log 进行格式化，这里仍然使用 <code>logging-operator-test-receiver</code> 测试</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-yaml"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Flow</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>test-logging</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>match</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>select</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>logging</span><span class=p>:</span><span class=w> </span><span class=l>golang</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>filters</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>concat</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>key</span><span class=p>:</span><span class=w> </span><span class=l>log</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>multiline_start_regexp</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;/^\d{4}-\d{2}-\d{2}/&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>multiline_end_regexp</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;/\Z/&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>separator</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>flush_interval</span><span class=p>:</span><span class=w> </span><span class=m>5</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>localOutputRefs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=l>test-receiver</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Output</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>test-receiver</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>http</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>endpoint</span><span class=p>:</span><span class=w> </span><span class=l>http://logging-operator-test-receiver:8080</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>content_type</span><span class=p>:</span><span class=w> </span><span class=l>application/json</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>buffer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>memory</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>tags</span><span class=p>:</span><span class=w> </span><span class=l>time</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey</span><span class=p>:</span><span class=w> </span><span class=l>1s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey_wait</span><span class=p>:</span><span class=w> </span><span class=l>0s</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><p>运行之后发现，日志已经被合并到了 <code>key</code> 为 <code>log</code> 的部分</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-text"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>[0] http.0: [[1710923000.932884258, {}], {&#34;log&#34;=&gt;&#34;2024-03-20 08:23:14.937 ERROR log_test/main.go:19 main.main 日志测试 2024-03-20 08:23:14.937
+</span></span><span class=line><span class=cl>main.main
+</span></span><span class=line><span class=cl>        D:/GolandProjects/log_test/main.go:19
+</span></span><span class=line><span class=cl>runtime.main
+</span></span><span class=line><span class=cl>        C:/Program Files/Go/src/runtime/proc.go:271
+</span></span><span class=line><span class=cl>&#34;, &#34;stream&#34;=&gt;&#34;stdout&#34;, &#34;time&#34;=&gt;&#34;2024-03-20T08:23:14.937900447Z&#34;, &#34;kubernetes&#34;=&gt;{&#34;pod_name&#34;=&gt;&#34;print-logs-64fb98db85-c4zdz&#34;, &#34;namespace_name&#34;=&gt;&#34;default&#34;, &#34;pod_id&#34;=&gt;&#34;d72c4042-cb45-4fe1-a684-eb4e56861049&#34;, &#34;labels&#34;=&gt;{&#34;app&#34;=&gt;&#34;print-logs&#34;, &#34;logging&#34;=&gt;&#34;golang&#34;, &#34;pod-template-hash&#34;=&gt;&#34;64fb98db85&#34;}, &#34;annotations&#34;=&gt;{&#34;cni.projectcalico.org/containerID&#34;=&gt;&#34;24c125288decf36a19b5d333569258a45b2f41b2dfbbef407854145234ec7323&#34;, &#34;cni.projectcalico.org/podIP&#34;=&gt;&#34;10.244.166.182/32&#34;, &#34;cni.projectcalico.org/podIPs&#34;=&gt;&#34;10.244.166.182/32&#34;}, &#34;host&#34;=&gt;&#34;node1&#34;, &#34;container_name&#34;=&gt;&#34;print-logs&#34;, &#34;docker_id&#34;=&gt;&#34;ffb6313adb1347f828348f128852ba110f608124f3a8aca68b400f238bfde71a&#34;,&#34;container_hash&#34;=&gt;&#34;print-test-log@sha256:ad1a3e5bb60d81a6b13e8085c618244055c35807e7a05caabf50f77adc7a11e0&#34;, &#34;container_image&#34;=&gt;&#34;print-test-log&#34;}}]</span></span></code></pre></td></tr></table></div></div></div><div class="details admonition danger open"><div class="details-summary admonition-title"><i class="icon fa-solid fa-bolt" aria-hidden=true></i>Danger<i class="details-icon fa-solid fa-angle-right" aria-hidden=true></i></div><div class=details-content><div class=admonition-content><p>如果使用的容器运行时为 containerd，则需要对应的日志为：</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-text"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>2024-04-10T02:15:17.527436711Z stdout F 2024-04-10 02:15:17.527 ERROR log_test/main.go:19 main.main 日志测试 2024-04-10 02:15:17.527
+</span></span><span class=line><span class=cl>2024-04-10T02:15:17.527496993Z stdout F main.main
+</span></span><span class=line><span class=cl>2024-04-10T02:15:17.527501224Z stdout F         D:/GolandProjects/log_test/main.go:19
+</span></span><span class=line><span class=cl>2024-04-10T02:15:17.527503316Z stdout F runtime.main
+</span></span><span class=line><span class=cl>2024-04-10T02:15:17.527505153Z stdout F         C:/Program Files/Go/src/runtime/proc.go:271</span></span></code></pre></td></tr></table></div></div></div><p>这时，fluentbit 会将后面的部分收集到 key 为 message 中，需要修改 Flow 的合并配置合并的 key 为 message</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-yaml"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=w>  </span><span class=nt>filters</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>concat</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>key</span><span class=p>:</span><span class=w> </span><span class=l>message</span></span></span></code></pre></td></tr></table></div></div></div></div></div></div><h2 class=heading-element id=日志的字段格式化><span>日志的字段格式化</span>
+<a href=#%e6%97%a5%e5%bf%97%e7%9a%84%e5%ad%97%e6%ae%b5%e6%a0%bc%e5%bc%8f%e5%8c%96 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-text"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>2024-03-20 06:31:44.934 ERROR log_test/main.go:19 main.main 日志测试 2024-03-20 06:31:44.934
+</span></span><span class=line><span class=cl>main.main
+</span></span><span class=line><span class=cl>        log_test/main.go:19
+</span></span><span class=line><span class=cl>runtime.main
+</span></span><span class=line><span class=cl>        runtime/proc.go:271</span></span></code></pre></td></tr></table></div></div></div><p>使用上述日志格式的作为参考编写正则表达式，将我们的数据使用正则命令将其拆分为如下部分</p><ul><li>time：2024-03-20 08:23:14.937</li><li>loglevel：ERROR</li><li>line：log_test/main.go:19</li><li>func：main.main</li><li>log部分保持不变</li></ul><p>正则表达式如下：(正则测试网站：<a href=https://regex101.com/ target=_blank rel="external nofollow noopener noreferrer">https://regex101.com/</a>)</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-fallback"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>/^(?&lt;time&gt;\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3})(\s+)(?&lt;loglevel&gt;\w+)(\s+)(?&lt;line&gt;[\w\.\:\/\-]+)(\s+)(?&lt;func&gt;[\w\.\:\/\-]+)/</span></span></code></pre></td></tr></table></div></div></div><p>配置日志字段格式化</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-yaml"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Flow</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>test-logging</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>match</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>select</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>logging</span><span class=p>:</span><span class=w> </span><span class=l>golang</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>filters</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>concat</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>key</span><span class=p>:</span><span class=w> </span><span class=l>log</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>multiline_start_regexp</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;/^\d{4}-\d{2}-\d{2}/&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>multiline_end_regexp</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;/\Z/&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>separator</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>flush_interval</span><span class=p>:</span><span class=w> </span><span class=m>5</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>parser</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>remove_key_name_field</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>reserve_data</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>parse</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>multi_format</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>patterns</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=nt>format</span><span class=p>:</span><span class=w> </span><span class=l>regexp</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>expression</span><span class=p>:</span><span class=w> </span><span class=l>/^(?&lt;time&gt;\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3})(\s+)(?&lt;loglevel&gt;\w+)(\s+)(?&lt;line&gt;[\w\.\:\/\-]+)(\s+)(?&lt;func&gt;[\w\.\:\/\-]+)/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>localOutputRefs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=l>test-receiver</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Output</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>test-receiver</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>http</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>endpoint</span><span class=p>:</span><span class=w> </span><span class=l>http://logging-operator-test-receiver:8080</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>content_type</span><span class=p>:</span><span class=w> </span><span class=l>application/json</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>buffer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>memory</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>tags</span><span class=p>:</span><span class=w> </span><span class=l>time</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey</span><span class=p>:</span><span class=w> </span><span class=l>1s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey_wait</span><span class=p>:</span><span class=w> </span><span class=l>0s</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><p>运行效果：</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-text"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>[0] http.0: [[1710928830.558128299, {}], {&#34;log&#34;=&gt;&#34;2024-03-20 10:00:24.938 ERROR log_test/main.go:19 main.main 日志测试 2024-03-20 10:00:24.938
+</span></span><span class=line><span class=cl>main.main
+</span></span><span class=line><span class=cl>  D:/GolandProjects/log_test/main.go:19
+</span></span><span class=line><span class=cl>runtime.main
+</span></span><span class=line><span class=cl>  C:/Program Files/Go/src/runtime/proc.go:271
+</span></span><span class=line><span class=cl>&#34;, &#34;stream&#34;=&gt;&#34;stdout&#34;, &#34;time&#34;=&gt;&#34;2024-03-20T10:00:24.939195916Z&#34;, &#34;kubernetes&#34;=&gt;{&#34;pod_name&#34;=&gt;&#34;print-logs-64fb98db85-c4zdz&#34;, &#34;namespace_name&#34;=&gt;&#34;default&#34;, &#34;pod_id&#34;=&gt;&#34;d72c4042-cb45-4fe1-a684-eb4e56861049&#34;, &#34;labels&#34;=&gt;{&#34;app&#34;=&gt;&#34;print-logs&#34;, &#34;logging&#34;=&gt;&#34;golang&#34;, &#34;pod-template-hash&#34;=&gt;&#34;64fb98db85&#34;}, &#34;annotations&#34;=&gt;{&#34;cni.projectcalico.org/containerID&#34;=&gt;&#34;24c125288decf36a19b5d333569258a45b2f41b2dfbbef407854145234ec7323&#34;, &#34;cni.projectcalico.org/podIP&#34;=&gt;&#34;10.244.166.182/32&#34;, &#34;cni.projectcalico.org/podIPs&#34;=&gt;&#34;10.244.166.182/32&#34;}, &#34;host&#34;=&gt;&#34;node1&#34;, &#34;container_name&#34;=&gt;&#34;print-logs&#34;, &#34;docker_id&#34;=&gt;&#34;ffb6313adb1347f828348f128852ba110f608124f3a8aca68b400f238bfde71a&#34;, &#34;container_hash&#34;=&gt;&#34;print-test-log@sha256:ad1a3e5bb60d81a6b13e8085c618244055c35807e7a05caabf50f77adc7a11e0&#34;, &#34;container_image&#34;=&gt;&#34;print-test-log&#34;}, &#34;loglevel&#34;=&gt;&#34;ERROR&#34;, &#34;line&#34;=&gt;&#34;log_test/main.go:19&#34;, &#34;func&#34;=&gt;&#34;main.main&#34;}]</span></span></code></pre></td></tr></table></div></div></div><h2 class=heading-element id=删除不需要的字段><span>删除不需要的字段</span>
+<a href=#%e5%88%a0%e9%99%a4%e4%b8%8d%e9%9c%80%e8%a6%81%e7%9a%84%e5%ad%97%e6%ae%b5 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>看上述日志发现其中有很多数据我们都不需要，可以使用 <code>record_transformer</code> 删除不需要的字段</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-yaml"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Flow</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>test-logging</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>match</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>select</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>logging</span><span class=p>:</span><span class=w> </span><span class=l>golang</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>filters</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>concat</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>key</span><span class=p>:</span><span class=w> </span><span class=l>log</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>multiline_start_regexp</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;/^\d{4}-\d{2}-\d{2}/&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>multiline_end_regexp</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;/\Z/&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>separator</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>flush_interval</span><span class=p>:</span><span class=w> </span><span class=m>5</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>parser</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>remove_key_name_field</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>reserve_data</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>parse</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>multi_format</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>patterns</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=nt>format</span><span class=p>:</span><span class=w> </span><span class=l>regexp</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>expression</span><span class=p>:</span><span class=w> </span><span class=l>/^(?&lt;time&gt;\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3})(\s+)(?&lt;loglevel&gt;\w+)(\s+)(?&lt;line&gt;[\w\.\:\/\-]+)(\s+)(?&lt;func&gt;[\w\.\:\/\-]+)/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>record_transformer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>remove_keys</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;$.kubernetes.pod_id,$.kubernetes.annotations,$.kubernetes.labels,$.kubernetes.docker_id,$.kubernetes.container_hash,$.kubernetes.container_image&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>localOutputRefs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=l>test-receiver</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Output</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>test-receiver</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>http</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>endpoint</span><span class=p>:</span><span class=w> </span><span class=l>http://logging-operator-test-receiver:8080</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>content_type</span><span class=p>:</span><span class=w> </span><span class=l>application/json</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>buffer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>memory</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>tags</span><span class=p>:</span><span class=w> </span><span class=l>time</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey</span><span class=p>:</span><span class=w> </span><span class=l>1s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey_wait</span><span class=p>:</span><span class=w> </span><span class=l>0s</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h1 class=heading-element id=日志输出到-elasticsearch><span>日志输出到 ElasticSearch</span>
+<a href=#%e6%97%a5%e5%bf%97%e8%be%93%e5%87%ba%e5%88%b0-elasticsearch class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h1><h2 class=heading-element id=elasticsearch-output-配置><span>ElasticSearch OutPut 配置</span>
+<a href=#elasticsearch-output-%e9%85%8d%e7%bd%ae class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>在 default 命名空间创建 elastic 密码的 <code>secret</code></p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-bash"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=1 style=--fi-max-shown-lines:10;--fi-line-digit:1;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl create secret generic elastic-password --from-literal<span class=o>=</span><span class=nv>password</span><span class=o>=</span><span class=s1>&#39;密码&#39;</span></span></span></code></pre></td></tr></table></div></div></div><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-yaml"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Flow</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>test-logging</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>match</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>select</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>logging</span><span class=p>:</span><span class=w> </span><span class=l>golang</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>filters</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>concat</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>key</span><span class=p>:</span><span class=w> </span><span class=l>log</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>multiline_start_regexp</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;/^\d{4}-\d{2}-\d{2}/&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>multiline_end_regexp</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;/\Z/&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>separator</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>flush_interval</span><span class=p>:</span><span class=w> </span><span class=m>5</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>parser</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>remove_key_name_field</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>reserve_data</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>parse</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>multi_format</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>patterns</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=nt>format</span><span class=p>:</span><span class=w> </span><span class=l>regexp</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>expression</span><span class=p>:</span><span class=w> </span><span class=l>/^(?&lt;time&gt;\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3})(\s+)(?&lt;loglevel&gt;\w+)(\s+)(?&lt;line&gt;[\w\.\:\/\-]+)(\s+)(?&lt;func&gt;[\w\.\:\/\-]+)/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>record_transformer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>remove_keys</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;$.kubernetes.pod_id,$.kubernetes.annotations,$.kubernetes.labels,$.kubernetes.docker_id,$.kubernetes.container_hash,$.kubernetes.container_image&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>localOutputRefs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=l>elastic-receiver</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Output</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>elastic-receiver</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>elasticsearch</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>host</span><span class=p>:</span><span class=w> </span><span class=m>10.0.16.2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>9200</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>logstash_format</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>logstash_prefix</span><span class=p>:</span><span class=w> </span><span class=l>my-test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>scheme</span><span class=p>:</span><span class=w> </span><span class=l>http</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>user</span><span class=p>:</span><span class=w> </span><span class=l>elastic</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>password</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>valueFrom</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>secretKeyRef</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>elastic-password</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>key</span><span class=p>:</span><span class=w> </span><span class=l>password</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>buffer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey</span><span class=p>:</span><span class=w> </span><span class=l>1m</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey_wait</span><span class=p>:</span><span class=w> </span><span class=l>30s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey_use_utc</span><span class=p>:</span><span class=w> </span><span class=kc>true</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=使用动态的索引名称><span>使用动态的索引名称</span>
+<a href=#%e4%bd%bf%e7%94%a8%e5%8a%a8%e6%80%81%e7%9a%84%e7%b4%a2%e5%bc%95%e5%90%8d%e7%a7%b0 class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><p>如果需要配置动态索引名称，需要在 buffer 中添加对应的 key 值，如我们需要在索引名称中添加命名空间与容器名称，配置如下：</p><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-yaml"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Flow</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>test-logging</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>match</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>select</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>logging</span><span class=p>:</span><span class=w> </span><span class=l>golang</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>filters</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>concat</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>key</span><span class=p>:</span><span class=w> </span><span class=l>log</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>multiline_start_regexp</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;/^\d{4}-\d{2}-\d{2}/&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>multiline_end_regexp</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;/\Z/&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>separator</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>flush_interval</span><span class=p>:</span><span class=w> </span><span class=m>5</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>parser</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>remove_key_name_field</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>reserve_data</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>parse</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>multi_format</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>patterns</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=nt>format</span><span class=p>:</span><span class=w> </span><span class=l>regexp</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>expression</span><span class=p>:</span><span class=w> </span><span class=l>/^(?&lt;time&gt;\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3})(\s+)(?&lt;loglevel&gt;\w+)(\s+)(?&lt;line&gt;[\w\.\:\/\-]+)(\s+)(?&lt;func&gt;[\w\.\:\/\-]+)/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>record_transformer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>remove_keys</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;$.kubernetes.pod_id,$.kubernetes.annotations,$.kubernetes.labels,$.kubernetes.docker_id,$.kubernetes.container_hash,$.kubernetes.container_image&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>localOutputRefs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=l>elastic-receiver</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Output</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>elastic-receiver</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>elasticsearch</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>host</span><span class=p>:</span><span class=w> </span><span class=m>10.0.16.2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>9200</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>logstash_format</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>logstash_prefix</span><span class=p>:</span><span class=w> </span><span class=l>my-test-${$.kubernetes.namespace_name}-${$.kubernetes.container_name}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>scheme</span><span class=p>:</span><span class=w> </span><span class=l>http</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>user</span><span class=p>:</span><span class=w> </span><span class=l>elastic</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>password</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>valueFrom</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>secretKeyRef</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>elastic-password</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>key</span><span class=p>:</span><span class=w> </span><span class=l>password</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>buffer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>tags</span><span class=p>:</span><span class=w> </span><span class=l>tag,time,$.kubernetes.namespace_name,$.kubernetes.container_name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey</span><span class=p>:</span><span class=w> </span><span class=l>1m</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey_wait</span><span class=p>:</span><span class=w> </span><span class=l>30s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey_use_utc</span><span class=p>:</span><span class=w> </span><span class=kc>true</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div><h2 class=heading-element id=elasticsearch-使用数据流模式><span>ElasticSearch 使用数据流模式</span>
+<a href=#elasticsearch-%e4%bd%bf%e7%94%a8%e6%95%b0%e6%8d%ae%e6%b5%81%e6%a8%a1%e5%bc%8f class=heading-mark><svg class="octicon octicon-link" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5.0 114.95 4.95l-2.5 2.5a3.5 3.5.0 01-4.95.0.751.751.0 01.018-1.042.751.751.0 011.042-.018 1.998 1.998.0 002.83.0l2.5-2.5a2.002 2.002.0 00-2.83-2.83l-1.25 1.25a.751.751.0 01-1.042-.018.751.751.0 01-.018-1.042zm-4.69 9.64a1.998 1.998.0 002.83.0l1.25-1.25a.751.751.0 011.042.018.751.751.0 01.018 1.042l-1.25 1.25a3.5 3.5.0 11-4.95-4.95l2.5-2.5a3.5 3.5.0 014.95.0.751.751.0 01-.018 1.042.751.751.0 01-1.042.018 1.998 1.998.0 00-2.83.0l-2.5 2.5a1.998 1.998.0 000 2.83z"/></svg></a></h2><div class="code-block highlight" data-mode=classic data-copyable=true data-editable=true><div class=chroma><div class="code-header language-yaml"><span class=code-title><i class="arrow fa-solid fa-chevron-down" aria-hidden=true></i></span><button type=button class=ellipses-btn aria-label="Show more options"><i class="fa-solid fa-ellipsis-h" aria-hidden=true></i></button><button type=button class="action-btn line-nos-btn" aria-label="Toggle line numbers" title="Toggle line numbers"><i class="fa-solid fa-list-ol" aria-hidden=true></i></button><button type=button class="action-btn line-wrap-btn" aria-label="Toggle code wrap" title="Toggle code wrap"><i class="fa-solid fa-right-left" aria-hidden=true></i></button><button type=button class="action-btn edit-btn" aria-label="Toggle code block editable" title="Toggle code block editable"><i class="fa-solid fa-pen-to-square" aria-hidden=true></i></button><button type=button class="action-btn copy-btn" aria-label="Copy to clipboard" title="Copy to clipboard" data-copied-text=Copied><i class="fa-regular fa-clone" aria-hidden=true></i></button></div><div class=code-wrapper data-max=10 data-line-digit=2 style=--fi-max-shown-lines:10;--fi-line-digit:2;--fi-line-start:1><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>logging.banzaicloud.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Output</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>elastic-receiver</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>elasticsearch</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>host</span><span class=p>:</span><span class=w> </span><span class=m>10.0.16.2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>9200</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>logstash_format</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>index_name</span><span class=p>:</span><span class=w> </span><span class=l>my-test-${$.kubernetes.namespace_name}-${$.kubernetes.container_name}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>include_timestamp</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>data_stream_enable</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>data_stream_name</span><span class=p>:</span><span class=w> </span><span class=l>my-test-${$.kubernetes.namespace_name}-${$.kubernetes.container_name}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>data_stream_ilm_name</span><span class=p>:</span><span class=w> </span><span class=l>my-test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>data_stream_template_name</span><span class=p>:</span><span class=w> </span><span class=l>my-test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>scheme</span><span class=p>:</span><span class=w> </span><span class=l>https</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ssl_verify</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ssl_version</span><span class=p>:</span><span class=w> </span><span class=l>TLSv1_2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>user</span><span class=p>:</span><span class=w> </span><span class=l>elastic</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>log_es_400_reason</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>default_elasticsearch_version</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;8.10.4&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>password</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>valueFrom</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>secretKeyRef</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>elastic-password</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>key</span><span class=p>:</span><span class=w> </span><span class=l>password</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>buffer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>tags</span><span class=p>:</span><span class=w> </span><span class=l>tag,time,$.kubernetes.namespace_name,$.kubernetes.container_name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey</span><span class=p>:</span><span class=w> </span><span class=l>1m</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey_wait</span><span class=p>:</span><span class=w> </span><span class=l>1m</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>timekey_use_utc</span><span class=p>:</span><span class=w> </span><span class=kc>true</span></span></span></code></pre></td></tr></table></div><button type=button class=code-expand-btn aria-label="Expand or collapse code block"><i class="fa-solid fa-angles-down" aria-hidden=true></i></button></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span title="Updated on 2026-09-29 08:32:15">Updated on 2026-09-29&nbsp;</span></div><div class=post-info-license><span><a rel="license external nofollow noopener noreferrer" href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank>CC BY-NC-SA 4.0</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a href=/en/posts/kubernetes-logging-collection-2/index.md title="Read Markdown" class=link-to-markdown>Read Markdown</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="Share on X" data-sharer=twitter data-url=https://blog.2nfree.com/en/posts/kubernetes-logging-collection-2/ data-title="Kubernetes 日志收集（二）- 基于 Logging Operator 的日志收集" data-hashtags=Kubernetes,Logging><i class="fa-brands fa-x-twitter" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="Share on Facebook" data-sharer=facebook data-url=https://blog.2nfree.com/en/posts/kubernetes-logging-collection-2/ data-hashtag=Kubernetes><i class="fa-brands fa-facebook-square" aria-hidden=true></i></a>
+<a href=javascript:void(0); title="Share on 微博" data-sharer=weibo data-url=https://blog.2nfree.com/en/posts/kubernetes-logging-collection-2/ data-title="Kubernetes 日志收集（二）- 基于 Logging Operator 的日志收集"><i class="fa-brands fa-weibo" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fa-solid fa-tags me-1" aria-hidden=true></i><a href=/en/tags/kubernetes/ class=post-tag title="Tags - Kubernetes">Kubernetes</a><a href=/en/tags/logging/ class=post-tag title="Tags - Logging">Logging</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>Back</a></span>&nbsp;|&nbsp;<span><a href=/en/>Home</a></span></section></div><div class=post-nav><a href=/en/posts/kubernetes-logging-collection-1/ class=post-nav-item rel=prev title="Kubernetes 日志收集（一）- 基于 SideCar 模式的日志收集"><i class="fa-solid fa-angle-left" aria-hidden=true></i>Kubernetes 日志收集（一）- 基于 SideCar 模式的日志收集</a><a href=/en/posts/keda/ class=post-nav-item rel=next title="KEDA - 基于 Kubernetes 的事件驱动自动缩放器">KEDA - 基于 Kubernetes 的事件驱动自动缩放器<i class="fa-solid fa-angle-right" aria-hidden=true></i></a></div></div></article><aside class="toc animate__animated animate__fadeIn animate__faster" id=toc-auto aria-label=Contents><h2 class=toc-title><span>Contents<i class="toc-icon fa-solid fa-angle-down ms-1" aria-hidden=true></i></span>
+<button type=button class=toc-print-btn onclick=event.stopPropagation(),window.print() aria-label=Print><i class="fa-solid fa-print" aria-hidden=true></i></button></h2><div class=toc-content id=toc-content-auto></div></aside></main><footer class=footer><div class=footer-container><div class="footer-line powered">Powered by <a href="https://github.com/gohugoio/hugo?v=0.167.0" target=_blank rel="external nofollow noopener noreferrer" title="Hugo 0.167.0"><img class=hugo-icon src=/images/hugo.min.svg alt="Hugo logo"> Hugo</a> | Theme - <a href="https://github.com/hugo-fixit/FixIt?v=v1.0.0-alpha.3" target=_blank rel=external title="FixIt v1.0.0-alpha.3"><img class=fixit-icon src=/images/fixit.min.svg alt="FixIt logo"> FixIt</a></div><div class="footer-line copyright" itemscope itemtype=http://schema.org/CreativeWork><i class="fa-regular fa-copyright" aria-hidden=true></i>
+<span itemprop=copyrightYear>2025 - 2026</span><span class=author itemprop=copyrightHolder>
+<a href=https://blog.2nfree.com/>komorebi</a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href=https://creativecommons.org/licenses/by-nc-sa/4.0/ target=_blank>CC BY-NC-SA 4.0</a></span></div></div></footer></div><div class=widgets><div id=mask></div><dialog id=nav-dialog aria-labelledby=nav-dialog-title closedby=any><button type=button class=nav-close-btn aria-label="Close Navigation"><i class="fa-solid fa-xmark fa-lg" aria-hidden=true></i></button><div class=toc><h2 class=toc-title id=nav-dialog-title>Navigation</h2><div class=toc-content id=toc-content-drawer></div></div></dialog><dialog id=search-dialog class=search-dialog aria-label=Search closedby=any><div class=search-modal><div class=search-modal-header><span class=search-delimiter></span>
+<button type=button class=search-close-btn aria-label="Close Search Dialog"><i class="fa-solid fa-xmark" aria-hidden=true></i></button></div><div class=search-source-footer><div class=search-shortcuts><span class=search-shortcut><kbd><i class=lucide-arrow-up aria-hidden=true></i></kbd>
+<kbd><i class=lucide-arrow-down aria-hidden=true></i></kbd>
+Navigate
+</span><span class=search-shortcut><kbd><i class=lucide-corner-down-left aria-hidden=true></i></kbd>
+Select
+</span><span class=search-shortcut><kbd>ESC</kbd>
+Close</span></div><span class=search-engine>Search by <a href=https://fusejs.io/ target=_blank rel="external nofollow noopener noreferrer">Fuse.js</a></span></div></div></dialog><div class=fixed-buttons><button type=button class="fixed-button back-to-top animate__faster hidden" aria-label="Back to Top"><i class="fa-solid fa-arrow-up" aria-hidden=true></i></button><button type=button id=nav-drawer-button class="fixed-button nav-drawer-button hidden" aria-label=Navigation aria-controls=nav-dialog aria-expanded=false><i class="fa-solid fa-bars" aria-hidden=true></i></button></div><noscript><div class="noscript-warning bg-danger text-white text-base font-bold fixed text-center inset-x-0 bottom-0 w-full z-fixed">This website works best with JavaScript enabled.</div></noscript></div><link rel=stylesheet href=/lib/cookieconsent/cookieconsent.min.css><script src=/lib/autocomplete-js/index.production.js defer></script><script src=/js/lib/fuse.min.js defer></script><script src=/lib/sharer/sharer.min.js async defer></script><script src=/lib/cookieconsent/cookieconsent.min.js defer></script><script src=/js/lib/cookieconsent.min.js defer></script><script src=/lib/cell-tooltip/cell-tooltip.umd.js defer></script><script src=/en/js/config/61e4da75d91b850ff564d7106c13016c.min.js defer></script><script src=/js/lib/file-tree.min.js defer></script><script src=/js/main.min.js defer></script><script src=/js/custom.min.js defer></script></body></html>
